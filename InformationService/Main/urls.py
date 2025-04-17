@@ -12,6 +12,11 @@ router.register(r'serials', views.SerialViewSet, basename='serials')
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path('movies/', views.movies_list, name='movies_list'),
+    path('movies/<int:pk>/', views.movie_detail, name='movie_detail'),
+    path('serials/', views.serials_list, name='serials_list'),
+    path('serials/<int:pk>/', views.serial_detail, name='serial_detail'),
+    path('about/', views.about, name='about'),
 
     path("api/", include(router.urls)),
 ]

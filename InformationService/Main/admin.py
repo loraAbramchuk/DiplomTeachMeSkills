@@ -10,6 +10,7 @@ from . import models
 # admin.py
 from django.contrib import admin
 from .models import Genre, Country, Movie, Serial
+from django.utils.html import mark_safe
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
@@ -23,14 +24,27 @@ class CountryAdmin(admin.ModelAdmin):
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'release_year', 'created_at')  # Поля в списке
+    list_display = ('id', 'title', 'release_year', 'created_at', 'poster_preview')  # Поля в списке
     list_filter = ('release_year', 'genres', 'country')  # Фильтры
     search_fields = ('title', 'description')  # Поля для поиска
     filter_horizontal = ('genres', 'country')  # Удобный выбор ManyToMany полей
 
+    def poster_preview(self, obj):
+        if obj.poster:
+            return mark_safe(f'<img src="{obj.poster.url}" style="height: 100px;" />')
+        return "No Image"
+
+    poster_preview.short_description = "Poster Preview"
+
 @admin.register(Serial)
 class SerialAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'release_year', 'episodes', 'created_at')
+    list_display = ('id', 'title', 'release_year', 'episodes', 'created_at', 'poster_preview')
     list_filter = ('release_year', 'genres', 'country')
     search_fields = ('title', 'description')
     filter_horizontal = ('genres', 'country')
+
+    def poster_preview(self, obj):
+        if obj.poster:
+            return mark_safe(f'<img src="{obj.poster.url}" style="height: 100px;" />')
+        return "No Image"
+    poster_preview.short_description = "Poster Preview"

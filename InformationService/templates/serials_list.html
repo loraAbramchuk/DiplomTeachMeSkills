@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serials List</title>
+</head>
+<body>
+    <h1>Serials List</h1>
+    <ul>
+        {% for serial in serials %}
+            <li>
+                <h2><a href="{% url 'serial_detail' serial.id %}">{{ serial.title }}</a></h2>
+                {% if serial.poster %}
+                    <img src="{{ serial.poster.url }}" alt="{{ serial.title }}" style="height: 150px;">
+                {% else %}
+                    <img src="{% static 'posters/default_serial.jpg' %}" alt="Default Serial Poster" style="height: 150px;">
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'index' %}">Back to Home</a>
+
+</body>
+</html>

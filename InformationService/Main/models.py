@@ -20,6 +20,7 @@ class Movie(models.Model):
     release_year = models.PositiveIntegerField()
     genres = models.ManyToManyField(Genre)
     country = models.ManyToManyField(Country)
+    poster = models.ImageField(upload_to='posters/movies/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -32,5 +33,9 @@ class Serial(models.Model):
     genres = models.ManyToManyField(Genre)
     country = models.ManyToManyField(Country)
     episodes = models.PositiveIntegerField()
+    poster = models.ImageField(upload_to='posters/serials/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
 

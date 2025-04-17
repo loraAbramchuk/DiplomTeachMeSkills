@@ -18,7 +18,7 @@ class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = ['id', 'title', 'description', 'release_year', 'genres', 'country', 'created_at']
+        fields = ['id', 'title', 'description', 'release_year', 'genres', 'country', 'poster', 'created_at']
 
 class SerialSerializer(serializers.ModelSerializer):
     genres = GenreSerializers(many=True, read_only=True)
@@ -26,4 +26,4 @@ class SerialSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Serial
-        fields = ['id', 'title', 'description', 'release_year', 'genres', 'country', 'episodes', 'created_at']
+        fields = ['id', 'title', 'description', 'release_year', 'genres', 'country', 'episodes', 'poster', 'created_at']

@@ -7,6 +7,7 @@ from .serializers import (
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
 
 def index(request):
@@ -58,3 +59,27 @@ class SerialViewSet(viewsets.ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+def movies_list(request):
+    """Список фильмов"""
+    movies = Movie.objects.all()
+    return render(request, 'movies_list.html', {'movies': movies})
+
+def serials_list(request):
+    """Список сериалов"""
+    serials = Serial.objects.all()
+    return render(request, 'serials_list.html', {'serials': serials})
+
+def movie_detail(request, pk):
+    """View for a specific movie"""
+    movie = get_object_or_404(Movie, pk=pk)
+    return render(request, 'movie_detail.html', {'movie': movie})
+
+def serial_detail(request, pk):
+    """View for a specific serial"""
+    serial = get_object_or_404(Serial, pk=pk)
+    return render(request, 'serial_detail.html', {'serial': serial})
+
+def about(request):
+    """About page"""
+    return render(request, 'about.html')
