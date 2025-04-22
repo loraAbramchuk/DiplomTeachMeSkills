@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}Сериалы{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Сериалы</h1>
+    <div class="row">
+        {% for serial in serials %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if serial.poster %}
+                    <img src="{{ serial.poster.url }}" class="card-img-top" alt="{{ serial.title }}">
+                {% else %}
+                    <img src="/media/posters/serials/zaglushka.jpg" class="card-img-top" alt="Нет постера">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ serial.title }}</h5>
+                    <p class="card-text">{{ serial.description|truncatewords:30 }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Год: {{ serial.release_year }}<br>
+                            Эпизодов: {{ serial.episodes }}<br>
+                            Жанры: {% for genre in serial.genres.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                        </small>
+                    </p>
+                    <a href="{% url 'serial_detail' serial.pk %}" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">Сериалы пока не добавлены.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

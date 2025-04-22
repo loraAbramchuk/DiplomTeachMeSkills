@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Фильмы{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Фильмы</h1>
+    <div class="row">
+        {% for movie in movies %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                {% if movie.poster %}
+                    <img src="{{ movie.poster.url }}" class="card-img-top" alt="{{ movie.title }}">
+                {% else %}
+                    <img src="/media/posters/movies/zaglushka.jpg" class="card-img-top" alt="Нет постера">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ movie.title }}</h5>
+                    <p class="card-text">{{ movie.description|truncatewords:30 }}</p>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Год: {{ movie.release_year }}<br>
+                            Жанры: {% for genre in movie.genres.all %}{{ genre.name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                        </small>
+                    </p>
+                    <a href="{% url 'movie_detail' movie.pk %}" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p class="text-center">Фильмы пока не добавлены.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

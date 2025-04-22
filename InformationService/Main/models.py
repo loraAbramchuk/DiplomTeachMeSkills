@@ -1,6 +1,11 @@
 from django.conf import settings
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth import get_user_model
+from django.utils import timezone
+from datetime import timedelta
+
+User = get_user_model()
 
 # Create your models here.
 
@@ -64,4 +69,59 @@ class Review(models.Model):
         if self.movie:
             return f"{self.user.username} - Фильм: {self.movie.title} ({self.rating})"
         return f"{self.user.username} - Сериал: {self.serial.title} ({self.rating})"
+
+class Subscription(models.Model):
+    """Модель подписки"""
+    name = models.CharField(max_length=100, verbose_name="Название")
+    description = models.TextField(verbose_name="Описание")
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
+    duration_days = models.IntegerField(verbose_name="Длительность (в днях)")
+
+    def __str__(self):
+        return f"{self.name} ({self.price} руб.)"
+
+    class Meta:
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"
+
+class UserSubscription(models.Model):
+    """Модель активной подписки пользователя"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    subscription = models.ForeignKey(Subscription, on_delete=models.PROTECT, verbose_name="Тип подписки")
+    start_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата начала")
+    end_date = models.DateTimeField(verbose_name="Дата окончания")
+    is_active = models.BooleanField(default=True, verbose_name="Активна")
+    auto_renewal = models.BooleanField(default=True, verbose_name="Автопродление")
+
+    def save(self, *args, **kwargs):
+        if not self.end_date:
+            self.end_date = timezone.now() + timedelta(days=self.subscription.duration_days)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.subscription.name}"
+
+    class Meta:
+        verbose_name = "Подписка пользователя"
+        verbose_name_plural = "Подписки пользователей"
+
+class Payment(models.Model):
+    """Модель платежа"""
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    subscription = models.ForeignKey(Subscription, on_delete=models.PROTECT, verbose_name="Тип подписки")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма")
+    payment_date = models.DateTimeField(auto_now_add=True, verbose_name="Дата платежа")
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'В обработке'),
+        ('completed', 'Выполнен'),
+        ('failed', 'Ошибка'),
+        ('refunded', 'Возвращен')
+    ], default='pending', verbose_name="Статус")
+
+    def __str__(self):
+        return f"{self.user.username} - {self.amount} руб. ({self.get_status_display()})"
+
+    class Meta:
+        verbose_name = "Платеж"
+        verbose_name_plural = "Платежи"
 

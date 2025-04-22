@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Профиль {{ user_profile.username }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>Профиль пользователя {{ user_profile.username }}</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h2>Рецензии пользователя</h2>
+            
+            <!-- Рецензии на фильмы -->
+            <h3 class="mt-4">Рецензии на фильмы</h3>
+            {% for review in movie_reviews %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'movie_detail' review.movie.pk %}">{{ review.movie.title }}</a>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Оценка: {{ review.rating }}/10</h6>
+                        <p class="card-text">{{ review.text }}</p>
+                        <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Пользователь еще не оставил рецензий на фильмы.</p>
+            {% endfor %}
+
+            <!-- Рецензии на сериалы -->
+            <h3 class="mt-4">Рецензии на сериалы</h3>
+            {% for review in serial_reviews %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <a href="{% url 'serial_detail' review.serial.pk %}">{{ review.serial.title }}</a>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Оценка: {{ review.rating }}/10</h6>
+                        <p class="card-text">{{ review.text }}</p>
+                        <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
+                    </div>
+                </div>
+            {% empty %}
+                <p>Пользователь еще не оставил рецензий на сериалы.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

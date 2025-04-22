@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Добро пожаловать в Movies and Serials Hub</h1>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="card-title">Фильмы</h2>
+                            <p class="card-text">Исследуйте нашу коллекцию фильмов разных жанров и стран.</p>
+                            <a href="{% url 'movies_list' %}" class="btn btn-primary">Смотреть фильмы</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h2 class="card-title">Сериалы</h2>
+                            <p class="card-text">Откройте для себя увлекательные сериалы со всего мира.</p>
+                            <a href="{% url 'serials_list' %}" class="btn btn-primary">Смотреть сериалы</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
