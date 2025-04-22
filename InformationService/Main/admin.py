@@ -9,7 +9,7 @@ from . import models
 
 # admin.py
 from django.contrib import admin
-from .models import Genre, Country, Movie, Serial
+from .models import Genre, Country, Movie, Serial, Review
 from django.utils.html import mark_safe
 
 @admin.register(Genre)
@@ -36,6 +36,14 @@ class MovieAdmin(admin.ModelAdmin):
 
     poster_preview.short_description = "Poster Preview"
 
+    def display_genres(self, obj):
+        return ", ".join([genre.name for genre in obj.genres.all()])
+    display_genres.short_description = 'Genres'
+
+    def display_countries(self, obj):
+        return ", ".join([country.name for country in obj.country.all()])
+    display_countries.short_description = 'Countries'
+
 @admin.register(Serial)
 class SerialAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'release_year', 'episodes', 'created_at', 'poster_preview')
@@ -48,3 +56,23 @@ class SerialAdmin(admin.ModelAdmin):
             return mark_safe(f'<img src="{obj.poster.url}" style="height: 100px;" />')
         return "No Image"
     poster_preview.short_description = "Poster Preview"
+
+    def display_genres(self, obj):
+        return ", ".join([genre.name for genre in obj.genres.all()])
+    display_genres.short_description = 'Genres'
+
+    def display_countries(self, obj):
+        return ", ".join([country.name for country in obj.country.all()])
+    display_countries.short_description = 'Countries'
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'get_content', 'rating', 'created_at')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('text', 'user__username', 'movie__title', 'serial__title')
+
+    def get_content(self, obj):
+        if obj.movie:
+            return f"Фильм: {obj.movie.title}"
+        return f"Сериал: {obj.serial.title}"
+    get_content.short_description = 'Контент'
