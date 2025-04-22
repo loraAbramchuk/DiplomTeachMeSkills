@@ -18,8 +18,22 @@ User = get_user_model()
 
 
 def index(request):
-    """Главная страница"""
-    return render(request, 'Main/index.html')
+    """Main page"""
+    # Получаем последний добавленный фильм для баннера
+    featured_movie = Movie.objects.order_by('-created_at').first()
+    
+    # Получаем последние 8 фильмов
+    latest_movies = Movie.objects.order_by('-created_at')[1:9]
+    
+    # Получаем последние 8 сериалов
+    latest_serials = Serial.objects.order_by('-created_at')[:8]
+    
+    context = {
+        'featured_movie': featured_movie,
+        'latest_movies': latest_movies,
+        'latest_serials': latest_serials,
+    }
+    return render(request, 'Main/index.html', context)
 
 
 class GenreViewSet(viewsets.ReadOnlyModelViewSet):

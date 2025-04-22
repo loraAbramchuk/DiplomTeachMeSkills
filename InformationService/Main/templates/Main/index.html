@@ -1,33 +1,144 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Главная{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <h1 class="text-center mb-4">Добро пожаловать в Movies and Serials Hub</h1>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h2 class="card-title">Фильмы</h2>
-                            <p class="card-text">Исследуйте нашу коллекцию фильмов разных жанров и стран.</p>
-                            <a href="{% url 'movies_list' %}" class="btn btn-primary">Смотреть фильмы</a>
+<!-- banner-area -->
+<section class="banner-area banner-bg" data-background="{% static 'img/banner/banner_bg01.jpg' %}">
+    <div class="container custom-container">
+        <div class="row">
+            <div class="col-xl-6 col-lg-8">
+                <div class="banner-content">
+                    {% if featured_movie %}
+                        <h2 class="title wow fadeInUp" data-wow-delay=".4s" data-wow-duration="1.8s">{{ featured_movie.title }}</h2>
+                        <div class="banner-meta wow fadeInUp" data-wow-delay=".6s" data-wow-duration="1.8s">
+                            <ul>
+                                <li class="quality">
+                                    <span>HD</span>
+                                </li>
+                                <li class="category">
+                                    {% for genre in featured_movie.genres.all %}
+                                        <a href="#">{{ genre.name }}{% if not forloop.last %},{% endif %}</a>
+                                    {% endfor %}
+                                </li>
+                                <li class="release-time">
+                                    <span><i class="far fa-calendar-alt"></i> {{ featured_movie.release_year }}</span>
+                                </li>
+                            </ul>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h2 class="card-title">Сериалы</h2>
-                            <p class="card-text">Откройте для себя увлекательные сериалы со всего мира.</p>
-                            <a href="{% url 'serials_list' %}" class="btn btn-primary">Смотреть сериалы</a>
-                        </div>
-                    </div>
+                        {% if featured_movie.trailer_url %}
+                            <a href="{{ featured_movie.trailer_url }}" class="banner-btn btn popup-video wow fadeInUp" data-wow-delay=".8s" data-wow-duration="1.8s">
+                                <i class="fas fa-play"></i> Смотреть трейлер
+                            </a>
+                        {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+<!-- banner-area-end -->
+
+<!-- movie-area -->
+<section class="movie-area movie-bg" data-background="{% static 'img/bg/movie_bg.jpg' %}">
+    <div class="container">
+        <div class="row align-items-end mb-60">
+            <div class="col-lg-6">
+                <div class="section-title text-center text-lg-left">
+                    <span class="sub-title">ОНЛАЙН СТРИМИНГ</span>
+                    <h2 class="title">Новые фильмы</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row tr-movie-active">
+            {% for movie in latest_movies %}
+            <div class="col-xl-3 col-lg-4 col-sm-6 grid-item grid-sizer">
+                <div class="movie-item movie-item-three mb-50">
+                    <div class="movie-poster">
+                        <img src="{{ movie.poster.url }}" alt="{{ movie.title }}">
+                        <ul class="overlay-btn">
+                            <li><a href="{% url 'movie_detail' movie.pk %}" class="btn">Подробнее</a></li>
+                            {% if movie.trailer_url %}
+                            <li><a href="{{ movie.trailer_url }}" class="btn popup-video"><i class="fas fa-play"></i></a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="movie-content">
+                        <div class="top">
+                            <h5 class="title"><a href="{% url 'movie_detail' movie.pk %}">{{ movie.title }}</a></h5>
+                            <span class="date">{{ movie.release_year }}</span>
+                        </div>
+                        <div class="bottom">
+                            <ul>
+                                <li><span class="quality">HD</span></li>
+                                <li>
+                                    {% for genre in movie.genres.all %}
+                                        <span>{{ genre.name }}{% if not forloop.last %}, {% endif %}</span>
+                                    {% endfor %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- movie-area-end -->
+
+<!-- tv-series-area -->
+<section class="tv-series-area tv-series-bg" data-background="{% static 'img/bg/tv_series_bg.jpg' %}">
+    <div class="container">
+        <div class="row align-items-end mb-60">
+            <div class="col-lg-6">
+                <div class="section-title text-center text-lg-left">
+                    <span class="sub-title">ОНЛАЙН СТРИМИНГ</span>
+                    <h2 class="title">Новые сериалы</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            {% for serial in latest_serials %}
+            <div class="col-xl-3 col-lg-4 col-sm-6 grid-item grid-sizer">
+                <div class="movie-item movie-item-three mb-50">
+                    <div class="movie-poster">
+                        <img src="{{ serial.poster.url }}" alt="{{ serial.title }}">
+                        <ul class="overlay-btn">
+                            <li><a href="{% url 'serial_detail' serial.pk %}" class="btn">Подробнее</a></li>
+                        </ul>
+                    </div>
+                    <div class="movie-content">
+                        <div class="top">
+                            <h5 class="title"><a href="{% url 'serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
+                            <span class="date">{{ serial.release_year }}</span>
+                        </div>
+                        <div class="bottom">
+                            <ul>
+                                <li><span class="quality">HD</span></li>
+                                <li>
+                                    {% for genre in serial.genres.all %}
+                                        <span>{{ genre.name }}{% if not forloop.last %}, {% endif %}</span>
+                                    {% endfor %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<!-- tv-series-area-end -->
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Инициализация magnific popup для видео
+    $('.popup-video').magnificPopup({
+        type: 'iframe'
+    });
+</script>
 {% endblock %} 

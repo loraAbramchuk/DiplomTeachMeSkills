@@ -22,16 +22,22 @@ class Genre(models.Model):
         return self.name
 
 class Movie(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    release_year = models.PositiveIntegerField()
-    genres = models.ManyToManyField(Genre)
-    country = models.ManyToManyField(Country)
-    poster = models.ImageField(upload_to='posters/movies/', blank=True, null=True)
+    """Модель фильма"""
+    title = models.CharField(max_length=255, verbose_name="Название")
+    description = models.TextField(verbose_name="Описание")
+    release_year = models.IntegerField(verbose_name="Год выпуска")
+    poster = models.ImageField(upload_to='posters/movies/', null=True, blank=True, verbose_name="Постер")
+    trailer_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL трейлера")
+    genres = models.ManyToManyField(Genre, verbose_name="Жанры")
+    country = models.ManyToManyField(Country, verbose_name="Страны")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        verbose_name = "Фильм"
+        verbose_name_plural = "Фильмы"
 
 class Serial(models.Model):
     title = models.CharField(max_length=200)

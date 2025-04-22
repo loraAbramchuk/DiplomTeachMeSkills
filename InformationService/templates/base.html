@@ -1,72 +1,187 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Movies and Serials Hub{% endblock %}</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">Movies and Serials Hub</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'index' %}">Главная</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'movies_list' %}">Фильмы</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'serials_list' %}">Сериалы</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'subscription_list' %}">Подписки</a>
-                    </li>
-                    {% endif %}
-                </ul>
-                <ul class="navbar-nav">
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'user_profile' user.username %}">Мой профиль</a>
-                        </li>
-                        <li class="nav-item">
-                            <span class="nav-link">Привет, {{ user.username }}!</span>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:logout' %}">Выход</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:login' %}">Вход</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'users:register' %}">Регистрация</a>
-                        </li>
-                    {% endif %}
-                </ul>
+{% load static %}
+<!doctype html>
+<html class="no-js" lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{% block title %}Movies and Serials Hub{% endblock %}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
+
+        <!-- CSS here -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+        <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+        <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+        <link rel="stylesheet" href="{% static 'css/odometer.css' %}">
+        <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+        <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+        <link rel="stylesheet" href="{% static 'css/default.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+    </head>
+    <body>
+        <!-- preloader -->
+        <div id="preloader">
+            <div id="loading-center">
+                <div id="loading-center-absolute">
+                    <img src="{% static 'img/preloader.svg' %}" alt="">
+                </div>
             </div>
         </div>
-    </nav>
 
-    <div class="container mt-4">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
+        <!-- Scroll-top -->
+        <button class="scroll-top scroll-to-target" data-target="html">
+            <i class="fas fa-angle-up"></i>
+        </button>
+
+        <!-- header-area -->
+        <header>
+            <div id="sticky-header" class="menu-area transparent-header">
+                <div class="container custom-container">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="mobile-nav-toggler"><i class="fas fa-bars"></i></div>
+                            <div class="menu-wrap">
+                                <nav class="menu-nav show">
+                                    <div class="logo">
+                                        <a href="{% url 'index' %}">
+                                            <img src="{% static 'img/logo/logo.png' %}" alt="Logo">
+                                        </a>
+                                    </div>
+                                    <div class="navbar-wrap main-menu d-none d-lg-flex">
+                                        <ul class="navigation">
+                                            <li><a href="{% url 'index' %}">Главная</a></li>
+                                            <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
+                                            <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                                            {% if user.is_authenticated %}
+                                            <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                    <div class="header-action d-none d-md-block">
+                                        <ul>
+                                            <li class="header-search">
+                                                <a href="#" data-toggle="modal" data-target="#search-modal">
+                                                    <i class="fas fa-search"></i>
+                                                </a>
+                                            </li>
+                                            {% if user.is_authenticated %}
+                                                <li class="header-btn">
+                                                    <a href="{% url 'user_profile' user.username %}" class="btn">Мой профиль</a>
+                                                </li>
+                                                <li class="header-btn">
+                                                    <a href="{% url 'users:logout' %}" class="btn">Выход</a>
+                                                </li>
+                                            {% else %}
+                                                <li class="header-btn">
+                                                    <a href="{% url 'users:login' %}" class="btn">Вход</a>
+                                                </li>
+                                                <li class="header-btn">
+                                                    <a href="{% url 'users:register' %}" class="btn">Регистрация</a>
+                                                </li>
+                                            {% endif %}
+                                        </ul>
+                                    </div>
+                                </nav>
+                            </div>
+
+                            <!-- Mobile Menu -->
+                            <div class="mobile-menu">
+                                <div class="close-btn"><i class="fas fa-times"></i></div>
+                                <nav class="menu-box">
+                                    <div class="nav-logo">
+                                        <a href="{% url 'index' %}">
+                                            <img src="{% static 'img/logo/logo.png' %}" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="menu-outer">
+                                        <!-- Мобильное меню будет добавлено через JavaScript -->
+                                    </div>
+                                </nav>
+                            </div>
+                            <div class="menu-backdrop"></div>
+
+                            <!-- Modal Search -->
+                            <div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <form>
+                                            <input type="text" placeholder="Поиск...">
+                                            <button><i class="fas fa-search"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            {% endfor %}
-        {% endif %}
+            </div>
+        </header>
 
-        {% block content %}
-        {% endblock %}
-    </div>
+        <!-- main-area -->
+        <main>
+            {% if messages %}
+                <div class="container mt-4">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- footer-area -->
+        <footer class="footer-area footer-bg" data-background="{% static 'img/bg/footer_bg.jpg' %}">
+            <div class="container">
+                <div class="footer-top">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="footer-menu">
+                                <ul>
+                                    <li><a href="{% url 'index' %}">Главная</a></li>
+                                    <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
+                                    <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="copyright-text">
+                                <p>&copy; 2024 Movies and Serials Hub. Все права защищены.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- JS here -->
+        <script src="{% static 'js/vendor/jquery-3.6.0.min.js' %}"></script>
+        <script src="{% static 'js/popper.min.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
+        <script src="{% static 'js/imagesloaded.pkgd.min.js' %}"></script>
+        <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+        <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+        <script src="{% static 'js/jquery.odometer.min.js' %}"></script>
+        <script src="{% static 'js/jquery.appear.js' %}"></script>
+        <script src="{% static 'js/slick.min.js' %}"></script>
+        <script src="{% static 'js/ajax-form.js' %}"></script>
+        <script src="{% static 'js/wow.min.js' %}"></script>
+        <script src="{% static 'js/aos.js' %}"></script>
+        <script src="{% static 'js/plugins.js' %}"></script>
+        <script src="{% static 'js/main.js' %}"></script>
+    </body>
 </html>
