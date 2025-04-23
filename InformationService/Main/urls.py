@@ -1,14 +1,5 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-
+from django.urls import path
 from . import views
-from .views import GenreViewSet, CountryViewSet
-
-router = DefaultRouter()
-router.register(r'genres', GenreViewSet)
-router.register(r'countries', CountryViewSet)
-router.register(r'movies', views.MovieViewSet, basename='movies')
-router.register(r'serials', views.SerialViewSet, basename='serials')
 
 urlpatterns = [
     path("", views.index, name="index"),
@@ -26,6 +17,4 @@ urlpatterns = [
     path('subscriptions/<int:subscription_id>/subscribe/', views.subscribe, name='subscribe'),
     path('subscriptions/cancel/', views.cancel_subscription, name='cancel_subscription'),
     path('payments/history/', views.payment_history, name='payment_history'),
-
-    path("api/", include(router.urls)),
 ]

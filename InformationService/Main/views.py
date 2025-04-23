@@ -1,12 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from rest_framework import viewsets
 from .models import Genre, Country, Movie, Serial, Review, Subscription, UserSubscription, Payment
-from .serializers import (
-    GenreSerializers, CountrySerializer, MovieSerializer, SerialSerializer
-)
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
-from rest_framework.response import Response
-from rest_framework import status
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -34,52 +27,6 @@ def index(request):
         'latest_serials': latest_serials,
     }
     return render(request, 'Main/index.html', context)
-
-
-class GenreViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Genre.objects.all()
-    serializer_class = GenreSerializers
-
-class CountryViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Country.objects.all()
-    serializer_class = CountrySerializer
-
-class MovieViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Movie.objects.all()
-    serializer_class = MovieSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        genre_id = self.request.query_params.get('genre_id')
-        if genre_id:
-            queryset = queryset.filter(genres__id=genre_id)
-        return queryset
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-class SerialViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Serial.objects.all()
-    serializer_class = SerialSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        genre_id = self.request.query_params.get('genre_id')
-        if genre_id:
-            queryset = queryset.filter(genres__id=genre_id)
-        return queryset
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 def movies_list(request):
     """Список фильмов"""
@@ -198,53 +145,60 @@ def subscription_list(request):
 
 @login_required
 def subscribe(request, subscription_id):
-    """Оформление подписки"""
+    """Подписка на тариф"""
     subscription = get_object_or_404(Subscription, pk=subscription_id)
     
-    # Создаем платеж
-    payment = Payment.objects.create(
+    # Проверяем, нет ли уже активной подписки
+    active_subscription = UserSubscription.objects.filter(
+        user=request.user,
+        is_active=True,
+        end_date__gt=timezone.now()
+    ).first()
+    
+    if active_subscription:
+        messages.warning(request, 'У вас уже есть активная подписка!')
+        return redirect('subscription_list')
+    
+    # Создаем запись о подписке
+    user_subscription = UserSubscription.objects.create(
+        user=request.user,
+        subscription=subscription,
+        start_date=timezone.now(),
+        end_date=timezone.now() + timezone.timedelta(days=30),
+        is_active=True
+    )
+    
+    # Создаем запись об оплате
+    Payment.objects.create(
         user=request.user,
         subscription=subscription,
         amount=subscription.price,
-        status='pending'
+        status='completed'
     )
     
-    # В реальном проекте здесь должна быть интеграция с платежной системой
-    # Для демонстрации просто создаем подписку
-    payment.status = 'completed'
-    payment.save()
-    
-    # Деактивируем текущую подписку, если есть
-    UserSubscription.objects.filter(
-        user=request.user,
-        is_active=True
-    ).update(is_active=False)
-    
-    # Создаем новую подписку
-    UserSubscription.objects.create(
-        user=request.user,
-        subscription=subscription
-    )
-    
-    messages.success(request, f'Вы успешно оформили подписку {subscription.name}!')
+    messages.success(request, f'Вы успешно подписались на тариф {subscription.name}!')
     return redirect('subscription_list')
 
 @login_required
 def cancel_subscription(request):
-    """Отмена автопродления подписки"""
-    subscription = get_object_or_404(
-        UserSubscription,
+    """Отмена подписки"""
+    subscription = UserSubscription.objects.filter(
         user=request.user,
-        is_active=True
-    )
-    subscription.auto_renewal = False
-    subscription.save()
+        is_active=True,
+        end_date__gt=timezone.now()
+    ).first()
     
-    messages.success(request, 'Автопродление подписки отключено.')
+    if subscription:
+        subscription.is_active = False
+        subscription.save()
+        messages.success(request, 'Ваша подписка успешно отменена.')
+    else:
+        messages.warning(request, 'У вас нет активной подписки для отмены.')
+    
     return redirect('subscription_list')
 
 @login_required
 def payment_history(request):
     """История платежей пользователя"""
-    payments = Payment.objects.filter(user=request.user).order_by('-payment_date')
+    payments = Payment.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'Main/payment_history.html', {'payments': payments})
