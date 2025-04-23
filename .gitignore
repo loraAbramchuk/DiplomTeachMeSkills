@@ -1,3 +1,9 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
 # Python
 __pycache__/
 *.py[cod]

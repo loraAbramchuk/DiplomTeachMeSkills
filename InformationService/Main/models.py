@@ -14,12 +14,20 @@ class Country(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Страна"
+        verbose_name_plural = "Страны"
 
 class Genre(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Жанр"
+        verbose_name_plural = "Жанры"
 
 class Movie(models.Model):
     """Модель фильма"""
@@ -51,6 +59,10 @@ class Serial(models.Model):
 
     def __str__(self):
         return self.title
+    
+    class Meta:
+        verbose_name = "Сериал"
+        verbose_name_plural = "Сериалы"
 
 
 class Review(models.Model):
@@ -75,6 +87,10 @@ class Review(models.Model):
         if self.movie:
             return f"{self.user.username} - Фильм: {self.movie.title} ({self.rating})"
         return f"{self.user.username} - Сериал: {self.serial.title} ({self.rating})"
+    
+    class Meta:
+        verbose_name = "Отзыв"
+        verbose_name_plural = "Отзывы"
 
 class Subscription(models.Model):
     """Модель подписки"""
