@@ -17,4 +17,9 @@ urlpatterns = [
     path('subscriptions/<int:subscription_id>/subscribe/', views.subscribe, name='subscribe'),
     path('subscriptions/cancel/', views.cancel_subscription, name='cancel_subscription'),
     path('payments/history/', views.payment_history, name='payment_history'),
+    
+    # Рекомендательная система
+    path('api/recommendations/', views.get_recommendations, name='recommendations'),
+    path('api/similar/<str:content_type>/<int:pk>/', views.get_similar, name='similar_content'),
+    path('api/trending/', views.get_trending, name='trending'),
 ]

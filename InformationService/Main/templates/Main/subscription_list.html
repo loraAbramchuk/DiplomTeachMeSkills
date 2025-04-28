@@ -1,51 +1,81 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Подписки{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mb-4">Подписки</h1>
-
-    {% if user_subscription %}
-        <div class="alert alert-info">
-            <h4>Ваша текущая подписка: {{ user_subscription.subscription.name }}</h4>
-            <p>Действует до: {{ user_subscription.end_date|date:"d.m.Y H:i" }}</p>
-            {% if user_subscription.auto_renewal %}
-                <p>Включено автопродление</p>
-                <form method="post" action="{% url 'cancel_subscription' %}" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-warning">Отключить автопродление</button>
-                </form>
-            {% else %}
-                <p>Автопродление отключено</p>
-            {% endif %}
+<section class="pricing-area pricing-bg" style="background-image: url(/static/img/bg/pricing_bg.jpg);">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="section-title title-style-three text-center mb-70">
+                    <span class="sub-title">наши планы</span>
+                    <h2 class="title">Подписки</h2>
+                </div>
+            </div>
         </div>
-    {% endif %}
 
-    <div class="row">
-        {% for subscription in subscriptions %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ subscription.name }}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{ subscription.price }} руб. / {{ subscription.duration_days }} дней</h6>
-                        <p class="card-text">{{ subscription.description }}</p>
-                        <form method="post" action="{% url 'subscribe' subscription.id %}">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-primary">Оформить подписку</button>
-                        </form>
+        {% if user_subscription %}
+            <div class="row justify-content-center mb-70">
+                <div class="col-lg-8">
+                    <div class="services-content-wrap">
+                        <div class="section-title title-style-two mb-20">
+                            <span class="sub-title">Ваша текущая подписка</span>
+                            <h2 class="title">{{ user_subscription.subscription.name }}</h2>
+                        </div>
+                        <p>Действует до: {{ user_subscription.end_date|date:"d.m.Y H:i" }}</p>
+                        {% if user_subscription.auto_renewal %}
+                            <p>Включено автопродление</p>
+                            <form method="post" action="{% url 'cancel_subscription' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn">Отключить автопродление</button>
+                            </form>
+                        {% else %}
+                            <p>Автопродление отключено</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-        {% empty %}
-            <div class="col-12">
-                <p>Нет доступных подписок.</p>
-            </div>
-        {% endfor %}
-    </div>
+        {% endif %}
 
-    <div class="mt-4">
-        <a href="{% url 'payment_history' %}" class="btn btn-secondary">История платежей</a>
+        <div class="pricing-box-wrap">
+            <div class="row justify-content-center">
+                {% for subscription in subscriptions %}
+                    <div class="col-lg-4 col-md-6 col-sm-8">
+                        <div class="pricing-box-item mb-30">
+                            <div class="pricing-top">
+                                <h6>{{ subscription.name }}</h6>
+                                <div class="price">
+                                    <h3>{{ subscription.price }}<span>руб.</span></h3>
+                                    <span>/ {{ subscription.duration_days }} дней</span>
+                                </div>
+                            </div>
+                            <div class="pricing-list">
+                                <p>{{ subscription.description }}</p>
+                            </div>
+                            <div class="pricing-btn">
+                                <form method="post" action="{% url 'subscribe' subscription.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn">Оформить подписку</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="col-12">
+                        <div class="services-content-wrap text-center">
+                            <p>Нет доступных подписок.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="row justify-content-center mt-50">
+            <div class="col-lg-8 text-center">
+                <a href="{% url 'payment_history' %}" class="btn">История платежей</a>
+            </div>
+        </div>
     </div>
-</div>
+</section>
 {% endblock %} 

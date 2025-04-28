@@ -6,6 +6,14 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.urls import reverse
 from functools import wraps
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from .recommendations import (
+    get_recommendations_by_genres,
+    get_similar_content,
+    get_trending_content
+)
 
 User = get_user_model()
 
@@ -21,11 +29,27 @@ def index(request):
     # Получаем последние 8 сериалов
     latest_serials = Serial.objects.order_by('-created_at')[:8]
     
+    # Получаем трендовый контент
+    trending = get_trending_content(days=7, limit=8)
+    
+    # Отладочная информация
+    print("Trending Movies:", trending['movies'].count() if trending['movies'] else 0)
+    print("Trending Serials:", trending['serials'].count() if trending['serials'] else 0)
+    
     context = {
         'featured_movie': featured_movie,
         'latest_movies': latest_movies,
         'latest_serials': latest_serials,
+        'trending_movies': trending['movies'],
+        'trending_serials': trending['serials'],
     }
+    
+    # Отладочная информация для контекста
+    print("Context keys:", context.keys())
+    for key, value in context.items():
+        if hasattr(value, 'count'):
+            print(f"{key} count:", value.count())
+    
     return render(request, 'Main/index.html', context)
 
 def movies_list(request):
@@ -62,13 +86,21 @@ def subscription_required(view_func):
 def movie_detail(request, pk):
     """View for a specific movie"""
     movie = get_object_or_404(Movie, pk=pk)
-    return render(request, 'Main/movie_detail.html', {'movie': movie})
+    similar_movies = get_similar_content(movie, 'movie', limit=4)
+    return render(request, 'Main/movie_detail.html', {
+        'movie': movie,
+        'similar_movies': similar_movies
+    })
 
 @subscription_required
 def serial_detail(request, pk):
     """View for a specific serial"""
     serial = get_object_or_404(Serial, pk=pk)
-    return render(request, 'Main/serial_detail.html', {'serial': serial})
+    similar_serials = get_similar_content(serial, 'serial', limit=4)
+    return render(request, 'Main/serial_detail.html', {
+        'serial': serial,
+        'similar_serials': similar_serials
+    })
 
 @login_required
 def add_movie_review(request, movie_id):
@@ -113,17 +145,22 @@ def about(request):
     return render(request, 'Main/about.html')
 
 def user_profile(request, username):
-    """Страница профиля пользователя с его рецензиями"""
+    """Страница профиля пользователя с его рецензиями и рекомендациями"""
     user_profile = get_object_or_404(User, username=username)
     
     # Получаем все рецензии пользователя
     movie_reviews = Review.objects.filter(user=user_profile, movie__isnull=False).select_related('movie').order_by('-created_at')
     serial_reviews = Review.objects.filter(user=user_profile, serial__isnull=False).select_related('serial').order_by('-created_at')
     
+    # Получаем персональные рекомендации для пользователя
+    recommendations = get_recommendations_by_genres(user_profile, limit=4)
+    
     context = {
         'user_profile': user_profile,
         'movie_reviews': movie_reviews,
         'serial_reviews': serial_reviews,
+        'recommended_movies': recommendations.get('movies', []),
+        'recommended_serials': recommendations.get('serials', []),
     }
     
     return render(request, 'Main/user_profile.html', context)
@@ -202,3 +239,59 @@ def payment_history(request):
     """История платежей пользователя"""
     payments = Payment.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'Main/payment_history.html', {'payments': payments})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_recommendations(request):
+    """Получение персонализированных рекомендаций для пользователя"""
+    content_type = request.query_params.get('type', 'all')
+    limit = int(request.query_params.get('limit', 10))
+    
+    recommendations = get_recommendations_by_genres(request.user, content_type, limit)
+    
+    if content_type == 'movies':
+        serializer = MovieSerializer(recommendations['movies'], many=True)
+    elif content_type == 'serials':
+        serializer = SerialSerializer(recommendations['serials'], many=True)
+    else:
+        response_data = {
+            'movies': MovieSerializer(recommendations['movies'], many=True).data,
+            'serials': SerialSerializer(recommendations['serials'], many=True).data
+        }
+        return Response(response_data)
+    
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_similar(request, content_type, pk):
+    """Получение похожего контента"""
+    limit = int(request.query_params.get('limit', 5))
+    
+    if content_type == 'movie':
+        item = Movie.objects.get(pk=pk)
+    else:
+        item = Serial.objects.get(pk=pk)
+    
+    similar_items = get_similar_content(item, content_type, limit)
+    
+    if content_type == 'movie':
+        serializer = MovieSerializer(similar_items, many=True)
+    else:
+        serializer = SerialSerializer(similar_items, many=True)
+    
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_trending(request):
+    """Получение трендового контента"""
+    days = int(request.query_params.get('days', 7))
+    limit = int(request.query_params.get('limit', 10))
+    
+    trending = get_trending_content(days, limit)
+    
+    response_data = {
+        'movies': MovieSerializer(trending['movies'], many=True).data,
+        'serials': SerialSerializer(trending['serials'], many=True).data
+    }
+    
+    return Response(response_data)

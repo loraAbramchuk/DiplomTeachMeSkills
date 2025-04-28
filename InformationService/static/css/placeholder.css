@@ -1,0 +1,31 @@
+.poster-placeholder {
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    width: 100%;
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5em;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.movie-poster .poster-placeholder {
+    min-height: 300px;
+    font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+    .poster-placeholder {
+        min-height: 300px;
+        font-size: 1.2em;
+    }
+    
+    .movie-poster .poster-placeholder {
+        min-height: 200px;
+        font-size: 1em;
+    }
+} 

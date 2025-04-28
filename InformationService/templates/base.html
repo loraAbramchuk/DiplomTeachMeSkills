@@ -33,11 +33,13 @@
                 </div>
             </div>
         </div>
+        <!-- preloader-end -->
 
         <!-- Scroll-top -->
         <button class="scroll-top scroll-to-target" data-target="html">
             <i class="fas fa-angle-up"></i>
         </button>
+        <!-- Scroll-top-end-->
 
         <!-- header-area -->
         <header>
@@ -58,6 +60,8 @@
                                             <li><a href="{% url 'index' %}">Главная</a></li>
                                             <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
                                             <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                                            <li><a href="{% url 'trending' %}">Рекомендации</a></li>
+                                            <li><a href="{% url 'about' %}">О нас</a></li>
                                             {% if user.is_authenticated %}
                                             <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
                                             {% endif %}
@@ -71,26 +75,26 @@
                                                 </a>
                                             </li>
                                             {% if user.is_authenticated %}
-                                                <li class="header-btn">
-                                                    <a href="{% url 'user_profile' user.username %}" class="btn">Мой профиль</a>
-                                                </li>
-                                                <li class="header-btn">
-                                                    <a href="{% url 'users:logout' %}" class="btn">Выход</a>
-                                                </li>
+                                            <li class="header-btn">
+                                                <a href="{% url 'user_profile' user.username %}" class="btn">{{ user.username }}</a>
+                                            </li>
+                                            <li class="header-btn">
+                                                <a href="{% url 'users:logout' %}" class="btn">Выйти</a>
+                                            </li>
                                             {% else %}
-                                                <li class="header-btn">
-                                                    <a href="{% url 'users:login' %}" class="btn">Вход</a>
-                                                </li>
-                                                <li class="header-btn">
-                                                    <a href="{% url 'users:register' %}" class="btn">Регистрация</a>
-                                                </li>
+                                            <li class="header-btn">
+                                                <a href="{% url 'users:login' %}" class="btn">Войти</a>
+                                            </li>
+                                            <li class="header-btn">
+                                                <a href="{% url 'users:register' %}" class="btn">Регистрация</a>
+                                            </li>
                                             {% endif %}
                                         </ul>
                                     </div>
                                 </nav>
                             </div>
 
-                            <!-- Mobile Menu -->
+                            <!-- Mobile Menu  -->
                             <div class="mobile-menu">
                                 <div class="close-btn"><i class="fas fa-times"></i></div>
                                 <nav class="menu-box">
@@ -100,11 +104,26 @@
                                         </a>
                                     </div>
                                     <div class="menu-outer">
-                                        <!-- Мобильное меню будет добавлено через JavaScript -->
+                                        <ul class="navigation">
+                                            <li><a href="{% url 'index' %}">Главная</a></li>
+                                            <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
+                                            <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                                            <li><a href="{% url 'trending' %}">Рекомендации</a></li>
+                                            <li><a href="{% url 'about' %}">О нас</a></li>
+                                            {% if user.is_authenticated %}
+                                            <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
+                                            <li><a href="{% url 'user_profile' user.username %}">{{ user.username }}</a></li>
+                                            <li><a href="{% url 'users:logout' %}">Выйти</a></li>
+                                            {% else %}
+                                            <li><a href="{% url 'users:login' %}">Войти</a></li>
+                                            <li><a href="{% url 'users:register' %}">Регистрация</a></li>
+                                            {% endif %}
+                                        </ul>
                                     </div>
                                 </nav>
                             </div>
                             <div class="menu-backdrop"></div>
+                            <!-- End Mobile Menu -->
 
                             <!-- Modal Search -->
                             <div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-hidden="true">
@@ -117,11 +136,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Modal Search-end -->
+
                         </div>
                     </div>
                 </div>
             </div>
         </header>
+        <!-- header-area-end -->
 
         <!-- main-area -->
         <main>
@@ -138,34 +160,84 @@
             {% block content %}
             {% endblock %}
         </main>
+        <!-- main-area-end -->
 
         <!-- footer-area -->
         <footer class="footer-area footer-bg" data-background="{% static 'img/bg/footer_bg.jpg' %}">
-            <div class="container">
-                <div class="footer-top">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="footer-menu">
-                                <ul>
-                                    <li><a href="{% url 'index' %}">Главная</a></li>
-                                    <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
-                                    <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
-                                </ul>
+            <div class="footer-top-wrap">
+                <div class="container">
+                    <div class="footer-menu-wrap">
+                        <div class="row align-items-center">
+                            <div class="col-lg-3">
+                                <div class="footer-logo">
+                                    <a href="{% url 'index' %}"><img src="{% static 'img/logo/logo.png' %}" alt=""></a>
+                                </div>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="footer-menu">
+                                    <nav>
+                                        <ul class="navigation">
+                                            <li><a href="{% url 'index' %}">Главная</a></li>
+                                            <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
+                                            <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                                            <li><a href="{% url 'trending' %}">Рекомендации</a></li>
+                                            <li><a href="{% url 'about' %}">О нас</a></li>
+                                        </ul>
+                                        <div class="footer-search">
+                                            <form action="#">
+                                                <input type="text" placeholder="Найти фильм">
+                                                <button><i class="fas fa-search"></i></button>
+                                            </form>
+                                        </div>
+                                    </nav>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-quick-link-wrap">
+                        <div class="row align-items-center">
+                            <div class="col-md-7">
+                                <div class="quick-link-list">
+                                    <ul>
+                                        <li><a href="#">FAQ</a></li>
+                                        <li><a href="#">Помощь</a></li>
+                                        <li><a href="#">Условия использования</a></li>
+                                        <li><a href="#">Конфиденциальность</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="footer-social">
+                                    <ul>
+                                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-pinterest-p"></i></a></li>
+                                        <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="footer-bottom">
+            </div>
+            <div class="copyright-wrap">
+                <div class="container">
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-6 col-md-6">
                             <div class="copyright-text">
-                                <p>&copy; 2024 Movies and Serials Hub. Все права защищены.</p>
+                                <p>&copy; 2024 Movies Hub. Все права защищены.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="payment-method-img text-center text-md-right">
+                                <img src="{% static 'img/images/card_img.png' %}" alt="img">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </footer>
+        <!-- footer-area-end -->
 
         <!-- JS here -->
         <script src="{% static 'js/vendor/jquery-3.6.0.min.js' %}"></script>
