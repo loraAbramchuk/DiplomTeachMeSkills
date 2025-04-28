@@ -4,37 +4,53 @@
 {% block title %}Подписки{% endblock %}
 
 {% block content %}
+<style>
+    .custom-btn {
+        background: #e4d804;
+        color: #171d22;
+        padding: 15px 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        font-size: 14px;
+        line-height: 1.2;
+        height: auto;
+        width: auto;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .custom-btn:hover {
+        background: #171d22;
+        color: #e4d804;
+        text-decoration: none;
+    }
+    .custom-btn:disabled {
+        background: #666;
+        color: #fff;
+        cursor: not-allowed;
+    }
+</style>
+
 <section class="pricing-area pricing-bg" style="background-image: url(/static/img/bg/pricing_bg.jpg);">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="section-title title-style-three text-center mb-70">
                     <span class="sub-title">наши планы</span>
-                    <h2 class="title">Подписки</h2>
+                    <h2 class="title">Доступные подписки</h2>
                 </div>
             </div>
         </div>
 
         {% if user_subscription %}
-            <div class="row justify-content-center mb-70">
-                <div class="col-lg-8">
-                    <div class="services-content-wrap">
-                        <div class="section-title title-style-two mb-20">
-                            <span class="sub-title">Ваша текущая подписка</span>
-                            <h2 class="title">{{ user_subscription.subscription.name }}</h2>
-                        </div>
-                        <p>Действует до: {{ user_subscription.end_date|date:"d.m.Y H:i" }}</p>
-                        {% if user_subscription.auto_renewal %}
-                            <p>Включено автопродление</p>
-                            <form method="post" action="{% url 'cancel_subscription' %}" class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit" class="btn">Отключить автопродление</button>
-                            </form>
-                        {% else %}
-                            <p>Автопродление отключено</p>
-                        {% endif %}
-                    </div>
-                </div>
+            <div class="alert alert-info text-center mb-4" style="background: rgba(23, 29, 34, 0.95); border: 2px solid #e4d804; color: #fff; padding: 20px; border-radius: 6px;">
+                <div style="margin-bottom: 15px;">У вас уже есть активная подписка "{{ user_subscription.subscription.name }}" (действует до {{ user_subscription.end_date|date:"d.m.Y H:i" }}).</div>
+                <a href="{% url 'user_profile' user.username %}" class="custom-btn">УПРАВЛЕНИЕ ПОДПИСКОЙ</a>
             </div>
         {% endif %}
 
@@ -54,17 +70,15 @@
                                 <p>{{ subscription.description }}</p>
                             </div>
                             <div class="pricing-btn">
-                                <form method="post" action="{% url 'subscribe' subscription.id %}">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn">Оформить подписку</button>
-                                </form>
+                                {% if user_subscription and user_subscription.subscription == subscription %}
+                                    <button class="custom-btn" disabled>Текущая подписка</button>
+                                {% else %}
+                                    <form method="post" action="{% url 'subscribe' subscription.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="custom-btn">Оформить подписку</button>
+                                    </form>
+                                {% endif %}
                             </div>
-                        </div>
-                    </div>
-                {% empty %}
-                    <div class="col-12">
-                        <div class="services-content-wrap text-center">
-                            <p>Нет доступных подписок.</p>
                         </div>
                     </div>
                 {% endfor %}
@@ -73,7 +87,7 @@
 
         <div class="row justify-content-center mt-50">
             <div class="col-lg-8 text-center">
-                <a href="{% url 'payment_history' %}" class="btn">История платежей</a>
+                <a href="{% url 'payment_history' %}" class="custom-btn">История платежей</a>
             </div>
         </div>
     </div>

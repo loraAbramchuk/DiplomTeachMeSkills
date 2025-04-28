@@ -4,102 +4,150 @@
 {% block title %}Профиль {{ user_profile.username }}{% endblock %}
 
 {% block content %}
-<section class="movie-area movie-bg" style="background-image: url(/static/img/bg/movie_bg.jpg);">
-    <div class="container py-5">
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="section-title text-center text-lg-left">
-                    <span class="sub-title">ПРОФИЛЬ</span>
-                    <h2 class="title">{{ user_profile.username }}</h2>
+<style>
+    .custom-btn {
+        background: #e4d804;
+        color: #171d22;
+        padding: 15px 30px;
+        font-weight: 700;
+        text-transform: uppercase;
+        border-radius: 4px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        font-size: 14px;
+        line-height: 1.2;
+        height: auto;
+        width: auto;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .custom-btn:hover {
+        background: #171d22;
+        color: #e4d804;
+        text-decoration: none;
+    }
+    .custom-btn:disabled {
+        background: #666;
+        color: #fff;
+        cursor: not-allowed;
+    }
+</style>
+
+<section class="blog-area blog-bg" data-background="{% static 'img/bg/blog_bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="blog-post-item">
+                    <div class="blog-post-content">
+                        <h2 class="title">{{ user_profile.username }}</h2>
+                        <div class="blog-meta">
+                            <ul>
+                                <li><i class="far fa-calendar-alt"></i> Дата регистрации: {{ user_profile.date_joined|date:"d.m.Y" }}</li>
+                            </ul>
+                        </div>
+                        
+                        {% if user.username == user_profile.username %}
+                            {% if active_subscription %}
+                                <div class="subscription-info mb-4">
+                                    <h4>Ваша подписка</h4>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{ active_subscription.subscription.name }}</h5>
+                                            <p class="card-text">Действует до: {{ active_subscription.end_date|date:"d.m.Y H:i" }}</p>
+                                            {% if active_subscription.auto_renewal %}
+                                                <p class="card-text">Автопродление включено</p>
+                                                <form method="post" action="{% url 'cancel_subscription' %}" class="d-inline">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="custom-btn">Отключить автопродление</button>
+                                                </form>
+                                            {% else %}
+                                                <p class="card-text">Автопродление отключено</p>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="subscription-info mb-4">
+                                    <p>У вас нет активной подписки. <a href="{% url 'subscription_list' %}" class="custom-btn">Оформить подписку</a></p>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+                        <div class="reviews-section">
+                            <h3>Отзывы о фильмах</h3>
+                            {% for review in movie_reviews %}
+                                <div class="review-item mb-4">
+                                    <h4><a href="{% url 'movie_detail' review.movie.pk %}">{{ review.movie.title }}</a></h4>
+                                    <div class="rating">Оценка: {{ review.rating }}/10</div>
+                                    <p>{{ review.text }}</p>
+                                    <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
+                                </div>
+                            {% empty %}
+                                <p>Нет отзывов о фильмах.</p>
+                            {% endfor %}
+
+                            <h3>Отзывы о сериалах</h3>
+                            {% for review in serial_reviews %}
+                                <div class="review-item mb-4">
+                                    <h4><a href="{% url 'serial_detail' review.serial.pk %}">{{ review.serial.title }}</a></h4>
+                                    <div class="rating">Оценка: {{ review.rating }}/10</div>
+                                    <p>{{ review.text }}</p>
+                                    <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
+                                </div>
+                            {% empty %}
+                                <p>Нет отзывов о сериалах.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Подписки -->
-        <div class="row mb-50">
-            <div class="col-12">
-                <div class="widget-title mb-30">
-                    <h5 class="title">Подписки</h5>
-                </div>
-                {% if user_subscription %}
-                    <div class="services-content-wrap">
-                        <div class="movie-content mb-30">
-                            <div class="top">
-                                <h5 class="title">{{ user_subscription.subscription.name }}</h5>
-                                <span class="date">до {{ user_subscription.end_date|date:"d.m.Y H:i" }}</span>
+            <div class="col-lg-4">
+                <aside class="blog-sidebar">
+                    {% if recommended_movies or recommended_serials %}
+                        <div class="widget">
+                            <div class="widget-title">
+                                <h5>Рекомендации</h5>
                             </div>
-                            {% if user_subscription.auto_renewal %}
-                                <p class="text">Включено автопродление</p>
-                            {% else %}
-                                <p class="text">Автопродление отключено</p>
+                            {% if recommended_movies %}
+                                <h6>Фильмы</h6>
+                                <div class="rc-post">
+                                    {% for movie in recommended_movies %}
+                                        <div class="rc-post-item">
+                                            {% if movie.poster %}
+                                                <div class="thumb"><img src="{{ movie.poster.url }}" alt="{{ movie.title }}"></div>
+                                            {% endif %}
+                                            <div class="content">
+                                                <h5><a href="{% url 'movie_detail' movie.pk %}">{{ movie.title }}</a></h5>
+                                                <span>{{ movie.release_year }}</span>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {% if recommended_serials %}
+                                <h6>Сериалы</h6>
+                                <div class="rc-post">
+                                    {% for serial in recommended_serials %}
+                                        <div class="rc-post-item">
+                                            {% if serial.poster %}
+                                                <div class="thumb"><img src="{{ serial.poster.url }}" alt="{{ serial.title }}"></div>
+                                            {% endif %}
+                                            <div class="content">
+                                                <h5><a href="{% url 'serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
+                                                <span>{{ serial.release_year }}</span>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                             {% endif %}
                         </div>
-                    </div>
-                {% else %}
-                    <div class="services-content-wrap">
-                        <div class="movie-content mb-30">
-                            <p class="text">Нет активных подписок. <a href="{% url 'subscription_list' %}" class="btn">Оформить подписку</a></p>
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="widget-title mb-50">
-                    <h5 class="title">Рецензии пользователя</h5>
-                </div>
-                
-                <!-- Рецензии на фильмы -->
-                <div class="widget-title mt-4 mb-30">
-                    <h5 class="title">Рецензии на фильмы</h5>
-                </div>
-                {% for review in movie_reviews %}
-                    <div class="ucm-area-content">
-                        <div class="movie-content mb-30">
-                            <div class="top">
-                                <h5 class="title">
-                                    <a href="{% url 'movie_detail' review.movie.pk %}">{{ review.movie.title }}</a>
-                                </h5>
-                                <span class="date">Оценка: {{ review.rating }}/10</span>
-                            </div>
-                            <p class="text">{{ review.text }}</p>
-                            <div class="bottom">
-                                <ul>
-                                    <li><span class="date"><i class="far fa-clock"></i> {{ review.created_at|date:"d.m.Y H:i" }}</span></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                {% empty %}
-                    <p class="text">Пользователь еще не оставил рецензий на фильмы.</p>
-                {% endfor %}
-
-                <!-- Рецензии на сериалы -->
-                <div class="widget-title mt-4 mb-30">
-                    <h5 class="title">Рецензии на сериалы</h5>
-                </div>
-                {% for review in serial_reviews %}
-                    <div class="ucm-area-content">
-                        <div class="movie-content mb-30">
-                            <div class="top">
-                                <h5 class="title">
-                                    <a href="{% url 'serial_detail' review.serial.pk %}">{{ review.serial.title }}</a>
-                                </h5>
-                                <span class="date">Оценка: {{ review.rating }}/10</span>
-                            </div>
-                            <p class="text">{{ review.text }}</p>
-                            <div class="bottom">
-                                <ul>
-                                    <li><span class="date"><i class="far fa-clock"></i> {{ review.created_at|date:"d.m.Y H:i" }}</span></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                {% empty %}
-                    <p class="text">Пользователь еще не оставил рецензий на сериалы.</p>
-                {% endfor %}
+                    {% endif %}
+                </aside>
             </div>
         </div>
     </div>
