@@ -142,7 +142,7 @@ def add_serial_review(request, serial_id):
 
 def about(request):
     """About page"""
-    return render(request, 'Main/about.html')
+    return render(request, 'about.html')
 
 def user_profile(request, username):
     """Страница профиля пользователя с его рецензиями и рекомендациями"""
@@ -153,14 +153,18 @@ def user_profile(request, username):
     serial_reviews = Review.objects.filter(user=user_profile, serial__isnull=False).select_related('serial').order_by('-created_at')
     
     # Получаем персональные рекомендации для пользователя
-    recommendations = get_recommendations_by_genres(user_profile, limit=4)
+    recommendations = get_recommendations_by_genres(user_profile, limit=2)
+    
+    # Получаем первые элементы из QuerySet безопасным способом
+    recommended_movie = recommendations.get('movies', []).first() if recommendations.get('movies') else None
+    recommended_serial = recommendations.get('serials', []).first() if recommendations.get('serials') else None
     
     context = {
         'user_profile': user_profile,
         'movie_reviews': movie_reviews,
         'serial_reviews': serial_reviews,
-        'recommended_movies': recommendations.get('movies', []),
-        'recommended_serials': recommendations.get('serials', []),
+        'recommended_movie': recommended_movie,
+        'recommended_serial': recommended_serial,
     }
     
     return render(request, 'Main/user_profile.html', context)

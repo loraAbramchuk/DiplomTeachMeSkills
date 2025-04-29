@@ -5,6 +5,7 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/placeholder.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom-buttons.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -64,13 +65,13 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Отправить отзыв</button>
+                        <button type="submit" class="custom-btn custom-btn-sm">Отправить отзыв</button>
                     </form>
                 {% endif %}
             {% else %}
                 <p>
-                    <a href="{% url 'users:login' %}">Войдите</a> или 
-                    <a href="{% url 'users:register' %}">зарегистрируйтесь</a> 
+                    <a href="{% url 'users:login' %}" class="custom-btn custom-btn-sm">Войти</a> или 
+                    <a href="{% url 'users:register' %}" class="custom-btn custom-btn-sm">Регистрация</a> 
                     чтобы оставить отзыв.
                 </p>
             {% endif %}

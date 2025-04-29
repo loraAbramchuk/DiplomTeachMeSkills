@@ -3,6 +3,10 @@
 
 {% block title %}Рекомендации{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/custom-buttons.css' %}">
+{% endblock %}
+
 {% block content %}
 <!-- up-coming-movie-area -->
 <section class="ucm-area ucm-bg" data-background="{% static 'img/bg/ucm_bg.jpg' %}">

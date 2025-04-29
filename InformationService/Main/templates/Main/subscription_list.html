@@ -4,37 +4,7 @@
 {% block title %}Подписки{% endblock %}
 
 {% block content %}
-<style>
-    .custom-btn {
-        background: #e4d804;
-        color: #171d22;
-        padding: 15px 30px;
-        font-weight: 700;
-        text-transform: uppercase;
-        border-radius: 4px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        font-size: 14px;
-        line-height: 1.2;
-        height: auto;
-        width: auto;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .custom-btn:hover {
-        background: #171d22;
-        color: #e4d804;
-        text-decoration: none;
-    }
-    .custom-btn:disabled {
-        background: #666;
-        color: #fff;
-        cursor: not-allowed;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/custom-buttons.css' %}">
 
 <section class="pricing-area pricing-bg" style="background-image: url(/static/img/bg/pricing_bg.jpg);">
     <div class="container">

@@ -4,37 +4,7 @@
 {% block title %}Профиль {{ user_profile.username }}{% endblock %}
 
 {% block content %}
-<style>
-    .custom-btn {
-        background: #e4d804;
-        color: #171d22;
-        padding: 15px 30px;
-        font-weight: 700;
-        text-transform: uppercase;
-        border-radius: 4px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border: none;
-        font-size: 14px;
-        line-height: 1.2;
-        height: auto;
-        width: auto;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .custom-btn:hover {
-        background: #171d22;
-        color: #e4d804;
-        text-decoration: none;
-    }
-    .custom-btn:disabled {
-        background: #666;
-        color: #fff;
-        cursor: not-allowed;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/custom-buttons.css' %}">
 
 <section class="blog-area blog-bg" data-background="{% static 'img/bg/blog_bg.jpg' %}">
     <div class="container">
@@ -107,46 +77,52 @@
 
             <div class="col-lg-4">
                 <aside class="blog-sidebar">
-                    {% if recommended_movies or recommended_serials %}
-                        <div class="widget">
-                            <div class="widget-title">
-                                <h5>Рекомендации</h5>
+                    <div class="widget">
+                        <div class="recommendation-section">
+                            <div class="widget-title mb-4 text-center">
+                                <h5 class="title">Рекомендации для вас</h5>
                             </div>
-                            {% if recommended_movies %}
-                                <h6>Фильмы</h6>
-                                <div class="rc-post">
-                                    {% for movie in recommended_movies %}
-                                        <div class="rc-post-item">
-                                            {% if movie.poster %}
-                                                <div class="thumb"><img src="{{ movie.poster.url }}" alt="{{ movie.title }}"></div>
-                                            {% endif %}
-                                            <div class="content">
-                                                <h5><a href="{% url 'movie_detail' movie.pk %}">{{ movie.title }}</a></h5>
-                                                <span>{{ movie.release_year }}</span>
-                                            </div>
+                            {% if recommended_movie %}
+                            <div class="mb-4">
+                                <h6 class="text-white mb-3">Фильм дня</h6>
+                                <div class="recommendation-item">
+                                    <div class="poster-wrap mb-3">
+                                        <img src="{{ recommended_movie.poster.url }}" alt="{{ recommended_movie.title }}" class="img-fluid">
+                                    </div>
+                                    <div class="content">
+                                        <h5 class="mb-2"><a href="{% url 'movie_detail' recommended_movie.id %}" class="hover-yellow">{{ recommended_movie.title }}</a></h5>
+                                        <div class="meta mb-2">
+                                            <span>{{ recommended_movie.release_year }}</span>
+                                            <span class="mx-2">•</span>
+                                            <span>{{ recommended_movie.genres.all|join:", " }}</span>
                                         </div>
-                                    {% endfor %}
+                                        <a href="{% url 'movie_detail' recommended_movie.id %}" class="custom-btn custom-btn-sm">Подробнее</a>
+                                    </div>
                                 </div>
+                            </div>
                             {% endif %}
 
-                            {% if recommended_serials %}
-                                <h6>Сериалы</h6>
-                                <div class="rc-post">
-                                    {% for serial in recommended_serials %}
-                                        <div class="rc-post-item">
-                                            {% if serial.poster %}
-                                                <div class="thumb"><img src="{{ serial.poster.url }}" alt="{{ serial.title }}"></div>
-                                            {% endif %}
-                                            <div class="content">
-                                                <h5><a href="{% url 'serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
-                                                <span>{{ serial.release_year }}</span>
-                                            </div>
+                            {% if recommended_serial %}
+                            <div>
+                                <h6 class="text-white mb-3">Сериал дня</h6>
+                                <div class="recommendation-item">
+                                    <div class="poster-wrap mb-3">
+                                        <img src="{{ recommended_serial.poster.url }}" alt="{{ recommended_serial.title }}" class="img-fluid">
+                                    </div>
+                                    <div class="content">
+                                        <h5 class="mb-2"><a href="{% url 'serial_detail' recommended_serial.id %}" class="hover-yellow">{{ recommended_serial.title }}</a></h5>
+                                        <div class="meta mb-2">
+                                            <span>{{ recommended_serial.release_year }}</span>
+                                            <span class="mx-2">•</span>
+                                            <span>{{ recommended_serial.genres.all|join:", " }}</span>
                                         </div>
-                                    {% endfor %}
+                                        <a href="{% url 'serial_detail' recommended_serial.id %}" class="custom-btn custom-btn-sm">Подробнее</a>
+                                    </div>
                                 </div>
+                            </div>
                             {% endif %}
                         </div>
-                    {% endif %}
+                    </div>
                 </aside>
             </div>
         </div>
