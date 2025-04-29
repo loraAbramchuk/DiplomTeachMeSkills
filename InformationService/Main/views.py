@@ -295,3 +295,29 @@ def get_trending(request):
     }
     
     return Response(response_data)
+
+def trending(request):
+    """Представление для страницы рекомендаций"""
+    # Получаем все фильмы и сериалы, сортируем по дате создания
+    movies = Movie.objects.prefetch_related('country', 'genres').all().order_by('-created_at')[:8]
+    serials = Serial.objects.prefetch_related('country', 'genres').all().order_by('-created_at')[:8]
+    
+    # Если пользователь авторизован, добавляем персонализированные рекомендации
+    if request.user.is_authenticated:
+        recommendations = get_recommendations_by_genres(request.user, limit=4)
+        recommended_movies = recommendations.get('movies', [])
+        recommended_serials = recommendations.get('serials', [])
+    else:
+        recommended_movies = []
+        recommended_serials = []
+    
+    context = {
+        'popular_movies': movies,
+        'popular_serials': serials,
+        'recommended_movies': recommended_movies,
+        'recommended_serials': recommended_serials,
+        'new_movies': Movie.objects.prefetch_related('country', 'genres').all().order_by('-release_year')[:4],
+        'new_serials': Serial.objects.prefetch_related('country', 'genres').all().order_by('-release_year')[:4],
+    }
+    
+    return render(request, 'Main/trending.html', context)
