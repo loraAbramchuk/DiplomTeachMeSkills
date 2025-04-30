@@ -4,7 +4,7 @@ from .models import CustomUser
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
-    # Extend the admin interface to include custom fields
+    # Расширяем интерфейс администратора, включая пользовательские поля
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('bio', 'profile_picture')}),
     )

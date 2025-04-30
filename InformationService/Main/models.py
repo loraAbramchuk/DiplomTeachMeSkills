@@ -7,7 +7,7 @@ from datetime import timedelta
 
 User = get_user_model()
 
-# Create your models here.
+# Определение моделей
 
 class Country(models.Model):
     name = models.CharField(max_length=100)

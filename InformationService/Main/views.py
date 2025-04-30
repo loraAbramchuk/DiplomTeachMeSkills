@@ -19,7 +19,7 @@ User = get_user_model()
 
 
 def index(request):
-    """Main page"""
+    """Главная страница"""
     # Получаем последний добавленный фильм для баннера
     featured_movie = Movie.objects.order_by('-created_at').first()
     
@@ -32,10 +32,6 @@ def index(request):
     # Получаем трендовый контент
     trending = get_trending_content(days=7, limit=8)
     
-    # Отладочная информация
-    print("Trending Movies:", trending['movies'].count() if trending['movies'] else 0)
-    print("Trending Serials:", trending['serials'].count() if trending['serials'] else 0)
-    
     context = {
         'featured_movie': featured_movie,
         'latest_movies': latest_movies,
@@ -43,12 +39,6 @@ def index(request):
         'trending_movies': trending['movies'],
         'trending_serials': trending['serials'],
     }
-    
-    # Отладочная информация для контекста
-    print("Context keys:", context.keys())
-    for key, value in context.items():
-        if hasattr(value, 'count'):
-            print(f"{key} count:", value.count())
     
     return render(request, 'Main/index.html', context)
 
@@ -84,7 +74,7 @@ def subscription_required(view_func):
 
 @subscription_required
 def movie_detail(request, pk):
-    """View for a specific movie"""
+    """Представление для конкретного фильма"""
     movie = get_object_or_404(Movie, pk=pk)
     similar_movies = get_similar_content(movie, 'movie', limit=4)
     return render(request, 'Main/movie_detail.html', {
@@ -94,7 +84,7 @@ def movie_detail(request, pk):
 
 @subscription_required
 def serial_detail(request, pk):
-    """View for a specific serial"""
+    """Представление для конкретного сериала"""
     serial = get_object_or_404(Serial, pk=pk)
     similar_serials = get_similar_content(serial, 'serial', limit=4)
     return render(request, 'Main/serial_detail.html', {
@@ -104,7 +94,7 @@ def serial_detail(request, pk):
 
 @login_required
 def add_movie_review(request, movie_id):
-    """Add review for a movie"""
+    """Добавление отзыва к фильму"""
     if request.method == 'POST':
         # Проверяем, что пользователь не является модератором
         if request.user.is_staff or request.user.is_superuser:
@@ -123,7 +113,7 @@ def add_movie_review(request, movie_id):
 
 @login_required
 def add_serial_review(request, serial_id):
-    """Add review for a serial"""
+    """Добавление отзыва к сериалу"""
     if request.method == 'POST':
         # Проверяем, что пользователь не является модератором
         if request.user.is_staff or request.user.is_superuser:
@@ -141,7 +131,7 @@ def add_serial_review(request, serial_id):
         return redirect('serial_detail', pk=serial_id)
 
 def about(request):
-    """About page"""
+    """Страница о нас"""
     return render(request, 'about.html')
 
 def user_profile(request, username):
@@ -301,7 +291,7 @@ def get_trending(request):
     return Response(response_data)
 
 def trending(request):
-    """Представление для страницы рекомендаций"""
+    """Представление для страницы трендов"""
     # Получаем все фильмы и сериалы, сортируем по дате создания
     movies = Movie.objects.prefetch_related('country', 'genres').all().order_by('-created_at')[:8]
     serials = Serial.objects.prefetch_related('country', 'genres').all().order_by('-created_at')[:8]
