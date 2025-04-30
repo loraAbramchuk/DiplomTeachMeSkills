@@ -193,3 +193,13 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# IDE specific files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Windows
+Thumbs.db
+Desktop.ini
