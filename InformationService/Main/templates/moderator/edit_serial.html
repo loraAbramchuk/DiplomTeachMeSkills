@@ -1,0 +1,107 @@
+{% extends 'moderator/base.html' %}
+
+{% block title %}Редактирование сериала{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Редактирование сериала</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Название</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ content.title }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание</label>
+                            <textarea class="form-control" id="description" name="description" rows="5" required>{{ content.description }}</textarea>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="release_year" class="form-label">Год выпуска</label>
+                            <input type="number" class="form-control" id="release_year" name="release_year" value="{{ content.release_year }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="episodes" class="form-label">Количество эпизодов</label>
+                            <input type="number" class="form-control" id="episodes" name="episodes" value="{{ content.episodes }}" required>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="poster" class="form-label">Постер</label>
+                            {% if content.poster %}
+                                <div class="mb-2">
+                                    <img src="{{ content.poster.url }}" alt="Current poster" class="img-thumbnail" style="max-height: 200px;">
+                                </div>
+                            {% endif %}
+                            <input type="file" class="form-control" id="poster" name="poster" accept="image/*">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Жанры</label>
+                            <div class="row">
+                                {% for genre in genres %}
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="genres" value="{{ genre.id }}" 
+                                               id="genre{{ genre.id }}" {% if genre in content.genres.all %}checked{% endif %}>
+                                        <label class="form-check-label" for="genre{{ genre.id }}">
+                                            {{ genre.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Страны</label>
+                            <div class="row">
+                                {% for country in countries %}
+                                <div class="col-md-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="countries" value="{{ country.id }}" 
+                                               id="country{{ country.id }}" {% if country in content.country.all %}checked{% endif %}>
+                                        <label class="form-check-label" for="country{{ country.id }}">
+                                            {{ country.name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'content_management' %}" class="btn btn-secondary">Отмена</a>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Информация о сериале</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Дата создания:</strong> {{ content.created_at|date:"d.m.Y H:i" }}</p>
+                    <p><strong>Последнее обновление:</strong> {{ content.updated_at|date:"d.m.Y H:i" }}</p>
+                    
+                    <h6 class="mt-4">Статистика отзывов</h6>
+                    <p>Всего отзывов: {{ content.review_set.count }}</p>
+                    <p>Средний рейтинг: {{ content.average_rating|default:"Нет оценок" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

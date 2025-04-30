@@ -72,6 +72,15 @@ class Review(models.Model):
     text = models.TextField()
     rating = models.PositiveSmallIntegerField()  # от 1 до 10, например
     created_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('pending', 'На модерации'),
+            ('approved', 'Одобрен'),
+            ('rejected', 'Отклонен')
+        ],
+        default='pending'
+    )
 
     def clean(self):
         if not self.movie and not self.serial:

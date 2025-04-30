@@ -18,11 +18,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from Main.admin_moderator import moderator_site
+from django.http import Http404
+from django.shortcuts import redirect
+
+def admin_access(request):
+    if not settings.ADMIN_SHOW_UI(request):
+        raise Http404()
+    return admin.site.urls(request)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('moderator/', moderator_site.urls),
+    path('admin/', admin.site.urls),  # Оставляем стандартный URL админки
     path('', include("Main.urls")),
     path('users/', include('users.urls')),
     path('api/', include('api.urls')),

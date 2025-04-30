@@ -147,3 +147,20 @@ AUTH_USER_MODEL = 'users.CustomUser'
 LOGIN_REDIRECT_URL = 'index'
 LOGOUT_REDIRECT_URL = 'index'
 LOGIN_URL = 'users:login'
+
+# Admin access control
+ADMIN_ENABLED = True
+
+def show_admin_ui(request):
+    if not ADMIN_ENABLED:
+        return False
+    if not request.user.is_authenticated:
+        return False
+    if not request.user.is_superuser:
+        return False
+    return True
+
+ADMIN_SHOW_UI = show_admin_ui
+
+# Запрещаем доступ к админке для staff-пользователей, которые не являются суперпользователями
+ADMIN_STAFF_ONLY = False

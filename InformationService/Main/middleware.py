@@ -1,21 +1,19 @@
 from django.shortcuts import redirect
 from django.contrib import messages
-from django.urls import reverse
+from django.urls import reverse, resolve
+from django.http import Http404
 
 class AdminAccessMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
-        # Проверка доступа к основной админке
-        if request.path.startswith('/admin/'):
-            if not request.user.is_authenticated:
-                messages.error(request, 'Необходима авторизация для доступа к админ-панели')
-                return redirect('users:login')
-            
+        # Проверяем, является ли текущий URL частью админки
+        resolved = resolve(request.path)
+        if resolved.app_name == 'admin' or request.path.startswith('/admin/'):
+            # Если пользователь не суперпользователь, запрещаем доступ
             if not request.user.is_superuser:
-                messages.error(request, 'Доступ запрещен. Только для администраторов.')
-                return redirect('index')
+                raise Http404()
 
         # Проверка доступа к модераторской панели
         if request.path.startswith('/moderator/'):

@@ -1,0 +1,44 @@
+{% extends 'moderator/base.html' %}
+
+{% block title %}Создать сериал{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Создать новый сериал</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="title" class="form-label">Название</label>
+                            <input type="text" class="form-control" id="title" name="title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Описание</label>
+                            <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="release_year" class="form-label">Год выпуска</label>
+                            <input type="number" class="form-control" id="release_year" name="release_year" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="episodes" class="form-label">Количество эпизодов</label>
+                            <input type="number" class="form-control" id="episodes" name="episodes" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="poster" class="form-label">Постер</label>
+                            <input type="file" class="form-control" id="poster" name="poster">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Создать сериал</button>
+                        <a href="{% url 'content_management' %}" class="btn btn-secondary">Отмена</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
