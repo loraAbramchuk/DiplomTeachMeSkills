@@ -3,149 +3,281 @@
 
 {% block title %}{{ movie.title }}{% endblock %}
 
-{% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/placeholder.css' %}">
-<link rel="stylesheet" href="{% static 'css/custom-buttons.css' %}">
-{% endblock %}
-
 {% block content %}
-<section class="gray-bg">
-<div class="container">
-    <div class="row">
-        <div class="col-md-4">
-            {% if movie.poster %}
-                <img src="{{ movie.poster.url }}" class="img-fluid rounded" alt="{{ movie.title }}">
-            {% else %}
-                <div class="poster-placeholder rounded">
-                    {{ movie.title }}
-                </div>
-            {% endif %}
-        </div>
-        <div class="col-md-8">
-            <h1 class="mb-3">{{ movie.title }}</h1>
-            <p class="lead">{{ movie.description }}</p>
-            <div class="mb-3">
-                <strong>Год выпуска:</strong> {{ movie.release_year }}
-            </div>
-            <div class="mb-3">
-                <strong>Жанры:</strong>
-                {% for genre in movie.genres.all %}
-                    {{ genre.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </div>
-            <div class="mb-3">
-                <strong>Страны:</strong>
-                {% for country in movie.country.all %}
-                    {{ country.name }}{% if not forloop.last %}, {% endif %}
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-
-    <!-- Отзывы -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <h2>Отзывы</h2>
-            {% if user.is_authenticated %}
-                {% if user.is_staff or user.is_superuser %}
-                    <p class="alert alert-info">Модераторы не могут оставлять отзывы.</p>
-                {% else %}
-                    <form method="post" action="{% url 'add_movie_review' movie.pk %}" class="mb-4">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="text" class="form-label">Ваш отзыв</label>
-                            <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
-                        </div>
-                        <div class="mb-3">
-                            <label for="rating" class="form-label">Оценка</label>
-                            <select class="form-select" id="rating" name="rating" required>
-                                <option value="">Выберите оценку</option>
-                                {% for i in "12345678910"|make_list %}
-                                    <option value="{{ i }}">{{ i }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <button type="submit" class="custom-btn custom-btn-sm">Отправить отзыв</button>
-                    </form>
-                {% endif %}
-            {% else %}
-                <p>
-                    <a href="{% url 'users:login' %}" class="custom-btn custom-btn-sm">Войти</a> или 
-                    <a href="{% url 'users:register' %}" class="custom-btn custom-btn-sm">Регистрация</a> 
-                    чтобы оставить отзыв.
-                </p>
-            {% endif %}
-
-            {% for review in movie.review_set.all %}
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="{% url 'user_profile' review.user.username %}">{{ review.user.username }}</a>
-                        </h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Оценка: {{ review.rating }}/10</h6>
-                        <p class="card-text">{{ review.text }}</p>
-                        <small class="text-muted">{{ review.created_at|date:"d.m.Y H:i" }}</small>
-                    </div>
-                </div>
-            {% empty %}
-                <p>Пока нет отзывов.</p>
-            {% endfor %}
-        </div>
-    </div>
-
-    <!-- similar-movies -->
-    <section class="similar-movies-area">
-        <div class="container">
-            <div class="row align-items-end mb-60">
-                <div class="col-lg-6">
-                    <div class="section-title text-center text-lg-left">
-                        <span class="sub-title">РЕКОМЕНДАЦИИ</span>
-                        <h2 class="title">Похожие фильмы</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="row justify-content-center">
-                {% for similar_movie in similar_movies %}
-                <div class="col-xl-3 col-lg-4 col-sm-6">
-                    <div class="movie-item movie-item-three">
-                        <div class="movie-poster">
-                            {% if similar_movie.poster %}
-                                <img src="{{ similar_movie.poster.url }}" alt="{{ similar_movie.title }}">
-                            {% else %}
-                                <div class="poster-placeholder">
-                                    {{ similar_movie.title }}
-                                </div>
-                            {% endif %}
-                            <ul class="overlay-btn">
-                                <li><a href="{% url 'movie_detail' similar_movie.pk %}" class="btn">Подробнее</a></li>
-                                {% if similar_movie.trailer_url %}
-                                <li><a href="{{ similar_movie.trailer_url }}" class="btn popup-video"><i class="fas fa-play"></i></a></li>
+<section class="movie-details-area movie-bg" data-background="{% static 'img/bg/movie_bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="movie-details-content">
+                    <div class="row">
+                        <div class="col-xl-3 col-lg-4">
+                            <div class="movie-details-poster">
+                                {% if movie.poster %}
+                                    <img src="{{ movie.poster.url }}" alt="{{ movie.title }}">
+                                {% else %}
+                                    <img src="{% static 'img/poster/no-poster.jpg' %}" alt="No poster">
                                 {% endif %}
-                            </ul>
-                        </div>
-                        <div class="movie-content">
-                            <div class="top">
-                                <h5 class="title"><a href="{% url 'movie_detail' similar_movie.pk %}">{{ similar_movie.title }}</a></h5>
-                                <span class="date">{{ similar_movie.release_year }}</span>
                             </div>
-                            <div class="bottom">
-                                <ul>
-                                    <li><span class="quality">HD</span></li>
-                                    <li>
-                                        {% for genre in similar_movie.genres.all %}
-                                            <span>{{ genre.name }}{% if not forloop.last %}, {% endif %}</span>
-                                        {% endfor %}
-                                    </li>
-                                </ul>
+                        </div>
+                        <div class="col-xl-9 col-lg-8">
+                            <div class="movie-details-box">
+                                <h3 class="title">{{ movie.title }}</h3>
+                                
+                                <div class="movie-details-meta">
+                                    <ul>
+                                        <li class="quality">
+                                            <span>{{ movie.quality }}</span>
+                                        </li>
+                                        <li>
+                                            <span class="release-year"><i class="far fa-calendar-alt"></i> {{ movie.release_year }}</span>
+                                        </li>
+                                        {% if movie.duration %}
+                                        <li>
+                                            <span class="duration"><i class="far fa-clock"></i> {{ movie.duration }} мин</span>
+                                        </li>
+                                        {% endif %}
+                                    </ul>
+                                </div>
+
+                                <div class="movie-details-genres">
+                                    {% for genre in movie.genres.all %}
+                                        <span class="genre-tag">{{ genre.name }}</span>
+                                    {% endfor %}
+                                </div>
+
+                                {% if movie.kinopoisk_rating %}
+                                <div class="movie-details-rating">
+                                    <div class="rating">
+                                        <i class="fas fa-star"></i>
+                                        <span class="rating-value">{{ movie.kinopoisk_rating }}</span>
+                                    </div>
+                                    {% if movie.kinopoisk_url %}
+                                    <a href="{{ movie.kinopoisk_url }}" target="_blank" class="kinopoisk-link">
+                                        <i class="fas fa-external-link-alt"></i> Страница на Кинопоиске
+                                    </a>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+
+                                <div class="movie-details-countries">
+                                    {% for country in movie.countries.all %}
+                                        <span class="country-tag">{{ country.name }}</span>
+                                    {% endfor %}
+                                </div>
+
+                                <p class="movie-details-desc">
+                                    {{ movie.description }}
+                                </p>
+
+                                <div class="movie-details-btn">
+                                    {% if movie.trailer_url %}
+                                    <a href="{{ movie.trailer_url }}" class="btn popup-video">
+                                        <i class="fas fa-play"></i> Смотреть трейлер
+                                    </a>
+                                    {% endif %}
+
+                                    {% if movie.watch_url %}
+                                    <a href="{{ movie.watch_url }}" class="btn" target="_blank">
+                                        <i class="fas fa-film"></i> Смотреть фильм
+                                    </a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
             </div>
         </div>
-    </section>
-    <!-- similar-movies-end -->
-</div>
+    </div>
 </section>
+
+<style>
+.movie-details-area {
+    padding: 100px 0;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.movie-details-area::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(7, 7, 7, 0.95);
+}
+
+.movie-details-content {
+    position: relative;
+    z-index: 1;
+}
+
+.movie-details-poster {
+    margin-bottom: 30px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.movie-details-poster img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.movie-details-box {
+    padding: 30px;
+    background: rgba(32, 32, 32, 0.8);
+    border-radius: 5px;
+}
+
+.movie-details-box .title {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #fff;
+}
+
+.movie-details-meta {
+    margin-bottom: 20px;
+}
+
+.movie-details-meta ul {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.movie-details-meta ul li {
+    color: #bcbcbc;
+    font-size: 14px;
+}
+
+.movie-details-meta ul li.quality span {
+    background: #e4d804;
+    color: #000;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.movie-details-meta ul li i {
+    color: #e4d804;
+    margin-right: 5px;
+}
+
+.movie-details-genres {
+    margin-bottom: 20px;
+}
+
+.genre-tag {
+    display: inline-block;
+    padding: 5px 15px;
+    background: #e4d804;
+    color: #000;
+    border-radius: 20px;
+    margin: 0 5px 5px 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.movie-details-rating {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.rating i {
+    color: #e4d804;
+}
+
+.rating-value {
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.kinopoisk-link {
+    color: #e4d804;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.kinopoisk-link:hover {
+    color: #fff;
+}
+
+.movie-details-countries {
+    margin-bottom: 20px;
+}
+
+.country-tag {
+    display: inline-block;
+    padding: 5px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-radius: 20px;
+    margin: 0 5px 5px 0;
+    font-size: 14px;
+}
+
+.movie-details-desc {
+    color: #bcbcbc;
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+}
+
+.movie-details-btn {
+    display: flex;
+    gap: 15px;
+}
+
+.movie-details-btn .btn {
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.movie-details-btn .btn i {
+    font-size: 16px;
+}
+
+.movie-details-btn .popup-video {
+    background: #e4d804;
+    color: #000;
+}
+
+.movie-details-btn .popup-video:hover {
+    background: #fff;
+}
+
+.movie-details-btn .btn:not(.popup-video) {
+    background: transparent;
+    border: 2px solid #e4d804;
+    color: #e4d804;
+}
+
+.movie-details-btn .btn:not(.popup-video):hover {
+    background: #e4d804;
+    color: #000;
+}
+</style>
 {% endblock %} 
