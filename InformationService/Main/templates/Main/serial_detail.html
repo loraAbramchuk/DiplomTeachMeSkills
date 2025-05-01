@@ -36,6 +36,11 @@
                                             <span class="seasons"><i class="fas fa-tv"></i> {{ serial.number_of_seasons }} сезон(ов)</span>
                                         </li>
                                         {% endif %}
+                                        {% if serial.episodes %}
+                                        <li>
+                                            <span class="episodes"><i class="fas fa-film"></i> {{ serial.episodes }} серий</span>
+                                        </li>
+                                        {% endif %}
                                     </ul>
                                 </div>
 
