@@ -5,22 +5,22 @@ from django.db.models.functions import Coalesce
 
 def get_user_preferred_genres(user, limit=5):
     """Получение предпочтительных жанров пользователя на основе его отзывов"""
-    # Получаем все жанры из фильмов и сериалов, которые пользователь оценил положительно (рейтинг > 6)
+    # Получаем все id жанров из фильмов и сериалов, которые пользователь оценил положительно (рейтинг > 6)
     movie_genres = Genre.objects.filter(
         movie__review__user=user,
         movie__review__rating__gt=6
-    ).values_list('id', 'name')
+    ).values_list('id', flat=True)
     
     serial_genres = Genre.objects.filter(
         serial__review__user=user,
         serial__review__rating__gt=6
-    ).values_list('id', 'name')
+    ).values_list('id', flat=True)
     
     # Объединяем и подсчитываем частоту жанров
     all_genres = list(movie_genres) + list(serial_genres)
     genre_counter = Counter(all_genres)
     
-    # Возвращаем наиболее частые жанры
+    # Возвращаем наиболее частые id жанров
     return [genre_id for genre_id, _ in genre_counter.most_common(limit)]
 
 def get_recommendations_by_genres(user, content_type='all', limit=10):
