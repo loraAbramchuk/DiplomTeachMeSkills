@@ -16,17 +16,39 @@
         </div>
     </div>
 
-    <!-- Поиск -->
+    <!-- Поиск и фильтры -->
     <div class="row mb-4">
-        <div class="col-md-6">
-            <form method="get" class="d-flex">
-                <input type="text" name="q" class="form-control me-2" placeholder="Поиск по названию или описанию..." value="{{ query }}">
+        <div class="col-md-8">
+            <form method="get" class="d-flex flex-wrap gap-2 align-items-center">
+                <input type="text" name="q" class="form-control me-2" placeholder="Поиск по названию..." value="{{ query }}" style="max-width: 200px;">
+                <select name="genre" class="form-select me-2" style="max-width: 150px;">
+                    <option value="">Жанр</option>
+                    {% for genre in genres %}
+                        <option value="{{ genre.id }}" {% if genre.id|stringformat:'s' == selected_genre %}selected{% endif %}>{{ genre.name }}</option>
+                    {% endfor %}
+                </select>
+                <select name="country" class="form-select me-2" style="max-width: 150px;">
+                    <option value="">Страна</option>
+                    {% for country in countries %}
+                        <option value="{{ country.id }}" {% if country.id|stringformat:'s' == selected_country %}selected{% endif %}>{{ country.name }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" name="year" class="form-control me-2" placeholder="Год" value="{{ selected_year }}" style="max-width: 100px;">
+                <select name="sort" class="form-select me-2" style="max-width: 150px;">
+                    <option value="created_at" {% if sort == 'created_at' %}selected{% endif %}>Сначала новые</option>
+                    <option value="title" {% if sort == 'title' %}selected{% endif %}>По названию</option>
+                    <option value="year" {% if sort == 'year' %}selected{% endif %}>По году</option>
+                </select>
+                <select name="order" class="form-select me-2" style="max-width: 120px;">
+                    <option value="desc" {% if order == 'desc' %}selected{% endif %}>По убыванию</option>
+                    <option value="asc" {% if order == 'asc' %}selected{% endif %}>По возрастанию</option>
+                </select>
                 <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-search"></i>
+                    <i class="bi bi-search"></i> Найти
                 </button>
             </form>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="btn-group float-end">
                 <a href="?type=all" class="btn btn-outline-primary {% if content_type == 'all' %}active{% endif %}">Все</a>
                 <a href="?type=movies" class="btn btn-outline-primary {% if content_type == 'movies' %}active{% endif %}">Фильмы</a>

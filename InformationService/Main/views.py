@@ -14,6 +14,8 @@ from .recommendations import (
     get_similar_content,
     get_trending_content
 )
+from django.db.models import Q
+from .kinopoisk_parser import KinopoiskParser
 
 User = get_user_model()
 
@@ -44,13 +46,59 @@ def index(request):
 
 def movies_list(request):
     """Список фильмов"""
+    # Получаем параметры фильтрации
+    genre = request.GET.get('genre', '')
+    country = request.GET.get('country', '')
+    
+    # Получаем все жанры и страны для фильтров
+    genres = Genre.objects.all()
+    countries = Country.objects.all()
+    
+    # Базовый запрос
     movies = Movie.objects.all()
-    return render(request, 'Main/movies_list.html', {'movies': movies})
+    
+    # Применяем фильтры
+    if genre:
+        movies = movies.filter(genres__name=genre)
+    if country:
+        movies = movies.filter(country__name=country)
+    
+    context = {
+        'movies': movies,
+        'genres': genres,
+        'countries': countries,
+        'selected_genre': genre,
+        'selected_country': country,
+    }
+    return render(request, 'Main/movies_list.html', context)
 
 def serials_list(request):
     """Список сериалов"""
+    # Получаем параметры фильтрации
+    genre = request.GET.get('genre', '')
+    country = request.GET.get('country', '')
+    
+    # Получаем все жанры и страны для фильтров
+    genres = Genre.objects.all()
+    countries = Country.objects.all()
+    
+    # Базовый запрос
     serials = Serial.objects.all()
-    return render(request, 'Main/serials_list.html', {'serials': serials})
+    
+    # Применяем фильтры
+    if genre:
+        serials = serials.filter(genres__name=genre)
+    if country:
+        serials = serials.filter(country__name=country)
+    
+    context = {
+        'serials': serials,
+        'genres': genres,
+        'countries': countries,
+        'selected_genre': genre,
+        'selected_country': country,
+    }
+    return render(request, 'Main/serials_list.html', context)
 
 def subscription_required(view_func):
     """Декоратор для проверки наличия активной подписки"""
@@ -76,20 +124,70 @@ def subscription_required(view_func):
 def movie_detail(request, pk):
     """Представление для конкретного фильма"""
     movie = get_object_or_404(Movie, pk=pk)
+    print(f"\nЗапрос деталей фильма: {movie.title} ({movie.release_year})")
+    
+    # Проверяем, есть ли уже данные с Кинопоиска
+    if not movie.kinopoisk_rating or not movie.trailer_url:
+        print("Данные с Кинопоиска отсутствуют или неполные, получаем новые")
+        parser = KinopoiskParser()
+        kinopoisk_data = parser.get_movie_data(movie.title, movie.release_year, movie)
+        
+        if kinopoisk_data:
+            print(f"Получены данные с Кинопоиска: {kinopoisk_data}")
+            # Обновляем данные фильма
+            movie.kinopoisk_rating = kinopoisk_data.get('kinopoisk_rating')
+            movie.kinopoisk_url = kinopoisk_data.get('kinopoisk_url')
+            movie.trailer_url = kinopoisk_data.get('trailer_url')
+            movie.watch_url = kinopoisk_data.get('watch_url')
+            movie.save()
+            print("Данные фильма обновлены")
+        else:
+            print("Не удалось получить данные с Кинопоиска")
+    else:
+        print(f"Используем существующие данные с Кинопоиска: рейтинг {movie.kinopoisk_rating}")
+    
     similar_movies = get_similar_content(movie, 'movie', limit=4)
     return render(request, 'Main/movie_detail.html', {
         'movie': movie,
-        'similar_movies': similar_movies
+        'genres': movie.genres.all(),
+        'countries': movie.country.all(),
+        'similar_movies': similar_movies,
+        'images': movie.images.all()
     })
 
 @subscription_required
 def serial_detail(request, pk):
     """Представление для конкретного сериала"""
     serial = get_object_or_404(Serial, pk=pk)
+    print(f"\nЗапрос деталей сериала: {serial.title} ({serial.release_year})")
+    
+    # Проверяем, есть ли уже данные с Кинопоиска
+    if not serial.kinopoisk_rating or not serial.trailer_url:
+        print("Данные с Кинопоиска отсутствуют или неполные, получаем новые")
+        parser = KinopoiskParser()
+        kinopoisk_data = parser.get_movie_data(serial.title, serial.release_year, serial)
+        
+        if kinopoisk_data:
+            print(f"Получены данные с Кинопоиска: {kinopoisk_data}")
+            # Обновляем данные сериала
+            serial.kinopoisk_rating = kinopoisk_data.get('kinopoisk_rating')
+            serial.kinopoisk_url = kinopoisk_data.get('kinopoisk_url')
+            serial.trailer_url = kinopoisk_data.get('trailer_url')
+            serial.watch_url = kinopoisk_data.get('watch_url')
+            serial.save()
+            print("Данные сериала обновлены")
+        else:
+            print("Не удалось получить данные с Кинопоиска")
+    else:
+        print(f"Используем существующие данные с Кинопоиска: рейтинг {serial.kinopoisk_rating}")
+    
     similar_serials = get_similar_content(serial, 'serial', limit=4)
     return render(request, 'Main/serial_detail.html', {
         'serial': serial,
-        'similar_serials': similar_serials
+        'genres': serial.genres.all(),
+        'countries': serial.country.all(),
+        'similar_serials': similar_serials,
+        'images': serial.images.all()
     })
 
 @login_required
@@ -315,3 +413,70 @@ def trending(request):
     }
     
     return render(request, 'Main/trending.html', context)
+
+def search(request):
+    """Поиск контента по различным параметрам"""
+    # Получаем параметры из GET-запроса
+    query = request.GET.get('q', '').strip()
+    genre = request.GET.get('genre', '').strip()
+    country = request.GET.get('country', '').strip()
+    year = request.GET.get('year', '').strip()
+    content_type = request.GET.get('type', 'all')
+
+    # Получаем все жанры и страны для фильтров
+    genres = Genre.objects.all()
+    countries = Country.objects.all()
+    
+    # Базовые запросы с предварительной загрузкой связанных данных
+    movies = Movie.objects.prefetch_related('genres', 'country').all()
+    serials = Serial.objects.prefetch_related('genres', 'country').all()
+    
+    # Применяем фильтры
+    if query:
+        movies = movies.filter(title__icontains=query)
+        serials = serials.filter(title__icontains=query)
+    
+    if genre:
+        movies = movies.filter(genres__name=genre)
+        serials = serials.filter(genres__name=genre)
+    
+    if country:
+        movies = movies.filter(country__name=country)
+        serials = serials.filter(country__name=country)
+    
+    if year:
+        try:
+            year = int(year)
+            movies = movies.filter(release_year=year)
+            serials = serials.filter(release_year=year)
+        except ValueError:
+            pass
+    
+    # Фильтруем по типу контента
+    if content_type == 'movies':
+        serials = Serial.objects.none()
+    elif content_type == 'serials':
+        movies = Movie.objects.none()
+    
+    # Добавляем отладочную информацию
+    print(f"Search parameters:")
+    print(f"Query: '{query}'")
+    print(f"Genre: '{genre}'")
+    print(f"Country: '{country}'")
+    print(f"Year: '{year}'")
+    print(f"Content type: '{content_type}'")
+    print(f"Movies found: {movies.count()}")
+    print(f"Serials found: {serials.count()}")
+    
+    context = {
+        'movies': movies.distinct(),
+        'serials': serials.distinct(),
+        'genres': genres,
+        'countries': countries,
+        'selected_genre': genre,
+        'selected_country': country,
+        'selected_year': year,
+        'selected_type': content_type,
+    }
+    
+    return render(request, 'Main/search_results.html', context)

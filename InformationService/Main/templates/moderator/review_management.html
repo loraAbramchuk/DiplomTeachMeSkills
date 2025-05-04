@@ -82,6 +82,9 @@
                                         data-action="reject">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
+                                <a href="{% url 'edit_review' review.id %}" class="btn btn-sm btn-warning">
+                                    <i class="bi bi-pencil"></i> Редактировать
+                                </a>
                                 <button class="btn btn-sm btn-info" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#reviewModal{{ review.id }}">

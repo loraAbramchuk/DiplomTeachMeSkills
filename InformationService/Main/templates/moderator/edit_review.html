@@ -1,0 +1,93 @@
+{% extends 'moderator/base.html' %}
+
+{% block title %}Редактирование отзыва{% endblock %}
+
+{% block content %}
+<style>
+    .card {
+        background-color: #141414;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+    .card-header {
+        background: rgba(255,255,255,0.03);
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .form-label {
+        color: #FFD700;
+        font-weight: 500;
+    }
+    .form-control, .form-select {
+        background-color: #1a1a1a;
+        color: #fff;
+        border: 1px solid #333;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #FFD700;
+        box-shadow: 0 0 0 0.15rem rgba(255,215,0,0.15);
+        background-color: #1a1a1a;
+        color: #fff;
+    }
+    .btn-primary {
+        background-color: #FFD700;
+        border-color: #FFD700;
+        color: #141414;
+        font-weight: 600;
+    }
+    .btn-primary:hover {
+        background-color: #e6c200;
+        border-color: #e6c200;
+        color: #141414;
+    }
+    .btn-secondary {
+        background-color: #222;
+        color: #fff;
+        border: 1px solid #333;
+    }
+    .btn-secondary:hover {
+        background-color: #333;
+        color: #FFD700;
+        border: 1px solid #FFD700;
+    }
+</style>
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Редактирование отзыва</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Пользователь</label>
+                            <input type="text" class="form-control" value="{{ review.user.username }}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Контент</label>
+                            <input type="text" class="form-control" value="{% if review.movie %}Фильм: {{ review.movie.title }}{% else %}Сериал: {{ review.serial.title }}{% endif %}" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Текст отзыва</label>
+                            <textarea class="form-control" name="text" rows="5">{{ review.text }}</textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Статус</label>
+                            <select class="form-select" name="status">
+                                <option value="pending" {% if review.status == 'pending' %}selected{% endif %}>На модерации</option>
+                                <option value="approved" {% if review.status == 'approved' %}selected{% endif %}>Одобрен</option>
+                                <option value="rejected" {% if review.status == 'rejected' %}selected{% endif %}>Отклонен</option>
+                            </select>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'review_management' %}" class="btn btn-secondary">Отмена</a>
+                            <button type="submit" class="btn btn-primary">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

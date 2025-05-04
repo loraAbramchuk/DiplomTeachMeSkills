@@ -1,20 +1,26 @@
 from django.contrib import admin
-from .models import Genre, Country, Movie, Serial, Review
+from .models import Genre, Country, Movie, Serial, Review, Subscription, UserSubscription, Payment, MovieImage, SerialImage
 from django.utils.html import mark_safe
+
+class MovieImageInline(admin.TabularInline):
+    model = MovieImage
+    extra = 3
+
+class SerialImageInline(admin.TabularInline):
+    model = SerialImage
+    extra = 3
 
 @admin.register(Movie)
 class MovieAdmin(admin.ModelAdmin):
-    list_display = ['title', 'release_year', 'created_at', 'poster_preview']
-    list_filter = ['release_year', 'genres', 'country']
-    search_fields = ['title', 'description']
-    filter_horizontal = ['genres', 'country']
+    list_display = ('title', 'release_year', 'kinopoisk_rating')
+    list_filter = ('genres', 'country', 'release_year')
+    search_fields = ('title', 'description')
     readonly_fields = ['created_at']
+    inlines = [MovieImageInline]
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'description', 'release_year', 'poster', 'trailer_url')
-        }),
-        ('Категоризация', {
-            'fields': ('genres', 'country')
+            'fields': ('title', 'description', 'release_year', 'genres', 'country', 
+                      'poster', 'trailer_url', 'watch_url', 'kinopoisk_rating', 'kinopoisk_url')
         }),
         ('Метаданные', {
             'fields': ('created_at',),
@@ -30,17 +36,15 @@ class MovieAdmin(admin.ModelAdmin):
 
 @admin.register(Serial)
 class SerialAdmin(admin.ModelAdmin):
-    list_display = ['title', 'release_year', 'episodes', 'created_at']
-    list_filter = ['release_year', 'genres', 'country']
-    search_fields = ['title', 'description']
-    filter_horizontal = ['genres', 'country']
+    list_display = ('title', 'release_year', 'episodes', 'kinopoisk_rating')
+    list_filter = ('genres', 'country', 'release_year')
+    search_fields = ('title', 'description')
     readonly_fields = ['created_at']
+    inlines = [SerialImageInline]
     fieldsets = (
         ('Основная информация', {
-            'fields': ('title', 'description', 'release_year', 'episodes', 'poster')
-        }),
-        ('Категоризация', {
-            'fields': ('genres', 'country')
+            'fields': ('title', 'description', 'release_year', 'episodes', 'genres', 
+                      'country', 'poster', 'trailer_url', 'watch_url', 'kinopoisk_rating', 'kinopoisk_url')
         }),
         ('Метаданные', {
             'fields': ('created_at',),
@@ -76,3 +80,13 @@ class CountryAdmin(admin.ModelAdmin):
 class GenreAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
+
+@admin.register(MovieImage)
+class MovieImageAdmin(admin.ModelAdmin):
+    list_display = ('movie', 'description')
+    list_filter = ('movie',)
+
+@admin.register(SerialImage)
+class SerialImageAdmin(admin.ModelAdmin):
+    list_display = ('serial', 'description')
+    list_filter = ('serial',)

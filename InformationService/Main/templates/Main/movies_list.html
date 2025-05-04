@@ -17,6 +17,31 @@
                     <h2 class="title">Все фильмы</h2>
                 </div>
             </div>
+            <div class="col-lg-6">
+                <div class="movie-filter">
+                    <form method="get" class="row g-3">
+                        <div class="col-md-5">
+                            <select class="form-select" name="genre">
+                                <option value="">Все жанры</option>
+                                {% for genre in genres %}
+                                    <option value="{{ genre.name }}" {% if selected_genre == genre.name %}selected{% endif %}>{{ genre.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <select class="form-select" name="country">
+                                <option value="">Все страны</option>
+                                {% for country in countries %}
+                                    <option value="{{ country.name }}" {% if selected_country == country.name %}selected{% endif %}>{{ country.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">Фильтровать</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="row tr-movie-active">
             {% for movie in movies %}

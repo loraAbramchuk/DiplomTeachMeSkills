@@ -1,0 +1,296 @@
+{% extends 'Main/base.html' %}
+{% load static %}
+
+{% block title %}Результаты поиска{% endblock %}
+
+{% block content %}
+<!-- breadcrumb-area -->
+<section class="breadcrumb-area breadcrumb-bg" data-background="{% static 'img/bg/breadcrumb_bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="breadcrumb-content text-center">
+                    <h2 class="title">Результаты поиска</h2>
+                    {% if request.GET.q %}
+                        <p class="text-light mb-0">Поисковый запрос: "{{ request.GET.q }}"</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- breadcrumb-area-end -->
+
+<!-- movie-area -->
+<section class="movie-area movie-bg" data-background="{% static 'img/bg/movie_bg.jpg' %}">
+    <div class="container">
+        <div class="row">
+            <!-- Фильтры -->
+            <div class="col-lg-3">
+                <div class="widget-area">
+                    <div class="widget">
+                        <div class="widget-title mb-4">
+                            <h5 class="title">Фильтры поиска</h5>
+                        </div>
+                        <form id="filterForm" method="GET" action="{% url 'search' %}">
+                            {% if request.GET.q %}
+                            <input type="hidden" id="searchQuery" name="q" value="{{ request.GET.q }}">
+                            {% endif %}
+                            
+                            <div class="mb-4">
+                                <label class="d-block mb-3">Тип контента</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="type" id="all" value="all" {% if selected_type == 'all' or not selected_type %}checked{% endif %}>
+                                    <label class="btn btn-outline-primary" for="all">Все</label>
+                                    
+                                    <input type="radio" class="btn-check" name="type" id="movies" value="movies" {% if selected_type == 'movies' %}checked{% endif %}>
+                                    <label class="btn btn-outline-primary" for="movies">Фильмы</label>
+                                    
+                                    <input type="radio" class="btn-check" name="type" id="serials" value="serials" {% if selected_type == 'serials' %}checked{% endif %}>
+                                    <label class="btn btn-outline-primary" for="serials">Сериалы</label>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="genreSelect" class="d-block mb-3">Жанр</label>
+                                <select class="form-select" id="genreSelect" name="genre">
+                                    <option value="">Все жанры</option>
+                                    {% for genre in genres %}
+                                        <option value="{{ genre.name }}" {% if selected_genre == genre.name %}selected{% endif %}>{{ genre.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="countrySelect" class="d-block mb-3">Страна</label>
+                                <select class="form-select" id="countrySelect" name="country">
+                                    <option value="">Все страны</option>
+                                    {% for country in countries %}
+                                        <option value="{{ country.name }}" {% if selected_country == country.name %}selected{% endif %}>{{ country.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="yearInput" class="d-block mb-3">Год выпуска</label>
+                                <input type="number" class="form-control" id="yearInput" name="year" value="{{ selected_year }}" placeholder="Введите год">
+                            </div>
+                            
+                            <button type="submit" id="filterSubmit" class="btn btn-primary w-100">
+                                <i class="fas fa-filter me-2"></i>Применить фильтры
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Результаты -->
+            <div class="col-lg-9">
+                {% if movies or serials %}
+                    {% if movies %}
+                        <div class="movie-section mb-5">
+                            <h3 class="section-title mb-4">Фильмы</h3>
+                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                                {% for movie in movies %}
+                                    <div class="col">
+                                        <div class="movie-card h-100">
+                                            <div class="movie-poster">
+                                                {% if movie.poster %}
+                                                    <img src="{{ movie.poster.url }}" class="img-fluid" alt="{{ movie.title }}">
+                                                {% else %}
+                                                    <div class="poster-placeholder">{{ movie.title }}</div>
+                                                {% endif %}
+                                                <div class="movie-content">
+                                                    <h5 class="title">
+                                                        <a href="{% url 'movie_detail' movie.pk %}">{{ movie.title }}</a>
+                                                    </h5>
+                                                    <div class="movie-meta">
+                                                        <span class="year">{{ movie.release_year }}</span>
+                                                        <span class="genres">
+                                                            {% for genre in movie.genres.all %}
+                                                                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                                                            {% endfor %}
+                                                        </span>
+                                                    </div>
+                                                    <a href="{% url 'movie_detail' movie.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if serials %}
+                        <div class="movie-section">
+                            <h3 class="section-title mb-4">Сериалы</h3>
+                            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                                {% for serial in serials %}
+                                    <div class="col">
+                                        <div class="movie-card h-100">
+                                            <div class="movie-poster">
+                                                {% if serial.poster %}
+                                                    <img src="{{ serial.poster.url }}" class="img-fluid" alt="{{ serial.title }}">
+                                                {% else %}
+                                                    <div class="poster-placeholder">{{ serial.title }}</div>
+                                                {% endif %}
+                                                <div class="movie-content">
+                                                    <h5 class="title">
+                                                        <a href="{% url 'serial_detail' serial.pk %}">{{ serial.title }}</a>
+                                                    </h5>
+                                                    <div class="movie-meta">
+                                                        <span class="year">{{ serial.release_year }}</span>
+                                                        <span class="genres">
+                                                            {% for genre in serial.genres.all %}
+                                                                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                                                            {% endfor %}
+                                                        </span>
+                                                    </div>
+                                                    <a href="{% url 'serial_detail' serial.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="alert alert-info">
+                        {% if request.GET.q %}
+                            <p class="mb-0">По вашему запросу "{{ request.GET.q }}" ничего не найдено.</p>
+                            <p class="mb-0">Попробуйте изменить параметры поиска или используйте другие ключевые слова.</p>
+                        {% else %}
+                            <p class="mb-0">Введите поисковый запрос или используйте фильтры для поиска.</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+<!-- movie-area-end -->
+
+{% block extra_css %}
+<style>
+.movie-card {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.movie-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.movie-poster {
+    position: relative;
+    overflow: hidden;
+}
+
+.movie-poster img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+}
+
+.poster-placeholder {
+    width: 100%;
+    height: 400px;
+    background: #2a2a2a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+}
+
+.movie-content {
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+}
+
+.movie-card:hover .movie-content {
+    transform: translateY(0);
+}
+
+.movie-content .title {
+    margin: 0 0 10px;
+}
+
+.movie-content .title a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.movie-meta {
+    font-size: 14px;
+    color: #aaa;
+}
+
+.movie-meta span {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.breadcrumb-area {
+    padding: 150px 0;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+}
+
+.breadcrumb-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.breadcrumb-content {
+    position: relative;
+    z-index: 1;
+}
+
+.widget {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    border-radius: 10px;
+}
+
+.widget-title {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+}
+
+.section-title {
+    color: #fff;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50px;
+    height: 2px;
+    background: #007bff;
+}
+</style>
+{% endblock %}
+{% endblock %} 

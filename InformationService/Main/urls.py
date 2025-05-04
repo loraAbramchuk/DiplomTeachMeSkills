@@ -5,6 +5,7 @@ from . import custom_moderator
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path('search/', views.search, name='search'),
     path('movies/', views.movies_list, name='movies_list'),
     path('movies/<int:pk>/', views.movie_detail, name='movie_detail'),
     path('movies/<int:movie_id>/review/', views.add_movie_review, name='add_movie_review'),
@@ -36,4 +37,5 @@ urlpatterns = [
     path('moderator-panel/content/<str:content_type>/<int:content_id>/', custom_moderator.edit_content, name='edit_content'),
     path('moderator-panel/reviews/', custom_moderator.review_management, name='review_management'),
     path('moderator-panel/reviews/<int:review_id>/update_status/', custom_moderator.update_review_status, name='update_review_status'),
+    path('moderator-panel/reviews/<int:review_id>/edit/', custom_moderator.edit_review, name='edit_review'),
 ]

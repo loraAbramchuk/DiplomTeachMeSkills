@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Movie Information Service{% endblock %}</title>
+    
+    <!-- CSS here -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'Main/css/movie-details.css' %}">
+    {% block extra_css %}{% endblock %}
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0f0f0f;
+            color: #bcbcbc;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background-color: #1a1a1a;
+            padding: 20px 0;
+        }
+
+        .navbar-brand {
+            color: #fff;
+            font-weight: 700;
+            font-size: 24px;
+        }
+
+        .navbar-nav .nav-link {
+            color: #bcbcbc;
+            font-weight: 500;
+            padding: 10px 20px;
+            transition: all 0.3s;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: #e4d804;
+        }
+
+        .footer {
+            background-color: #1a1a1a;
+            padding: 40px 0;
+            margin-top: 60px;
+        }
+
+        .footer p {
+            margin: 0;
+            color: #bcbcbc;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">MovieInfo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'index' %}">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'movies' in request.path %}active{% endif %}" href="{% url 'movies_list' %}">Фильмы</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'serials' in request.path %}active{% endif %}" href="{% url 'serials_list' %}">Сериалы</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 MovieInfo. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <!-- JS here -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html> 

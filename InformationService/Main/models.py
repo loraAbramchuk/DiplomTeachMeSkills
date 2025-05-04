@@ -29,6 +29,24 @@ class Genre(models.Model):
         verbose_name = "Жанр"
         verbose_name_plural = "Жанры"
 
+class MovieImage(models.Model):
+    movie = models.ForeignKey('Movie', on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='movie_images/')
+    description = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        verbose_name = "Изображение фильма"
+        verbose_name_plural = "Изображения фильмов"
+
+class SerialImage(models.Model):
+    serial = models.ForeignKey('Serial', on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='serial_images/')
+    description = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        verbose_name = "Изображение сериала"
+        verbose_name_plural = "Изображения сериалов"
+
 class Movie(models.Model):
     """Модель фильма"""
     title = models.CharField(max_length=255, verbose_name="Название")
@@ -36,6 +54,9 @@ class Movie(models.Model):
     release_year = models.IntegerField(verbose_name="Год выпуска")
     poster = models.ImageField(upload_to='posters/movies/', null=True, blank=True, verbose_name="Постер")
     trailer_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL трейлера")
+    watch_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL для просмотра")
+    kinopoisk_rating = models.FloatField(null=True, blank=True, verbose_name="Рейтинг Кинопоиска")
+    kinopoisk_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL на Кинопоиске")
     genres = models.ManyToManyField(Genre, verbose_name="Жанры")
     country = models.ManyToManyField(Country, verbose_name="Страны")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -46,15 +67,21 @@ class Movie(models.Model):
     class Meta:
         verbose_name = "Фильм"
         verbose_name_plural = "Фильмы"
+        ordering = ['-created_at']
 
 class Serial(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    release_year = models.PositiveIntegerField()
-    genres = models.ManyToManyField(Genre)
-    country = models.ManyToManyField(Country)
-    episodes = models.PositiveIntegerField()
-    poster = models.ImageField(upload_to='posters/serials/', blank=True, null=True)
+    """Модель сериала"""
+    title = models.CharField(max_length=200, verbose_name="Название")
+    description = models.TextField(verbose_name="Описание")
+    release_year = models.PositiveIntegerField(verbose_name="Год выпуска")
+    genres = models.ManyToManyField(Genre, verbose_name="Жанры")
+    country = models.ManyToManyField(Country, verbose_name="Страны")
+    episodes = models.PositiveIntegerField(verbose_name="Количество эпизодов")
+    poster = models.ImageField(upload_to='posters/serials/', blank=True, null=True, verbose_name="Постер")
+    trailer_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL трейлера")
+    watch_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL для просмотра")
+    kinopoisk_rating = models.FloatField(null=True, blank=True, verbose_name="Рейтинг Кинопоиска")
+    kinopoisk_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL на Кинопоиске")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -63,6 +90,7 @@ class Serial(models.Model):
     class Meta:
         verbose_name = "Сериал"
         verbose_name_plural = "Сериалы"
+        ordering = ['-created_at']
 
 
 class Review(models.Model):

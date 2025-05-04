@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.db.models import Q
-from .models import Movie, Serial, Review, User
+from .models import Movie, Serial, Review, User, Genre, Country
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -41,36 +41,59 @@ def moderator_dashboard(request):
 @login_required
 @user_passes_test(is_moderator)
 def content_management(request):
-    # Фильтрация и поиск
     query = request.GET.get('q', '')
     content_type = request.GET.get('type', 'all')
-    
+    sort = request.GET.get('sort', 'created_at')
+    order = request.GET.get('order', 'desc')
+
+    sort_fields = {
+        'title': 'title',
+        'year': 'release_year',
+        'created_at': 'created_at',
+    }
+    sort_field = sort_fields.get(sort, 'created_at')
+    if order == 'desc':
+        sort_field = '-' + sort_field
+
+    movie_filter = {}
+    serial_filter = {}
     if query:
-        movies = Movie.objects.filter(
-            Q(title__icontains=query) | 
-            Q(description__icontains=query)
-        )
-        serials = Serial.objects.filter(
-            Q(title__icontains=query) | 
-            Q(description__icontains=query)
-        )
-    else:
-        movies = Movie.objects.all()
-        serials = Serial.objects.all()
-    
-    # Пагинация
+        movie_filter['title__icontains'] = query
+        serial_filter['title__icontains'] = query
+    if request.GET.get('year'):
+        movie_filter['release_year'] = request.GET['year']
+        serial_filter['release_year'] = request.GET['year']
+    if request.GET.get('genre'):
+        movie_filter['genres__id'] = request.GET['genre']
+        serial_filter['genres__id'] = request.GET['genre']
+    if request.GET.get('country'):
+        movie_filter['country__id'] = request.GET['country']
+        serial_filter['country__id'] = request.GET['country']
+
+    movies = Movie.objects.filter(**movie_filter).order_by(sort_field).distinct()
+    serials = Serial.objects.filter(**serial_filter).order_by(sort_field).distinct()
+
     movie_paginator = Paginator(movies, 10)
     serial_paginator = Paginator(serials, 10)
-    
     page = request.GET.get('page', 1)
     movies = movie_paginator.get_page(page)
     serials = serial_paginator.get_page(page)
-    
+
+    genres = Genre.objects.all()
+    countries = Country.objects.all()
+
     context = {
         'movies': movies,
         'serials': serials,
         'query': query,
         'content_type': content_type,
+        'sort': sort,
+        'order': order,
+        'genres': genres,
+        'countries': countries,
+        'selected_genre': request.GET.get('genre', ''),
+        'selected_country': request.GET.get('country', ''),
+        'selected_year': request.GET.get('year', ''),
     }
     return render(request, 'moderator/content_management.html', context)
 
@@ -184,4 +207,16 @@ def create_content(request, content_type):
         return redirect('content_management')
     
     template = f'moderator/create_{content_type}.html'
-    return render(request, template, {'content_type': content_type}) 
+    return render(request, template, {'content_type': content_type})
+
+@login_required
+@user_passes_test(is_moderator)
+def edit_review(request, review_id):
+    review = get_object_or_404(Review, id=review_id)
+    if request.method == 'POST':
+        review.text = request.POST.get('text', review.text)
+        review.status = request.POST.get('status', review.status)
+        review.save()
+        messages.success(request, 'Отзыв успешно обновлен')
+        return redirect('review_management')
+    return render(request, 'moderator/edit_review.html', {'review': review}) 
