@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Main',
     'rest_framework',
+    'django_filters',
+    'drf_yasg',
     'users',
     'api',
 ]
@@ -168,3 +170,14 @@ ADMIN_SHOW_UI = show_admin_ui
 
 # Запрещаем доступ к админке для staff-пользователей, которые не являются суперпользователями
 ADMIN_STAFF_ONLY = False
+
+# REST Framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+        'rest_framework.filters.OrderingFilter',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10,
+}

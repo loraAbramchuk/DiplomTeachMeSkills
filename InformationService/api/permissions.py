@@ -1,10 +1,10 @@
 from rest_framework import permissions
 
 
-class IsAdminOrModeratorOrReadOnly(permissions.BasePermission):
+class IsModeratorOrReadOnly(permissions.BasePermission):
     """
-    Разрешение, которое позволяет только администраторам и модераторам
-    создавать и редактировать объекты, а остальным пользователям - только просматривать.
+    Разрешение для модераторов на редактирование,
+    остальные только на чтение.
     """
     def has_permission(self, request, view):
         # Разрешаем GET, HEAD и OPTIONS запросы всем пользователям
@@ -15,5 +15,13 @@ class IsAdminOrModeratorOrReadOnly(permissions.BasePermission):
         if not request.user.is_authenticated:
             return False
             
-        # Разрешаем доступ администраторам и модераторам
-        return request.user.groups.filter(name="Модераторы").exists() or request.user.is_superuser
+        # Разрешаем доступ только модераторам и суперпользователям
+        return request.user.groups.filter(name='Модераторы').exists() or request.user.is_superuser
+
+
+class IsSuperuserOnly(permissions.BasePermission):
+    """
+    Разрешение только для суперпользователей.
+    """
+    def has_permission(self, request, view):
+        return request.user and request.user.is_superuser

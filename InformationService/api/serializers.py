@@ -1,5 +1,18 @@
 from rest_framework import serializers
-from Main.models import Genre, Country, Movie, Serial, Review           
+from Main.models import Genre, Country, Movie, Serial, Review
+from users.models import CustomUser
+
+
+class UserSerializer(serializers.ModelSerializer):
+    """Сериализатор для пользователей в API"""
+    class Meta:
+        model = CustomUser
+        fields = [
+            'id', 'username', 'email', 'first_name', 'last_name',
+            'is_active', 'is_staff', 'is_superuser', 'date_joined',
+            'last_login'
+        ]
+        read_only_fields = ['id', 'date_joined', 'last_login']
 
 
 class GenreSerializers(serializers.ModelSerializer):
@@ -38,9 +51,18 @@ class SerialSerializer(serializers.ModelSerializer):
 
 class ReviewSerializer(serializers.ModelSerializer):
     """Сериализатор для отзывов в API"""
+    user = serializers.StringRelatedField()
+    movie = serializers.StringRelatedField(required=False)
+    serial = serializers.StringRelatedField(required=False)
+    status_display = serializers.CharField(source='get_status_display', read_only=True)
+
     class Meta:
         model = Review
-        fields = ['id', 'movie', 'user', 'rating', 'comment', 'created_at']
+        fields = [
+            'id', 'user', 'movie', 'serial', 'text', 'rating', 
+            'status', 'status_display', 'created_at'
+        ]
+        read_only_fields = ['user', 'created_at']
 
 
 
