@@ -1,251 +1,282 @@
 {% load static %}
 <!doctype html>
 <html class="no-js" lang="ru">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>{% block title %}Movies and Serials Hub{% endblock %}</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>{% block title %}Movies and Serials Hub{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
 
-        <!-- CSS here -->
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
-        <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
-        <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
-        <link rel="stylesheet" href="{% static 'css/odometer.css' %}">
-        <link rel="stylesheet" href="{% static 'css/aos.css' %}">
-        <link rel="stylesheet" href="{% static 'css/slick.css' %}">
-        <link rel="stylesheet" href="{% static 'css/default.css' %}">
-        <link rel="stylesheet" href="{% static 'css/style.css' %}">
-        <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
-    </head>
-    <body>
-        <!-- preloader -->
-        <div id="preloader">
-            <div id="loading-center">
-                <div id="loading-center-absolute">
-                    <img src="{% static 'img/preloader.svg' %}" alt="">
-                </div>
-            </div>
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/animate.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/magnific-popup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fontawesome-all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/flaticon.css' %}">
+    <link rel="stylesheet" href="{% static 'css/odometer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/aos.css' %}">
+    <link rel="stylesheet" href="{% static 'css/slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css/default.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/responsive.css' %}">
+  </head>
+  <body>
+
+    <!-- Модальное окно сообщений -->
+    <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="messageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="messageModalLabel">Сообщение</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} mb-0">
+                {{ message }}
+              </div>
+            {% endfor %}
+          </div>
         </div>
-        <!-- preloader-end -->
+      </div>
+    </div>
 
-        <!-- Scroll-top -->
-        <button class="scroll-top scroll-to-target" data-target="html">
-            <i class="fas fa-angle-up"></i>
-        </button>
-        <!-- Scroll-top-end-->
+    <!-- Поиск -->
+    <div class="modal fade" id="search-modal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-0 rounded-4">
+          <div class="modal-header border-0">
+            <h5 class="modal-title">Поиск</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
+            <form method="get" action="{% url 'search' %}">
+              <div class="input-group">
+                <input type="text" class="form-control rounded-start" placeholder="Введите запрос..." name="q" required>
+                <button class="btn btn-warning text-black rounded-end fw-bold" type="submit">Найти</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        <!-- header-area -->
-        <header>
-            <div id="sticky-header" class="menu-area transparent-header">
-                <div class="container custom-container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="mobile-nav-toggler"><i class="fas fa-bars"></i></div>
-                            <div class="menu-wrap">
-                                <nav class="menu-nav show">
-                                    <div class="logo">
-                                        <a href="{% url 'index' %}">
-                                            <img src="{% static 'img/logo/logo.png' %}" alt="Logo">
-                                        </a>
-                                    </div>
-                                    <div class="navbar-wrap main-menu d-none d-lg-flex">
-                                        <ul class="navigation">
-                                            <li><a href="{% url 'index' %}">Главная</a></li>
-                                            <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
-                                            <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
-                                            <li><a href="{% url 'trending' %}">Рекомендации</a></li>
-                                            <li><a href="{% url 'about' %}">О нас</a></li>
-                                            {% if user.is_authenticated %}
-                                            <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
-                                            {% endif %}
-                                        </ul>
-                                    </div>
-                                    <div class="header-action d-none d-md-block">
-                                        <ul>
-                                            <li class="header-search">
-                                                <a href="#" data-toggle="modal" data-target="#search-modal">
-                                                    <i class="fas fa-search"></i>
-                                                </a>
-                                            </li>
-                                            {% if user.is_authenticated %}
-                                            <li class="header-btn">
-                                                <a href="{% url 'user_profile' user.username %}" class="btn">{{ user.username }}</a>
-                                            </li>
-                                            <li class="header-btn">
-                                                <a href="{% url 'users:logout' %}" class="btn">Выйти</a>
-                                            </li>
-                                            {% else %}
-                                            <li class="header-btn">
-                                                <a href="{% url 'users:login' %}" class="btn">Войти</a>
-                                            </li>
-                                            <li class="header-btn">
-                                                <a href="{% url 'users:register' %}" class="btn">Регистрация</a>
-                                            </li>
-                                            {% endif %}
-                                        </ul>
-                                    </div>
-                                </nav>
-                            </div>
+    <!-- Прелоадер -->
+    <div id="preloader">
+      <div id="loading-center">
+        <div id="loading-center-absolute">
+          <img src="{% static 'img/preloader.svg' %}" alt="">
+        </div>
+      </div>
+    </div>
 
-                            <!-- Mobile Menu  -->
-                            <div class="mobile-menu">
-                                <div class="close-btn"><i class="fas fa-times"></i></div>
-                                <nav class="menu-box">
-                                    <div class="nav-logo">
-                                        <a href="{% url 'index' %}">
-                                            <img src="{% static 'img/logo/logo.png' %}" alt="">
-                                        </a>
-                                    </div>
-                                    <div class="menu-outer">
-                                        <ul class="navigation">
-                                            <li><a href="{% url 'index' %}">Главная</a></li>
-                                            <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
-                                            <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
-                                            <li><a href="{% url 'trending' %}">Рекомендации</a></li>
-                                            <li><a href="{% url 'about' %}">О нас</a></li>
-                                            {% if user.is_authenticated %}
-                                            <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
-                                            <li><a href="{% url 'user_profile' user.username %}">{{ user.username }}</a></li>
-                                            <li><a href="{% url 'users:logout' %}">Выйти</a></li>
-                                            {% else %}
-                                            <li><a href="{% url 'users:login' %}">Войти</a></li>
-                                            <li><a href="{% url 'users:register' %}">Регистрация</a></li>
-                                            {% endif %}
-                                        </ul>
-                                    </div>
-                                </nav>
-                            </div>
-                            <div class="menu-backdrop"></div>
-                            <!-- End Mobile Menu -->
+    <!-- Кнопка наверх -->
+    <button class="scroll-top scroll-to-target" data-target="html">
+      <i class="fas fa-angle-up"></i>
+    </button>
 
-                            <!-- Modal Search -->
-                            <div class="modal fade" id="search-modal" tabindex="-1" role="dialog" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <form>
-                                            <input type="text" placeholder="Поиск...">
-                                            <button><i class="fas fa-search"></i></button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Modal Search-end -->
+    <!-- Header -->
+    <header>
+      <div id="sticky-header" class="menu-area transparent-header">
+        <div class="container custom-container">
+          <div class="row">
+            <div class="col-12">
+              <div class="mobile-nav-toggler"><i class="fas fa-bars"></i></div>
+              <div class="menu-wrap">
+                <nav class="menu-nav show">
+                  <div class="logo">
+                    <a href="{% url 'index' %}">
+                      <img src="{% static 'img/logo/logo.png' %}" alt="Logo">
+                    </a>
+                  </div>
+                  <div class="navbar-wrap main-menu d-none d-lg-flex">
+                    <ul class="navigation">
+                      <li><a href="{% url 'index' %}">Главная</a></li>
+                      <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
+                      <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                      <li><a href="{% url 'trending' %}">Рекомендации</a></li>
+                      <li><a href="{% url 'about' %}">О нас</a></li>
+                      {% if user.is_authenticated %}
+                      <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                  <div class="header-action d-none d-md-block">
+                    <ul>
+                      <li class="header-search list-unstyled d-inline-block">
+                        <a href="#" id="custom-search-trigger" class="text-white" style="font-size: 20px;" data-bs-toggle="modal" data-bs-target="#search-modal">
+                          <i class="fas fa-search"></i>
+                        </a>
+                      </li>
+                      {% if user.is_authenticated %}
+                      <li class="header-btn">
+                        <a href="{% url 'user_profile' user.username %}" class="btn">{{ user.username }}</a>
+                      </li>
+                      <li class="header-btn">
+                        <a href="{% url 'users:logout' %}" class="btn">Выйти</a>
+                      </li>
+                      {% else %}
+                      <li class="header-btn">
+                        <a href="{% url 'users:login' %}" class="btn">Войти</a>
+                      </li>
+                      <li class="header-btn">
+                        <a href="{% url 'users:register' %}" class="btn">Регистрация</a>
+                      </li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                </nav>
+              </div>
 
-                        </div>
-                    </div>
-                </div>
+              <!-- Mobile menu -->
+              <div class="mobile-menu">
+                <div class="close-btn"><i class="fas fa-times"></i></div>
+                <nav class="menu-box">
+                  <div class="nav-logo">
+                    <a href="{% url 'index' %}">
+                      <img src="{% static 'img/logo/logo.png' %}" alt="">
+                    </a>
+                  </div>
+                  <div class="menu-outer">
+                    <ul class="navigation">
+                      <li><a href="{% url 'index' %}">Главная</a></li>
+                      <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
+                      <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                      <li><a href="{% url 'trending' %}">Рекомендации</a></li>
+                      <li><a href="{% url 'about' %}">О нас</a></li>
+                      {% if user.is_authenticated %}
+                      <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
+                      <li><a href="{% url 'user_profile' user.username %}">{{ user.username }}</a></li>
+                      <li><a href="{% url 'users:logout' %}">Выйти</a></li>
+                      {% else %}
+                      <li><a href="{% url 'users:login' %}">Войти</a></li>
+                      <li><a href="{% url 'users:register' %}">Регистрация</a></li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                </nav>
+              </div>
+              <div class="menu-backdrop"></div>
             </div>
-        </header>
-        <!-- header-area-end -->
+          </div>
+        </div>
+      </div>
+    </header>
 
-        <!-- main-area -->
-        <main>
-         
+    <!-- Main -->
+    <main>
+      {% block content %}
+      {% endblock %}
+    </main>
 
-            {% block content %}
-            {% endblock %}
-        </main>
-        <!-- main-area-end -->
-
-        <!-- footer-area -->
-        <footer class="footer-area footer-bg" data-background="{% static 'img/bg/footer_bg.jpg' %}">
-            <div class="footer-top-wrap">
-                <div class="container">
-                    <div class="footer-menu-wrap">
-                        <div class="row align-items-center">
-                            <div class="col-lg-3">
-                                <div class="footer-logo">
-                                    <a href="{% url 'index' %}"><img src="{% static 'img/logo/logo.png' %}" alt=""></a>
-                                </div>
-                            </div>
-                            <div class="col-lg-9">
-                                <div class="footer-menu">
-                                    <nav>
-                                        <ul class="navigation">
-                                            <li><a href="{% url 'index' %}">Главная</a></li>
-                                            <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
-                                            <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
-                                            <li><a href="{% url 'trending' %}">Рекомендации</a></li>
-                                            <li><a href="{% url 'about' %}">О нас</a></li>
-                                        </ul>
-                                        <div class="footer-search">
-                                            <form action="#">
-                                                <input type="text" placeholder="Найти фильм">
-                                                <button><i class="fas fa-search"></i></button>
-                                            </form>
-                                        </div>
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="footer-quick-link-wrap">
-                        <div class="row align-items-center">
-                            <div class="col-md-7">
-                                <div class="quick-link-list">
-                                    <ul>
-                                        <li><a href="#">FAQ</a></li>
-                                        <li><a href="#">Помощь</a></li>
-                                        <li><a href="#">Условия использования</a></li>
-                                        <li><a href="#">Конфиденциальность</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="col-md-5">
-                                <div class="footer-social">
-                                    <ul>
-                                        <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                        <li><a href="#"><i class="fab fa-pinterest-p"></i></a></li>
-                                        <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Footer -->
+    <footer class="footer-area footer-bg" data-background="{% static 'img/bg/footer_bg.jpg' %}">
+      <div class="footer-top-wrap">
+        <div class="container">
+          <div class="footer-menu-wrap">
+            <div class="row align-items-center">
+              <div class="col-lg-3">
+                <div class="footer-logo">
+                  <a href="{% url 'index' %}"><img src="{% static 'img/logo/logo.png' %}" alt=""></a>
                 </div>
-            </div>
-            <div class="copyright-wrap">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6">
-                            <div class="copyright-text">
-                                <p>&copy; 2024 Movies Hub. Все права защищены.</p>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6">
-                            <div class="payment-method-img text-center text-md-right">
-                                <img src="{% static 'img/images/card_img.png' %}" alt="img">
-                            </div>
-                        </div>
+              </div>
+              <div class="col-lg-9">
+                <div class="footer-menu">
+                  <nav>
+                    <ul class="navigation">
+                      <li><a href="{% url 'index' %}">Главная</a></li>
+                      <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
+                      <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                      <li><a href="{% url 'trending' %}">Рекомендации</a></li>
+                      <li><a href="{% url 'about' %}">О нас</a></li>
+                    </ul>
+                    <div class="footer-search">
+                      <form action="#">
+                        <input type="text" placeholder="Найти фильм">
+                        <button><i class="fas fa-search"></i></button>
+                      </form>
                     </div>
+                  </nav>
                 </div>
+              </div>
             </div>
-        </footer>
-        <!-- footer-area-end -->
+          </div>
+          <div class="footer-quick-link-wrap">
+            <div class="row align-items-center">
+              <div class="col-md-7">
+                <div class="quick-link-list">
+                  <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Помощь</a></li>
+                    <li><a href="#">Условия использования</a></li>
+                    <li><a href="#">Конфиденциальность</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="footer-social">
+                  <ul>
+                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#"><i class="fab fa-pinterest-p"></i></a></li>
+                    <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="copyright-wrap">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 col-md-6">
+              <div class="copyright-text">
+                <p>&copy; 2024 Movies Hub. Все права защищены.</p>
+              </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+              <div class="payment-method-img text-center text-md-right">
+                <img src="{% static 'img/images/card_img.png' %}" alt="img">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
 
-        <!-- JS here -->
-        <script src="{% static 'js/vendor/jquery-3.6.0.min.js' %}"></script>
-        <script src="{% static 'js/popper.min.js' %}"></script>
-        <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        <script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
-        <script src="{% static 'js/imagesloaded.pkgd.min.js' %}"></script>
-        <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
-        <script src="{% static 'js/owl.carousel.min.js' %}"></script>
-        <script src="{% static 'js/jquery.odometer.min.js' %}"></script>
-        <script src="{% static 'js/jquery.appear.js' %}"></script>
-        <script src="{% static 'js/slick.min.js' %}"></script>
-        <script src="{% static 'js/ajax-form.js' %}"></script>
-        <script src="{% static 'js/wow.min.js' %}"></script>
-        <script src="{% static 'js/aos.js' %}"></script>
-        <script src="{% static 'js/plugins.js' %}"></script>
-        <script src="{% static 'js/main.js' %}"></script>
-    </body>
+    <!-- JS -->
+    <script src="{% static 'js/vendor/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/popper.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/isotope.pkgd.min.js' %}"></script>
+    <script src="{% static 'js/imagesloaded.pkgd.min.js' %}"></script>
+    <script src="{% static 'js/jquery.magnific-popup.min.js' %}"></script>
+    <script src="{% static 'js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'js/jquery.odometer.min.js' %}"></script>
+    <script src="{% static 'js/jquery.appear.js' %}"></script>
+    <script src="{% static 'js/slick.min.js' %}"></script>
+    <script src="{% static 'js/ajax-form.js' %}"></script>
+    <script src="{% static 'js/wow.min.js' %}"></script>
+    <script src="{% static 'js/aos.js' %}"></script>
+    <script src="{% static 'js/plugins.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    {% if messages %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const messageModalEl = document.getElementById('messageModal');
+        if (messageModalEl) {
+          const messageModal = new bootstrap.Modal(messageModalEl);
+          messageModal.show();
+        }
+      });
+    </script>
+    {% endif %}
+  </body>
 </html>

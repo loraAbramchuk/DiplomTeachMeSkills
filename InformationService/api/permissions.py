@@ -16,4 +16,4 @@ class IsAdminOrModeratorOrReadOnly(permissions.BasePermission):
             return False
             
         # Разрешаем доступ администраторам и модераторам
-        return request.user.is_staff or request.user.is_superuser 
+        return request.user.groups.filter(name="Модераторы").exists() or request.user.is_superuser

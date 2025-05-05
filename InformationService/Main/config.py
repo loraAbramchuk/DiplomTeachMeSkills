@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Получаем API ключ из переменных окружения или используем значение по умолчанию
-KINOPOISK_API_KEY = os.getenv('KINOPOISK_API_KEY', '1e650235-dfbe-417f-a6d3-1c8d3df53d64')
+KINOPOISK_API_KEY = os.getenv('KINOPOISK_API_KEY')
 
 # Другие настройки
 KINOPOISK_RATE_LIMIT = 20  # Ограничение запросов в секунду
