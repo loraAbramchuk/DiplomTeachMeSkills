@@ -174,80 +174,84 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer-area footer-bg" data-background="{% static 'img/bg/footer_bg.jpg' %}">
-      <div class="footer-top-wrap">
-        <div class="container">
-          <div class="footer-menu-wrap">
-            <div class="row align-items-center">
-              <div class="col-lg-3">
-                <div class="footer-logo">
-                  <a href="{% url 'index' %}"><img src="{% static 'img/logo/logo.png' %}" alt=""></a>
-                </div>
-              </div>
-              <div class="col-lg-9">
-                <div class="footer-menu">
-                  <nav>
-                    <ul class="navigation">
-                      <li><a href="{% url 'index' %}">Главная</a></li>
-                      <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
-                      <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
-                      <li><a href="{% url 'trending' %}">Рекомендации</a></li>
-                      <li><a href="{% url 'about' %}">О нас</a></li>
-                    </ul>
-                    <div class="footer-search">
-                      <form action="#">
-                        <input type="text" placeholder="Найти фильм">
-                        <button><i class="fas fa-search"></i></button>
-                      </form>
+<footer class="footer-area footer-bg" data-background="{% static 'img/bg/footer_bg.jpg' %}">
+  <div class="footer-top-wrap">
+    <div class="container">
+      <div class="footer-menu-wrap">
+        <div class="row align-items-center">
+          <div class="col-lg-3">
+            <div class="footer-logo">
+              <a href="{% url 'index' %}"><img src="{% static 'img/logo/logo.png' %}" alt=""></a>
+            </div>
+          </div>
+          <div class="col-lg-9">
+            <div class="footer-menu">
+              <nav>
+                <ul class="navigation">
+                  <li><a href="{% url 'index' %}">Главная</a></li>
+                  <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
+                  <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
+                  <li><a href="{% url 'trending' %}">Рекомендации</a></li>
+                  <li><a href="{% url 'about' %}">О нас</a></li>
+                </ul>
+                <!-- Обновлённый поиск в футере -->
+                <div class="footer-search">
+                  <form method="get" action="{% url 'search' %}">
+                    <div class="input-group">
+                      <input type="text" class="form-control rounded-start" placeholder="Найти фильм" name="q" required>
+                      <button class="btn btn-warning text-black rounded-end fw-bold" type="submit">Найти</button>
                     </div>
-                  </nav>
+                  </form>
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="footer-quick-link-wrap">
-            <div class="row align-items-center">
-              <div class="col-md-7">
-                <div class="quick-link-list">
-                  <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Помощь</a></li>
-                    <li><a href="#">Условия использования</a></li>
-                    <li><a href="#">Конфиденциальность</a></li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-md-5">
-                <div class="footer-social">
-                  <ul>
-                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                    <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                    <li><a href="#"><i class="fab fa-pinterest-p"></i></a></li>
-                    <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                  </ul>
-                </div>
-              </div>
+              </nav>
             </div>
           </div>
         </div>
       </div>
-      <div class="copyright-wrap">
-        <div class="container">
-          <div class="row">
-            <div class="col-lg-6 col-md-6">
-              <div class="copyright-text">
-                <p>&copy; 2024 Movies Hub. Все права защищены.</p>
-              </div>
+      <div class="footer-quick-link-wrap">
+        <div class="row align-items-center">
+          <div class="col-md-7">
+            <div class="quick-link-list">
+              <ul>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Помощь</a></li>
+                <li><a href="#">Условия использования</a></li>
+                <li><a href="#">Конфиденциальность</a></li>
+              </ul>
             </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="payment-method-img text-center text-md-right">
-                <img src="{% static 'img/images/card_img.png' %}" alt="img">
-              </div>
+          </div>
+          <div class="col-md-5">
+            <div class="footer-social">
+              <ul>
+                <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+                <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                <li><a href="#"><i class="fab fa-pinterest-p"></i></a></li>
+                <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
-    </footer>
+    </div>
+  </div>
+  <div class="copyright-wrap">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-6 col-md-6">
+          <div class="copyright-text">
+            <p>&copy; 2024 Movies Hub. Все права защищены.</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6">
+          <div class="payment-method-img text-center text-md-right">
+            <img src="{% static 'img/images/card_img.png' %}" alt="img">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
 
     <!-- JS -->
     <script src="{% static 'js/vendor/jquery-3.6.0.min.js' %}"></script>
