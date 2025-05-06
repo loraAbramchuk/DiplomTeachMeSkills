@@ -17,6 +17,7 @@ from .recommendations import (
 from django.db.models import Q
 from .kinopoisk_parser import KinopoiskParser
 
+
 User = get_user_model()
 
 
@@ -390,6 +391,8 @@ def get_trending(request):
 
 def trending(request):
     """Представление для страницы трендов"""
+    # Запускаем задачу обновления популярности
+    
     # Получаем все фильмы и сериалы, сортируем по дате создания
     movies = Movie.objects.prefetch_related('country', 'genres').all().order_by('-created_at')[:8]
     serials = Serial.objects.prefetch_related('country', 'genres').all().order_by('-created_at')[:8]

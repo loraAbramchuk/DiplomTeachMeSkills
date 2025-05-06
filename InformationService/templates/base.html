@@ -113,6 +113,14 @@
                         </a>
                       </li>
                       {% if user.is_authenticated %}
+                      <li class="header-notification list-unstyled d-inline-block me-3">
+                        <a href="{% url 'users:notifications' %}" class="text-white position-relative" style="font-size: 20px;">
+                          <i class="fas fa-bell"></i>
+                          <span id="unreadCount" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: none;">
+                            0
+                          </span>
+                        </a>
+                      </li>
                       <li class="header-btn">
                         <a href="{% url 'user_profile' user.username %}" class="btn">{{ user.username }}</a>
                       </li>
@@ -279,6 +287,35 @@
           const messageModal = new bootstrap.Modal(messageModalEl);
           messageModal.show();
         }
+      });
+    </script>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Функция обновления счетчика непрочитанных уведомлений
+        function updateUnreadCount() {
+          fetch('{% url "users:get_unread_count" %}')
+          .then(response => response.json())
+          .then(data => {
+            const countElement = document.getElementById('unreadCount');
+            if (countElement) {
+              countElement.textContent = data.count;
+              if (data.count === 0) {
+                countElement.style.display = 'none';
+              } else {
+                countElement.style.display = 'inline';
+              }
+            }
+          });
+        }
+
+        // Обновляем счетчик при загрузке страницы
+        updateUnreadCount();
+
+        // Обновляем счетчик каждые 30 секунд
+        setInterval(updateUnreadCount, 30000);
       });
     </script>
     {% endif %}

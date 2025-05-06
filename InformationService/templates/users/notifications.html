@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Уведомления{% endblock %}
+
+{% block content %}
+<div class="container mt-5" style="padding-top: 40px; min-height: 70vh;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <h1 class="mb-3" style="font-size:2.5rem; word-break:break-word;">Уведомления</h1>
+                <button class="btn btn-primary mb-3" id="markAllRead">Отметить все как прочитанные</button>
+            </div>
+            <div class="card">
+                <div class="card-body" style="background: #f8f9fa;">
+                    {% if notifications %}
+                        <div class="list-group">
+                            {% for notification in notifications %}
+                                <div class="list-group-item list-group-item-action mb-3 {% if not notification.is_read %}list-group-item-info unread{% endif %}"
+                                     data-notification-id="{{ notification.id }}"
+                                     style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); cursor: pointer;"
+                                     title="{% if not notification.is_read %}Кликните, чтобы отметить как прочитанное{% else %}Прочитано{% endif %}">
+                                    <div class="d-flex w-100 justify-content-between flex-wrap">
+                                        <h5 class="mb-1" style="font-size:1.2rem;">{{ notification.title }}</h5>
+                                        <small class="text-muted" style="white-space:nowrap;">{{ notification.created_at|date:"d.m.Y H:i" }}</small>
+                                    </div>
+                                    <p class="mb-1" style="word-break:break-word;">{{ notification.message }}</p>
+                                    <small class="badge bg-{{ notification.notification_type }}">
+                                        {{ notification.get_notification_type_display }}
+                                    </small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-center">У вас нет уведомлений</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- CSRF-токен в meta -->
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const csrftoken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Отметить все как прочитанные
+    document.getElementById('markAllRead').addEventListener('click', function() {
+        fetch("{% url 'users:mark_all_notifications_read' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken,
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                document.querySelectorAll('.list-group-item-info').forEach(item => {
+                    item.classList.remove('list-group-item-info');
+                });
+                updateUnreadCount();
+            }
+        });
+    });
+
+    // Отметить отдельное уведомление
+    document.querySelectorAll('.list-group-item').forEach(item => {
+        item.addEventListener('click', function() {
+            const notificationId = this.dataset.notificationId;
+
+            if (!this.classList.contains('list-group-item-info')) return;
+
+            fetch(`/users/notifications/${notificationId}/read/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    this.classList.remove('list-group-item-info');
+                    updateUnreadCount();
+                }
+            });
+        });
+    });
+
+    function updateUnreadCount() {
+        fetch("{% url 'users:get_unread_count' %}")
+        .then(response => response.json())
+        .then(data => {
+            const countElement = document.getElementById('unreadCount');
+            if (countElement) {
+                countElement.textContent = data.count;
+                countElement.style.display = data.count > 0 ? 'inline' : 'none';
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

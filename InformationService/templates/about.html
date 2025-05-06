@@ -146,9 +146,10 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <form action="#" class="newsletter-form">
-                        <input type="email" placeholder="Введите ваш email">
-                        <button class="btn">Подписаться</button>
+                    <form action="{% url 'users:subscribe_newsletter' %}" method="post" class="newsletter-form">
+                        {% csrf_token %}
+                        <input type="email" name="email" placeholder="Введите ваш email" required>
+                        <button type="submit" class="btn">Подписаться</button>
                     </form>
                 </div>
             </div>
