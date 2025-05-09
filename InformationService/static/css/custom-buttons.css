@@ -1,19 +1,14 @@
 /* Базовые стили для всех кастомных кнопок */
 .custom-btn {
-    background: #e4d804;
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #e4d804;
     color: #171d22;
-    font-weight: 700;
-    text-transform: uppercase;
-    border-radius: 4px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     border: none;
-    font-size: 14px;
-    line-height: 1.2;
-    transition: all 0.3s ease;
+    border-radius: 4px;
     text-decoration: none;
-    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 /* Стандартная кнопка (большая) */
@@ -33,7 +28,7 @@
 
 /* Общие эффекты для всех кнопок */
 .custom-btn:hover {
-    background: #171d22;
+    background-color: #171d22;
     color: #e4d804;
     text-decoration: none;
 }
@@ -151,4 +146,56 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.custom-btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.custom-btn-danger:hover {
+    background-color: #c82333;
+    color: #fff;
+}
+
+.subscription-info {
+    background: rgba(23, 29, 34, 0.95);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.subscription-info h6 {
+    color: #e4d804;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.subscription-info p {
+    color: #fff;
+    margin-bottom: 10px;
+}
+
+.subscription-info .text-success {
+    color: #28a745 !important;
+}
+
+.subscription-info .text-danger {
+    color: #dc3545 !important;
+}
+
+.subscription-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.subscription-actions form {
+    margin: 0;
+}
+
+.subscription-actions .custom-btn {
+    margin: 0;
+    min-width: 200px;
 } 

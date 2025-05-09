@@ -16,6 +16,7 @@ from .recommendations import (
 )
 from django.db.models import Q
 from .kinopoisk_parser import KinopoiskParser
+from .tasks import fetch_kinopoisk_data_task
 
 
 User = get_user_model()
@@ -125,28 +126,10 @@ def subscription_required(view_func):
 def movie_detail(request, pk):
     """Представление для конкретного фильма"""
     movie = get_object_or_404(Movie, pk=pk)
-    print(f"\nЗапрос деталей фильма: {movie.title} ({movie.release_year})")
-    
-    # Проверяем, есть ли уже данные с Кинопоиска
     if not movie.kinopoisk_rating or not movie.trailer_url:
-        print("Данные с Кинопоиска отсутствуют или неполные, получаем новые")
-        parser = KinopoiskParser()
-        kinopoisk_data = parser.get_movie_data(movie.title, movie.release_year, movie)
-        
-        if kinopoisk_data:
-            print(f"Получены данные с Кинопоиска: {kinopoisk_data}")
-            # Обновляем данные фильма
-            movie.kinopoisk_rating = kinopoisk_data.get('kinopoisk_rating')
-            movie.kinopoisk_url = kinopoisk_data.get('kinopoisk_url')
-            movie.trailer_url = kinopoisk_data.get('trailer_url')
-            movie.watch_url = kinopoisk_data.get('watch_url')
-            movie.save()
-            print("Данные фильма обновлены")
-        else:
-            print("Не удалось получить данные с Кинопоиска")
-    else:
-        print(f"Используем существующие данные с Кинопоиска: рейтинг {movie.kinopoisk_rating}")
-    
+        # Запускаем фоновую задачу
+        fetch_kinopoisk_data_task.delay('movie', movie.pk)
+        messages.info(request, 'Данные с Кинопоиска обновляются. Пожалуйста, попробуйте позже.')
     similar_movies = get_similar_content(movie, 'movie', limit=4)
     return render(request, 'Main/movie_detail.html', {
         'movie': movie,
@@ -160,28 +143,10 @@ def movie_detail(request, pk):
 def serial_detail(request, pk):
     """Представление для конкретного сериала"""
     serial = get_object_or_404(Serial, pk=pk)
-    print(f"\nЗапрос деталей сериала: {serial.title} ({serial.release_year})")
-    
-    # Проверяем, есть ли уже данные с Кинопоиска
     if not serial.kinopoisk_rating or not serial.trailer_url:
-        print("Данные с Кинопоиска отсутствуют или неполные, получаем новые")
-        parser = KinopoiskParser()
-        kinopoisk_data = parser.get_movie_data(serial.title, serial.release_year, serial)
-        
-        if kinopoisk_data:
-            print(f"Получены данные с Кинопоиска: {kinopoisk_data}")
-            # Обновляем данные сериала
-            serial.kinopoisk_rating = kinopoisk_data.get('kinopoisk_rating')
-            serial.kinopoisk_url = kinopoisk_data.get('kinopoisk_url')
-            serial.trailer_url = kinopoisk_data.get('trailer_url')
-            serial.watch_url = kinopoisk_data.get('watch_url')
-            serial.save()
-            print("Данные сериала обновлены")
-        else:
-            print("Не удалось получить данные с Кинопоиска")
-    else:
-        print(f"Используем существующие данные с Кинопоиска: рейтинг {serial.kinopoisk_rating}")
-    
+        # Запускаем фоновую задачу
+        fetch_kinopoisk_data_task.delay('serial', serial.pk)
+        messages.info(request, 'Данные с Кинопоиска обновляются. Пожалуйста, попробуйте позже.')
     similar_serials = get_similar_content(serial, 'serial', limit=4)
     return render(request, 'Main/serial_detail.html', {
         'serial': serial,
@@ -248,12 +213,20 @@ def user_profile(request, username):
     recommended_movie = recommendations.get('movies', []).first() if recommendations.get('movies') else None
     recommended_serial = recommendations.get('serials', []).first() if recommendations.get('serials') else None
     
+    # Получаем активную подписку пользователя
+    active_subscription = UserSubscription.objects.filter(
+        user=user_profile,
+        is_active=True,
+        end_date__gt=timezone.now()
+    ).select_related('subscription').first()
+    
     context = {
         'user_profile': user_profile,
         'movie_reviews': movie_reviews,
         'serial_reviews': serial_reviews,
         'recommended_movie': recommended_movie,
         'recommended_serial': recommended_serial,
+        'active_subscription': active_subscription,  # Добавляем информацию о подписке в контекст
     }
     
     return render(request, 'Main/user_profile.html', context)
@@ -311,21 +284,29 @@ def subscribe(request, subscription_id):
 
 @login_required
 def cancel_subscription(request):
-    """Отмена подписки"""
-    subscription = UserSubscription.objects.filter(
-        user=request.user,
-        is_active=True,
-        end_date__gt=timezone.now()
-    ).first()
+    """Отмена подписки или отключение автопродления"""
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        subscription = UserSubscription.objects.filter(
+            user=request.user,
+            is_active=True,
+            end_date__gt=timezone.now()
+        ).first()
+        
+        if subscription:
+            if action == 'cancel_subscription':
+                subscription.is_active = False
+                subscription.auto_renewal = False
+                subscription.save()
+                messages.success(request, 'Ваша подписка успешно отменена.')
+            elif action == 'disable_auto_renewal':
+                subscription.auto_renewal = False
+                subscription.save()
+                messages.success(request, 'Автопродление подписки отключено.')
+        else:
+            messages.warning(request, 'У вас нет активной подписки для отмены.')
     
-    if subscription:
-        subscription.is_active = False
-        subscription.save()
-        messages.success(request, 'Ваша подписка успешно отменена.')
-    else:
-        messages.warning(request, 'У вас нет активной подписки для отмены.')
-    
-    return redirect('subscription_list')
+    return redirect('user_profile', username=request.user.username)
 
 @login_required
 def payment_history(request):

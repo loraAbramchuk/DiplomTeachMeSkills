@@ -19,32 +19,47 @@
                             </ul>
                         </div>
                         
-                        {% if user.username == user_profile.username %}
-                            {% if active_subscription %}
-                                <div class="subscription-info mb-4">
-                                    <h4>Ваша подписка</h4>
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ active_subscription.subscription.name }}</h5>
-                                            <p class="card-text">Действует до: {{ active_subscription.end_date|date:"d.m.Y H:i" }}</p>
+                        <!-- Информация о подписке -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Информация о подписке</h5>
+                            </div>
+                            <div class="card-body">
+                                {% if active_subscription %}
+                                    <div class="subscription-info">
+                                        <h6>Текущая подписка: {{ active_subscription.subscription.name }}</h6>
+                                        <p>Действует до: {{ active_subscription.end_date|date:"d.m.Y" }}</p>
+                                        <p>Статус автопродления: 
                                             {% if active_subscription.auto_renewal %}
-                                                <p class="card-text">Автопродление включено</p>
+                                                <span class="text-success">Включено</span>
+                                            {% else %}
+                                                <span class="text-danger">Отключено</span>
+                                            {% endif %}
+                                        </p>
+                                        
+                                        <div class="subscription-actions">
+                                            {% if active_subscription.auto_renewal %}
                                                 <form method="post" action="{% url 'cancel_subscription' %}" class="d-inline">
                                                     {% csrf_token %}
+                                                    <input type="hidden" name="action" value="disable_auto_renewal">
                                                     <button type="submit" class="custom-btn">Отключить автопродление</button>
                                                 </form>
-                                            {% else %}
-                                                <p class="card-text">Автопродление отключено</p>
                                             {% endif %}
+                                            
+                                            <form method="post" action="{% url 'cancel_subscription' %}" class="d-inline" 
+                                                  onsubmit="return confirm('Вы уверены, что хотите отменить подписку?');">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="action" value="cancel_subscription">
+                                                <button type="submit" class="custom-btn custom-btn-danger">Отменить подписку</button>
+                                            </form>
                                         </div>
                                     </div>
-                                </div>
-                            {% else %}
-                                <div class="subscription-info mb-4">
-                                    <p>У вас нет активной подписки. <a href="{% url 'subscription_list' %}" class="custom-btn">Оформить подписку</a></p>
-                                </div>
-                            {% endif %}
-                        {% endif %}
+                                {% else %}
+                                    <p>У вас нет активной подписки</p>
+                                    <a href="{% url 'subscription_list' %}" class="custom-btn">Выбрать подписку</a>
+                                {% endif %}
+                            </div>
+                        </div>
 
                         <div class="reviews-section">
                             <h3>Отзывы о фильмах</h3>
