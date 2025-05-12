@@ -3,44 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ title }}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .header {
-            background-color: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-            border-radius: 5px;
-            margin-bottom: 20px;
-        }
-        .content {
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        .footer {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-        }
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin-top: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/email-styles.css' %}">
 </head>
 <body>
     <div class="header">
@@ -49,13 +12,13 @@
     <div class="content">
         <p>{{ message }}</p>
         {% if notification_type == 'info' %}
-            <p style="color: #17a2b8;">Это информационное сообщение.</p>
+            <p class="notification-info">Это информационное сообщение.</p>
         {% elif notification_type == 'warning' %}
-            <p style="color: #ffc107;">Это предупреждение.</p>
+            <p class="notification-warning">Это предупреждение.</p>
         {% elif notification_type == 'success' %}
-            <p style="color: #28a745;">Это сообщение об успехе.</p>
+            <p class="notification-success">Это сообщение об успехе.</p>
         {% elif notification_type == 'error' %}
-            <p style="color: #dc3545;">Это сообщение об ошибке.</p>
+            <p class="notification-error">Это сообщение об ошибке.</p>
         {% endif %}
         <p>Дата: {{ created_at|date:"d.m.Y H:i" }}</p>
         <a href="{{ site_url }}{% url 'users:notifications' %}" class="button">Посмотреть уведомления</a>

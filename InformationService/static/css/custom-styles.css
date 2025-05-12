@@ -1,0 +1,143 @@
+/* Стили для модального окна поиска */
+#search-modal .modal-content {
+    background-color: #000;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+}
+
+#search-modal .modal-header {
+    border: none;
+}
+
+/* Стили для иконок в шапке */
+.header-action .header-search a,
+.header-action .header-notification a {
+    font-size: 20px;
+    color: white;
+}
+
+/* Стили для бейджа уведомлений */
+#unreadCount {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    transform: translate(-50%, -50%);
+}
+
+/* Стили для кнопок в шапке */
+.header-btn .btn {
+    padding: 8px 20px;
+    border-radius: 5px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.header-btn .btn:hover {
+    transform: translateY(-2px);
+}
+
+/* Стили для поиска в футере */
+.footer-search .input-group {
+    margin-top: 15px;
+}
+
+.footer-search .form-control {
+    border: none;
+    padding: 10px 15px;
+}
+
+.footer-search .btn {
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+/* Стили для страницы уведомлений */
+.notifications-container {
+    padding-top: 40px;
+    min-height: 70vh;
+}
+
+.notifications-title {
+    font-size: 2.5rem;
+    word-break: break-word;
+}
+
+.notification-item {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    cursor: pointer;
+}
+
+.notification-title {
+    font-size: 1.2rem;
+}
+
+.notification-time {
+    white-space: nowrap;
+}
+
+.notification-message {
+    word-break: break-word;
+}
+
+/* Стили для форм авторизации и регистрации */
+.contact-form-wrap {
+    background: rgba(23, 29, 34, 0.95);
+    padding: 40px;
+    border-radius: 8px;
+    border: 2px solid rgba(228, 216, 4, 0.3);
+}
+
+.form-grp {
+    margin-bottom: 25px;
+}
+
+.form-grp label {
+    color: #e4d804;
+    margin-bottom: 10px;
+    display: block;
+    font-weight: 500;
+}
+
+.form-grp input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(228, 216, 4, 0.3);
+    padding: 12px 20px;
+    color: #fff;
+    border-radius: 4px;
+}
+
+.form-grp input:focus {
+    border-color: #e4d804;
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.auth-btn {
+    background: #e4d804;
+    color: #171d22;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.auth-btn:hover {
+    background: #171d22;
+    color: #e4d804;
+}
+
+.errorlist {
+    color: #ff6b6b;
+    list-style: none;
+    padding: 0;
+    margin: 5px 0;
+    font-size: 14px;
+} 

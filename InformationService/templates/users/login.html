@@ -26,7 +26,7 @@
                                 </div>
                             {% endfor %}
                             <div class="form-grp">
-                                <button type="submit" class="btn">Войти</button>
+                                <button type="submit" class="auth-btn">Войти</button>
                             </div>
                         </form>
                         <div class="text-center mt-4">
@@ -38,60 +38,4 @@
         </div>
     </div>
 </section>
-{% endblock %}
-
-{% block extra_css %}
-<style>
-    .contact-form-wrap {
-        background: rgba(23, 29, 34, 0.95);
-        padding: 40px;
-        border-radius: 8px;
-        border: 2px solid rgba(228, 216, 4, 0.3);
-    }
-    .form-grp {
-        margin-bottom: 25px;
-    }
-    .form-grp label {
-        color: #e4d804;
-        margin-bottom: 10px;
-        display: block;
-        font-weight: 500;
-    }
-    .form-grp input {
-        width: 100%;
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(228, 216, 4, 0.3);
-        padding: 12px 20px;
-        color: #fff;
-        border-radius: 4px;
-    }
-    .form-grp input:focus {
-        border-color: #e4d804;
-        outline: none;
-        background: rgba(255, 255, 255, 0.15);
-    }
-    .btn {
-        background: #e4d804;
-        color: #171d22;
-        font-weight: 700;
-        text-transform: uppercase;
-        padding: 12px 30px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        width: 100%;
-        transition: all 0.3s ease;
-    }
-    .btn:hover {
-        background: #171d22;
-        color: #e4d804;
-    }
-    .errorlist {
-        color: #ff6b6b;
-        list-style: none;
-        padding: 0;
-        margin: 5px 0;
-        font-size: 14px;
-    }
-</style>
 {% endblock %} 

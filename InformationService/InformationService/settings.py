@@ -200,4 +200,4 @@ LOGGING = {
 # Уведомления
 NOTIFICATION_EMAIL_SUBJECT_PREFIX = '[Movies Hub] '
 NOTIFICATION_EMAIL_TEMPLATE = 'users/email/notification.html'
-SITE_URL = 'http://localhost:8000'
+SITE_URL = 'http://127.0.0.1:8000'

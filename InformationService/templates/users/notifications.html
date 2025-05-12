@@ -4,11 +4,11 @@
 {% block title %}Уведомления{% endblock %}
 
 {% block content %}
-<div class="container mt-5" style="padding-top: 40px; min-height: 70vh;">
+<div class="container mt-5 notifications-container">
     <div class="row">
         <div class="col-md-12">
             <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-                <h1 class="mb-3" style="font-size:2.5rem; word-break:break-word;">Уведомления</h1>
+                <h1 class="mb-3 notifications-title">Уведомления</h1>
                 <button class="btn btn-primary mb-3" id="markAllRead">Отметить все как прочитанные</button>
             </div>
             <div class="card">
@@ -16,15 +16,14 @@
                     {% if notifications %}
                         <div class="list-group">
                             {% for notification in notifications %}
-                                <div class="list-group-item list-group-item-action mb-3 {% if not notification.is_read %}list-group-item-info unread{% endif %}"
+                                <div class="list-group-item list-group-item-action mb-3 notification-item {% if not notification.is_read %}list-group-item-info unread{% endif %}"
                                      data-notification-id="{{ notification.id }}"
-                                     style="border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); cursor: pointer;"
                                      title="{% if not notification.is_read %}Кликните, чтобы отметить как прочитанное{% else %}Прочитано{% endif %}">
                                     <div class="d-flex w-100 justify-content-between flex-wrap">
-                                        <h5 class="mb-1" style="font-size:1.2rem;">{{ notification.title }}</h5>
-                                        <small class="text-muted" style="white-space:nowrap;">{{ notification.created_at|date:"d.m.Y H:i" }}</small>
+                                        <h5 class="mb-1 notification-title">{{ notification.title }}</h5>
+                                        <small class="text-muted notification-time">{{ notification.created_at|date:"d.m.Y H:i" }}</small>
                                     </div>
-                                    <p class="mb-1" style="word-break:break-word;">{{ notification.message }}</p>
+                                    <p class="mb-1 notification-message">{{ notification.message }}</p>
                                     <small class="badge bg-{{ notification.notification_type }}">
                                         {{ notification.get_notification_type_display }}
                                     </small>

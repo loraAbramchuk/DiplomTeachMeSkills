@@ -77,12 +77,14 @@ def subscribe_newsletter(request):
                 if created:
                     try:
                         # Подготовка HTML-сообщения
+                        logger.info(f"Начало подготовки приветственного письма для {email}")
                         html_message = render_to_string('users/email/welcome.html', {
                             'email': email,
                             'site_url': settings.SITE_URL,
                         })
                         plain_message = strip_tags(html_message)
                         
+                        logger.info(f"Отправка приветственного письма на {email}")
                         # Отправка email
                         send_mail(
                             subject='Добро пожаловать в Movies Hub!',
@@ -92,9 +94,12 @@ def subscribe_newsletter(request):
                             recipient_list=[email],
                             fail_silently=False,
                         )
+                        logger.info(f"Приветственное письмо успешно отправлено на {email}")
                         messages.success(request, 'Вы успешно подписались на рассылку!')
                     except Exception as e:
                         logger.error(f"Ошибка при отправке email: {str(e)}")
+                        logger.error(f"Тип ошибки: {type(e)}")
+                        logger.error(f"Детали ошибки: {e.__dict__ if hasattr(e, '__dict__') else 'Нет дополнительных деталей'}")
                         messages.warning(request, 'Подписка оформлена, но возникла проблема с отправкой приветственного письма.')
                 else:
                     if not subscription.is_active:
@@ -109,4 +114,4 @@ def subscribe_newsletter(request):
         else:
             messages.error(request, 'Пожалуйста, введите корректный email адрес.')
     
-    return redirect('about') 
+    return redirect('Main:about') 
