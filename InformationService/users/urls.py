@@ -25,7 +25,7 @@ def test_notifications_view(request):
 
 urlpatterns = [
     path('register/', views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html', next_page='Main:index'), name='login'),
     path('logout/', LogoutView.as_view(next_page='Main:index'), name='logout'),
 
     path('test-notifications/', test_notifications_view, name='test_notifications'),

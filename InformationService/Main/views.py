@@ -119,7 +119,7 @@ def subscription_required(view_func):
         
         if not active_subscription:
             messages.warning(request, 'Для доступа к этому контенту необходима активная подписка.')
-            return redirect('subscription_list')
+            return redirect('Main:subscription_list')
             
         return view_func(request, *args, **kwargs)
     return _wrapped_view
@@ -145,7 +145,7 @@ def movie_detail(request, movie_id):
     reviews = Review.objects.filter(movie=movie).order_by('-created_at')
     
     # Получаем кадры из фильма
-    frames = MovieImage.objects.filter(movie=movie)
+    frames = MovieImage.objects.filter(movie=movie)[:10]
     
     context = {
         'movie': movie,
@@ -178,7 +178,7 @@ def serial_detail(request, pk):
     reviews = Review.objects.filter(serial=serial).order_by('-created_at')
     
     # Получаем кадры из сериала
-    frames = SerialImage.objects.filter(serial=serial)
+    frames = SerialImage.objects.filter(serial=serial)[:10]
     
     context = {
         'serial': serial,

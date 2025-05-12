@@ -86,6 +86,11 @@
                                         <i class="fas fa-film"></i> Смотреть сериал
                                     </a>
                                     {% endif %}
+                                    {% if user.is_authenticated %}
+                                    <a href="{% url 'Main:subscription_list' %}" class="btn">
+                                        <i class="fas fa-crown"></i> Подписаться
+                                    </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -96,7 +101,7 @@
     </div>
 </section>
 
-{% if serial.images.all %}
+{% if frames %}
 <section class="movie-gallery-area">
     <div class="container">
         <div class="row">
@@ -107,7 +112,7 @@
             </div>
         </div>
         <div class="row">
-            {% for image in serial.images.all %}
+            {% for image in frames %}
             <div class="col-lg-4 col-md-6">
                 <div class="gallery-item">
                     <img src="{{ image.image.url }}" alt="{{ image.description }}">

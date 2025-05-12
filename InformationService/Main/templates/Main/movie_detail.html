@@ -91,7 +91,7 @@
     </div>
 </section>
 
-{% if movie.images.all %}
+{% if frames %}
 <section class="movie-gallery-area">
     <div class="container">
         <div class="row">
@@ -102,7 +102,7 @@
             </div>
         </div>
         <div class="row">
-            {% for image in movie.images.all %}
+            {% for image in frames %}
             <div class="col-lg-4 col-md-6">
                 <div class="gallery-item">
                     <img src="{{ image.image.url }}" alt="{{ image.description }}">
@@ -116,7 +116,6 @@
             {% endfor %}
         </div>
     </div>
-    
 </section>
 {% endif %}
 
