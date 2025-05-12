@@ -41,7 +41,7 @@
 
                                 <div class="movie-details-genres">
                                     {% for genre in movie.genres.all %}
-                                        <span class="genre-tag">{{ genre.name }}</span>
+                                        <a href="{% url 'Main:search' %}?genre={{ genre.name|urlencode }}" class="genre-tag">{{ genre.name }}</a>
                                     {% endfor %}
                                 </div>
 
@@ -60,8 +60,8 @@
                                 {% endif %}
 
                                 <div class="movie-details-countries">
-                                    {% for country in movie.countries.all %}
-                                        <span class="country-tag">{{ country.name }}</span>
+                                    {% for country in movie.country.all %}
+                                        <a href="{% url 'Main:search' %}?country={{ country.name|urlencode }}" class="country-tag">{{ country.name }}</a>
                                     {% endfor %}
                                 </div>
 
@@ -145,7 +145,7 @@
             <div class="col-12">
                 <div class="review-form">
                     <h3>Оставить отзыв</h3>
-                    <form method="post" action="{% url 'add_movie_review' movie.id %}">
+                    <form method="post" action="{% url 'Main:add_movie_review' movie.id %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="rating">Оценка</label>
@@ -169,7 +169,7 @@
         {% else %}
         <div class="row mb-4">
             <div class="col-12">
-                <p class="text-center">Чтобы оставить отзыв, пожалуйста, <a href="{% url 'login' %}">войдите</a> или <a href="{% url 'register' %}">зарегистрируйтесь</a>.</p>
+                <p class="text-center">Чтобы оставить отзыв, пожалуйста, <a href="{% url 'users:login' %}">войдите</a> или <a href="{% url 'users:register' %}">зарегистрируйтесь</a>.</p>
             </div>
         </div>
         {% endif %}

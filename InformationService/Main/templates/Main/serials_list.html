@@ -56,12 +56,12 @@
                             </div>
                         {% endif %}
                         <ul class="overlay-btn">
-                            <li><a href="{% url 'serial_detail' serial.pk %}" class="btn">Подробнее</a></li>
+                            <li><a href="{% url 'Main:serial_detail' serial.pk %}" class="btn">Подробнее</a></li>
                         </ul>
                     </div>
                     <div class="movie-content">
                         <div class="top">
-                            <h5 class="title"><a href="{% url 'serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
+                            <h5 class="title"><a href="{% url 'Main:serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
                             <span class="date">{{ serial.release_year }}</span>
                         </div>
                         <div class="bottom">

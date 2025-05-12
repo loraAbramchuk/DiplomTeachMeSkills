@@ -9,6 +9,7 @@ from .views import (
 )
 from .tasks import test_notification_system
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.views import LogoutView
 
 app_name = 'users'
 
@@ -25,7 +26,7 @@ def test_notifications_view(request):
 urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='index'), name='logout'),
+    path('logout/', LogoutView.as_view(next_page='Main:index'), name='logout'),
 
     path('test-notifications/', test_notifications_view, name='test_notifications'),
     path('subscribe/', views.subscribe_newsletter, name='subscribe_newsletter'),

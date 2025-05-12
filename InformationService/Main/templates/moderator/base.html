@@ -140,29 +140,29 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'moderator_dashboard' %}active{% endif %}" 
-                           href="{% url 'moderator_dashboard' %}">
+                           href="{% url 'Main:moderator_dashboard' %}">
                             <i class="bi bi-speedometer2 me-2"></i>Дашборд
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'content_management' %}active{% endif %}" 
-                           href="{% url 'content_management' %}">
+                           href="{% url 'Main:content_management' %}">
                             <i class="bi bi-film me-2"></i>Управление контентом
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'review_management' %}active{% endif %}" 
-                           href="{% url 'review_management' %}">
+                           href="{% url 'Main:review_management' %}">
                             <i class="bi bi-chat-dots me-2"></i>Управление отзывами
                         </a>
                     </li>
                     <li class="nav-item mt-4">
-                        <a class="nav-link" href="{% url 'index' %}">
+                        <a class="nav-link" href="{% url 'Main:index' %}">
                             <i class="bi bi-house me-2"></i>На сайт
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">
+                        <a class="nav-link" href="{% url 'users:logout' %}">
                             <i class="bi bi-box-arrow-right me-2"></i>Выйти
                         </a>
                     </li>

@@ -1,4 +1,11 @@
 from .recommendations import get_recommendations_by_genres, get_trending_content
+from django.conf import settings
+
+def media_settings(request):
+    return {
+        'MEDIA_URL': settings.MEDIA_URL,
+        'MEDIA_ROOT': settings.MEDIA_ROOT,
+    }
 
 def recommendations_processor(request):
     """Добавляет рекомендации в контекст всех шаблонов"""

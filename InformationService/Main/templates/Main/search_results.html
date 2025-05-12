@@ -32,7 +32,7 @@
                         <div class="widget-title mb-4">
                             <h5 class="title">Фильтры поиска</h5>
                         </div>
-                        <form id="filterForm" method="GET" action="{% url 'search' %}">
+                        <form id="filterForm" method="GET" action="{% url 'Main:search' %}">
                             {% if request.GET.q %}
                             <input type="hidden" id="searchQuery" name="q" value="{{ request.GET.q }}">
                             {% endif %}
@@ -102,7 +102,7 @@
                                                 {% endif %}
                                                 <div class="movie-content">
                                                     <h5 class="title">
-                                                        <a href="{% url 'movie_detail' movie.pk %}">{{ movie.title }}</a>
+                                                        <a href="{% url 'Main:movie_detail' movie.pk %}">{{ movie.title }}</a>
                                                     </h5>
                                                     <div class="movie-meta">
                                                         <span class="year">{{ movie.release_year }}</span>
@@ -112,7 +112,7 @@
                                                             {% endfor %}
                                                         </span>
                                                     </div>
-                                                    <a href="{% url 'movie_detail' movie.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
+                                                    <a href="{% url 'Main:movie_detail' movie.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -137,7 +137,7 @@
                                                 {% endif %}
                                                 <div class="movie-content">
                                                     <h5 class="title">
-                                                        <a href="{% url 'serial_detail' serial.pk %}">{{ serial.title }}</a>
+                                                        <a href="{% url 'Main:serial_detail' serial.pk %}">{{ serial.title }}</a>
                                                     </h5>
                                                     <div class="movie-meta">
                                                         <span class="year">{{ serial.release_year }}</span>
@@ -147,7 +147,7 @@
                                                             {% endfor %}
                                                         </span>
                                                     </div>
-                                                    <a href="{% url 'serial_detail' serial.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
+                                                    <a href="{% url 'Main:serial_detail' serial.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
                                                 </div>
                                             </div>
                                         </div>

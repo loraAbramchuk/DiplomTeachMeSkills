@@ -57,7 +57,6 @@ def get_unread_count(request):
     count = Notification.objects.filter(user=request.user, is_read=False).count()
     return JsonResponse({'count': count})
 
-
 def test_notifications(request):
     """
     Представление для запуска тестовой задачи уведомлений

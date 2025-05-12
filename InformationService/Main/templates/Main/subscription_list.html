@@ -20,7 +20,7 @@
         {% if user_subscription %}
             <div class="alert alert-info text-center mb-4" style="background: rgba(23, 29, 34, 0.95); border: 2px solid #e4d804; color: #fff; padding: 20px; border-radius: 6px;">
                 <div style="margin-bottom: 15px;">У вас уже есть активная подписка "{{ user_subscription.subscription.name }}" (действует до {{ user_subscription.end_date|date:"d.m.Y H:i" }}).</div>
-                <a href="{% url 'user_profile' user.username %}" class="custom-btn">УПРАВЛЕНИЕ ПОДПИСКОЙ</a>
+                <a href="{% url 'Main:user_profile' user.username %}" class="custom-btn">УПРАВЛЕНИЕ ПОДПИСКОЙ</a>
             </div>
         {% endif %}
 
@@ -43,7 +43,7 @@
                                 {% if user_subscription and user_subscription.subscription == subscription %}
                                     <button class="custom-btn" disabled>Текущая подписка</button>
                                 {% else %}
-                                    <form method="post" action="{% url 'subscribe' subscription.id %}">
+                                    <form method="post" action="{% url 'Main:subscribe' subscription.id %}">
                                         {% csrf_token %}
                                         <button type="submit" class="custom-btn">Оформить подписку</button>
                                     </form>
@@ -57,7 +57,7 @@
 
         <div class="row justify-content-center mt-50">
             <div class="col-lg-8 text-center">
-                <a href="{% url 'payment_history' %}" class="custom-btn">История платежей</a>
+                <a href="{% url 'Main:payment_history' %}" class="custom-btn">История платежей</a>
             </div>
         </div>
     </div>

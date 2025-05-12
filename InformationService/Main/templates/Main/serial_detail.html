@@ -65,7 +65,7 @@
                                 {% endif %}
 
                                 <div class="movie-details-countries">
-                                    {% for country in serial.countries.all %}
+                                    {% for country in serial.country.all %}
                                         <span class="country-tag">{{ country.name }}</span>
                                     {% endfor %}
                                 </div>
@@ -139,7 +139,7 @@
             <div class="col-12">
                 <div class="review-form">
                     <h3>Оставить отзыв</h3>
-                    <form method="post" action="{% url 'add_serial_review' serial.id %}">
+                    <form method="post" action="{% url 'Main:add_serial_review' serial.id %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="rating">Оценка</label>
@@ -163,7 +163,7 @@
         {% else %}
         <div class="row mb-4">
             <div class="col-12">
-                <p class="text-center">Чтобы оставить отзыв, пожалуйста, <a href="{% url 'login' %}">войдите</a> или <a href="{% url 'register' %}">зарегистрируйтесь</a>.</p>
+                <p class="text-center">Чтобы оставить отзыв, пожалуйста, <a href="{% url 'users:login' %}">войдите</a> или <a href="{% url 'users:register' %}">зарегистрируйтесь</a>.</p>
             </div>
         </div>
         {% endif %}

@@ -54,7 +54,7 @@
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Закрыть"></button>
           </div>
           <div class="modal-body">
-            <form method="get" action="{% url 'search' %}">
+            <form method="get" action="{% url 'Main:search' %}">
               <div class="input-group">
                 <input type="text" class="form-control rounded-start" placeholder="Введите запрос..." name="q" required>
                 <button class="btn btn-warning text-black rounded-end fw-bold" type="submit">Найти</button>
@@ -89,19 +89,19 @@
               <div class="menu-wrap">
                 <nav class="menu-nav show">
                   <div class="logo">
-                    <a href="{% url 'index' %}">
+                    <a href="{% url 'Main:index' %}">
                       <img src="{% static 'img/logo/logo.png' %}" alt="Logo">
                     </a>
                   </div>
                   <div class="navbar-wrap main-menu d-none d-lg-flex">
                     <ul class="navigation">
-                      <li><a href="{% url 'index' %}">Главная</a></li>
-                      <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
-                      <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
-                      <li><a href="{% url 'trending' %}">Рекомендации</a></li>
-                      <li><a href="{% url 'about' %}">О нас</a></li>
+                      <li><a href="{% url 'Main:index' %}">Главная</a></li>
+                      <li><a href="{% url 'Main:movies_list' %}">Фильмы</a></li>
+                      <li><a href="{% url 'Main:serials_list' %}">Сериалы</a></li>
+                      <li><a href="{% url 'Main:trending' %}">Рекомендации</a></li>
+                      <li><a href="{% url 'Main:about' %}">О нас</a></li>
                       {% if user.is_authenticated %}
-                      <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
+                      <li><a href="{% url 'Main:subscription_list' %}">Подписки</a></li>
                       {% endif %}
                     </ul>
                   </div>
@@ -122,7 +122,7 @@
                         </a>
                       </li>
                       <li class="header-btn">
-                        <a href="{% url 'user_profile' user.username %}" class="btn">{{ user.username }}</a>
+                        <a href="{% url 'Main:user_profile' user.username %}" class="btn">{{ user.username }}</a>
                       </li>
                       <li class="header-btn">
                         <a href="{% url 'users:logout' %}" class="btn">Выйти</a>
@@ -145,20 +145,20 @@
                 <div class="close-btn"><i class="fas fa-times"></i></div>
                 <nav class="menu-box">
                   <div class="nav-logo">
-                    <a href="{% url 'index' %}">
+                    <a href="{% url 'Main:index' %}">
                       <img src="{% static 'img/logo/logo.png' %}" alt="">
                     </a>
                   </div>
                   <div class="menu-outer">
                     <ul class="navigation">
-                      <li><a href="{% url 'index' %}">Главная</a></li>
-                      <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
-                      <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
-                      <li><a href="{% url 'trending' %}">Рекомендации</a></li>
-                      <li><a href="{% url 'about' %}">О нас</a></li>
+                      <li><a href="{% url 'Main:index' %}">Главная</a></li>
+                      <li><a href="{% url 'Main:movies_list' %}">Фильмы</a></li>
+                      <li><a href="{% url 'Main:serials_list' %}">Сериалы</a></li>
+                      <li><a href="{% url 'Main:trending' %}">Рекомендации</a></li>
+                      <li><a href="{% url 'Main:about' %}">О нас</a></li>
                       {% if user.is_authenticated %}
-                      <li><a href="{% url 'subscription_list' %}">Подписки</a></li>
-                      <li><a href="{% url 'user_profile' user.username %}">{{ user.username }}</a></li>
+                      <li><a href="{% url 'Main:subscription_list' %}">Подписки</a></li>
+                      <li><a href="{% url 'Main:user_profile' user.username %}">{{ user.username }}</a></li>
                       <li><a href="{% url 'users:logout' %}">Выйти</a></li>
                       {% else %}
                       <li><a href="{% url 'users:login' %}">Войти</a></li>
@@ -189,22 +189,22 @@
         <div class="row align-items-center">
           <div class="col-lg-3">
             <div class="footer-logo">
-              <a href="{% url 'index' %}"><img src="{% static 'img/logo/logo.png' %}" alt=""></a>
+              <a href="{% url 'Main:index' %}"><img src="{% static 'img/logo/logo.png' %}" alt=""></a>
             </div>
           </div>
           <div class="col-lg-9">
             <div class="footer-menu">
               <nav>
                 <ul class="navigation">
-                  <li><a href="{% url 'index' %}">Главная</a></li>
-                  <li><a href="{% url 'movies_list' %}">Фильмы</a></li>
-                  <li><a href="{% url 'serials_list' %}">Сериалы</a></li>
-                  <li><a href="{% url 'trending' %}">Рекомендации</a></li>
-                  <li><a href="{% url 'about' %}">О нас</a></li>
+                  <li><a href="{% url 'Main:index' %}">Главная</a></li>
+                  <li><a href="{% url 'Main:movies_list' %}">Фильмы</a></li>
+                  <li><a href="{% url 'Main:serials_list' %}">Сериалы</a></li>
+                  <li><a href="{% url 'Main:trending' %}">Рекомендации</a></li>
+                  <li><a href="{% url 'Main:about' %}">О нас</a></li>
                 </ul>
                 <!-- Обновлённый поиск в футере -->
                 <div class="footer-search">
-                  <form method="get" action="{% url 'search' %}">
+                  <form method="get" action="{% url 'Main:search' %}">
                     <div class="input-group">
                       <input type="text" class="form-control rounded-start" placeholder="Найти фильм" name="q" required>
                       <button class="btn btn-warning text-black rounded-end fw-bold" type="submit">Найти</button>

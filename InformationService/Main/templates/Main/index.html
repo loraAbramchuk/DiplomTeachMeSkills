@@ -24,7 +24,7 @@
                                 </li>
                                 <li class="category">
                                     {% for genre in featured_movie.genres.all %}
-                                        <a href="#">{{ genre.name }}{% if not forloop.last %},{% endif %}</a>
+                                        <a href="{% url 'Main:search' %}?genre={{ genre.name|urlencode }}">{{ genre.name }}{% if not forloop.last %},{% endif %}</a>
                                     {% endfor %}
                                 </li>
                                 <li class="release-time">
@@ -69,7 +69,7 @@
                             </div>
                         {% endif %}
                         <ul class="overlay-btn">
-                            <li><a href="{% url 'movie_detail' movie.pk %}" class="btn">Подробнее</a></li>
+                            <li><a href="{% url 'Main:movie_detail' movie.pk %}" class="btn">Подробнее</a></li>
                             {% if movie.trailer_url %}
                             <li><a href="{{ movie.trailer_url }}" class="btn popup-video"><i class="fas fa-play"></i></a></li>
                             {% endif %}
@@ -77,7 +77,7 @@
                     </div>
                     <div class="movie-content">
                         <div class="top">
-                            <h5 class="title"><a href="{% url 'movie_detail' movie.pk %}">{{ movie.title }}</a></h5>
+                            <h5 class="title"><a href="{% url 'Main:movie_detail' movie.pk %}">{{ movie.title }}</a></h5>
                             <span class="date">{{ movie.release_year }}</span>
                         </div>
                         <div class="bottom">
@@ -123,12 +123,12 @@
                             </div>
                         {% endif %}
                         <ul class="overlay-btn">
-                            <li><a href="{% url 'serial_detail' serial.pk %}" class="btn">Подробнее</a></li>
+                            <li><a href="{% url 'Main:serial_detail' serial.pk %}" class="btn">Подробнее</a></li>
                         </ul>
                     </div>
                     <div class="movie-content">
                         <div class="top">
-                            <h5 class="title"><a href="{% url 'serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
+                            <h5 class="title"><a href="{% url 'Main:serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
                             <span class="date">{{ serial.release_year }}</span>
                         </div>
                         <div class="bottom">
@@ -190,7 +190,7 @@
                                 </div>
                             {% endif %}
                             <ul class="overlay-btn">
-                                <li><a href="{% url 'movie_detail' movie.pk %}" class="btn">Подробнее</a></li>
+                                <li><a href="{% url 'Main:movie_detail' movie.pk %}" class="btn">Подробнее</a></li>
                                 {% if movie.trailer_url %}
                                 <li><a href="{{ movie.trailer_url }}" class="btn popup-video"><i class="fas fa-play"></i></a></li>
                                 {% endif %}
@@ -198,7 +198,7 @@
                         </div>
                         <div class="movie-content">
                             <div class="top">
-                                <h5 class="title"><a href="{% url 'movie_detail' movie.pk %}">{{ movie.title }}</a></h5>
+                                <h5 class="title"><a href="{% url 'Main:movie_detail' movie.pk %}">{{ movie.title }}</a></h5>
                                 <span class="date">{{ movie.release_year }}</span>
                             </div>
                             <div class="bottom">
@@ -250,12 +250,12 @@
                                 </div>
                             {% endif %}
                             <ul class="overlay-btn">
-                                <li><a href="{% url 'serial_detail' serial.pk %}" class="btn">Подробнее</a></li>
+                                <li><a href="{% url 'Main:serial_detail' serial.pk %}" class="btn">Подробнее</a></li>
                             </ul>
                         </div>
                         <div class="movie-content">
                             <div class="top">
-                                <h5 class="title"><a href="{% url 'serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
+                                <h5 class="title"><a href="{% url 'Main:serial_detail' serial.pk %}">{{ serial.title }}</a></h5>
                                 <span class="date">{{ serial.release_year }}</span>
                             </div>
                             <div class="bottom">

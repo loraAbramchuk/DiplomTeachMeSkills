@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Genre, Country, Movie, Serial, Review, Subscription, UserSubscription, Payment
+from .models import Genre, Country, Movie, Serial, Review, Subscription, UserSubscription, Payment, MovieImage, SerialImage
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import get_user_model
@@ -17,6 +17,8 @@ from .recommendations import (
 from django.db.models import Q
 from .kinopoisk_parser import KinopoiskParser
 from .tasks import fetch_kinopoisk_data_task
+from django.conf import settings
+import os
 
 
 User = get_user_model()
@@ -123,38 +125,70 @@ def subscription_required(view_func):
     return _wrapped_view
 
 @subscription_required
-def movie_detail(request, pk):
-    """Представление для конкретного фильма"""
-    movie = get_object_or_404(Movie, pk=pk)
-    if not movie.kinopoisk_rating or not movie.trailer_url:
-        # Запускаем фоновую задачу
-        fetch_kinopoisk_data_task.delay('movie', movie.pk)
-        messages.info(request, 'Данные с Кинопоиска обновляются. Пожалуйста, попробуйте позже.')
-    similar_movies = get_similar_content(movie, 'movie', limit=4)
-    return render(request, 'Main/movie_detail.html', {
+def movie_detail(request, movie_id):
+    """Представление для отображения детальной информации о фильме"""
+    movie = get_object_or_404(Movie, id=movie_id)
+    
+    # Проверяем наличие постера и других данных
+    has_poster = False
+    if movie.poster:
+        try:
+            has_poster = os.path.exists(movie.poster.path)
+        except ValueError:
+            has_poster = False
+    
+    # Если нет постера или других данных, запускаем задачу обновления
+    if not has_poster or not movie.kinopoisk_rating or not movie.trailer_url:
+        fetch_kinopoisk_data_task.delay('movie', movie.id)
+    
+    # Получаем отзывы для фильма
+    reviews = Review.objects.filter(movie=movie).order_by('-created_at')
+    
+    # Получаем кадры из фильма
+    frames = MovieImage.objects.filter(movie=movie)
+    
+    context = {
         'movie': movie,
-        'genres': movie.genres.all(),
-        'countries': movie.country.all(),
-        'similar_movies': similar_movies,
-        'images': movie.images.all()
-    })
+        'reviews': reviews,
+        'frames': frames,
+        'has_poster': has_poster,
+        'is_updating': not has_poster or not movie.kinopoisk_rating or not movie.trailer_url
+    }
+    
+    return render(request, 'Main/movie_detail.html', context)
 
 @subscription_required
 def serial_detail(request, pk):
     """Представление для конкретного сериала"""
     serial = get_object_or_404(Serial, pk=pk)
-    if not serial.kinopoisk_rating or not serial.trailer_url:
-        # Запускаем фоновую задачу
-        fetch_kinopoisk_data_task.delay('serial', serial.pk)
-        messages.info(request, 'Данные с Кинопоиска обновляются. Пожалуйста, попробуйте позже.')
-    similar_serials = get_similar_content(serial, 'serial', limit=4)
-    return render(request, 'Main/serial_detail.html', {
+    
+    # Проверяем наличие постера и других данных
+    has_poster = False
+    if serial.poster:
+        try:
+            has_poster = os.path.exists(serial.poster.path)
+        except ValueError:
+            has_poster = False
+    
+    # Если нет постера или других данных, запускаем задачу обновления
+    if not has_poster or not serial.kinopoisk_rating or not serial.trailer_url:
+        fetch_kinopoisk_data_task.delay('serial', serial.id)
+    
+    # Получаем отзывы для сериала
+    reviews = Review.objects.filter(serial=serial).order_by('-created_at')
+    
+    # Получаем кадры из сериала
+    frames = SerialImage.objects.filter(serial=serial)
+    
+    context = {
         'serial': serial,
-        'genres': serial.genres.all(),
-        'countries': serial.country.all(),
-        'similar_serials': similar_serials,
-        'images': serial.images.all()
-    })
+        'reviews': reviews,
+        'frames': frames,
+        'has_poster': has_poster,
+        'is_updating': not has_poster or not serial.kinopoisk_rating or not serial.trailer_url
+    }
+    
+    return render(request, 'Main/serial_detail.html', context)
 
 @login_required
 def add_movie_review(request, movie_id):
@@ -442,16 +476,6 @@ def search(request):
     elif content_type == 'serials':
         movies = Movie.objects.none()
     
-    # Добавляем отладочную информацию
-    print(f"Search parameters:")
-    print(f"Query: '{query}'")
-    print(f"Genre: '{genre}'")
-    print(f"Country: '{country}'")
-    print(f"Year: '{year}'")
-    print(f"Content type: '{content_type}'")
-    print(f"Movies found: {movies.count()}")
-    print(f"Serials found: {serials.count()}")
-    
     context = {
         'movies': movies.distinct(),
         'serials': serials.distinct(),
@@ -461,6 +485,7 @@ def search(request):
         'selected_country': country,
         'selected_year': year,
         'selected_type': content_type,
+        'query': query,
     }
     
     return render(request, 'Main/search_results.html', context)
