@@ -26,18 +26,17 @@ User = get_user_model()
 
 def index(request):
     """Главная страница"""
-    # Получаем последний добавленный фильм для баннера
-    featured_movie = Movie.objects.order_by('-created_at').first()
-    
+    # Сначала пробуем получить фильм 'Очень странные дела' для баннера
+    featured_movie = Movie.objects.filter(title='Начало', release_year=2010).first()
+    # Если такого фильма нет, берем последний добавленный
+    if not featured_movie:
+        featured_movie = Movie.objects.order_by('-created_at').first()
     # Получаем последние 8 фильмов
     latest_movies = Movie.objects.order_by('-created_at')[1:9]
-    
     # Получаем последние 8 сериалов
     latest_serials = Serial.objects.order_by('-created_at')[:8]
-    
     # Получаем трендовый контент
     trending = get_trending_content(days=7, limit=8)
-    
     context = {
         'featured_movie': featured_movie,
         'latest_movies': latest_movies,
@@ -45,7 +44,6 @@ def index(request):
         'trending_movies': trending['movies'],
         'trending_serials': trending['serials'],
     }
-    
     return render(request, 'Main/index.html', context)
 
 def movies_list(request):

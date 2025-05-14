@@ -6,17 +6,18 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/placeholder.css' %}">
 <link rel="stylesheet" href="{% static 'css/custom-buttons.css' %}">
+<link rel="stylesheet" href="{% static 'css/banner.css' %}">
 {% endblock %}
 
 {% block content %}
 <!-- banner-area -->
-<section class="banner-area banner-bg" data-background="{% static 'img/banner/banner_bg01.jpg' %}">
+<section class="banner-area banner-bg" {% if featured_movie and featured_movie.poster %}style="background-image: url('{{ featured_movie.poster.url }}');"{% else %}data-background="{% static 'img/banner/banner_bg01.jpg' %}"{% endif %}>
     <div class="container custom-container">
         <div class="row">
             <div class="col-xl-6 col-lg-8">
                 <div class="banner-content">
                     {% if featured_movie %}
-                        <h2 class="title wow fadeInUp" data-wow-delay=".4s" data-wow-duration="1.8s">{{ featured_movie.title }}</h2>
+                        <h2 class="title adaptive-text wow fadeInUp" data-wow-delay=".4s" data-wow-duration="1.8s">{{ featured_movie.title }}</h2>
                         <div class="banner-meta wow fadeInUp" data-wow-delay=".6s" data-wow-duration="1.8s">
                             <ul>
                                 <li class="quality">
@@ -24,11 +25,14 @@
                                 </li>
                                 <li class="category">
                                     {% for genre in featured_movie.genres.all %}
-                                        <a href="{% url 'Main:search' %}?genre={{ genre.name|urlencode }}">{{ genre.name }}{% if not forloop.last %},{% endif %}</a>
+                                        <a href="{% url 'Main:search' %}?genre={{ genre.name|urlencode }}" class="adaptive-text">{{ genre.name }}{% if not forloop.last %},{% endif %}</a>
                                     {% endfor %}
                                 </li>
-                                <li class="release-time">
+                                <li class="release-time adaptive-text">
                                     <span><i class="far fa-calendar-alt"></i> {{ featured_movie.release_year }}</span>
+                                    {% if featured_movie.duration %}
+                                    <span><i class="far fa-clock"></i> {{ featured_movie.duration }} мин</span>
+                                    {% endif %}
                                 </li>
                             </ul>
                         </div>
@@ -37,6 +41,22 @@
                                 <i class="fas fa-play"></i> Смотреть трейлер
                             </a>
                         {% endif %}
+                    {% else %}
+                        <h2 class="title adaptive-text wow fadeInUp" data-wow-delay=".4s" data-wow-duration="1.8s">Безграничные <span>Фильмы</span>, Сериалы и многое другое</h2>
+                        <div class="banner-meta wow fadeInUp" data-wow-delay=".6s" data-wow-duration="1.8s">
+                            <ul>
+                                <li class="quality">
+                                    <span>HD</span>
+                                </li>
+                                <li class="category">
+                                    <a href="#" class="adaptive-text">Фильмы</a>,
+                                    <a href="#" class="adaptive-text">Сериалы</a>
+                                </li>
+                            </ul>
+                        </div>
+                        <a href="#movie-area" class="banner-btn btn wow fadeInUp" data-wow-delay=".8s" data-wow-duration="1.8s">
+                            <i class="fas fa-play"></i> Смотреть сейчас
+                        </a>
                     {% endif %}
                 </div>
             </div>

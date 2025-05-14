@@ -55,26 +55,41 @@
             color: #bcbcbc;
             text-align: center;
         }
+
+        /* Стили для адаптивного текста */
+        .adaptive-text {
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .adaptive-text.dark {
+            color: #000000;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+        }
+
+        .adaptive-text.light {
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'index' %}">MovieInfo</a>
+            <a class="navbar-brand adaptive-text" href="{% url 'index' %}">MovieInfo</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="{% url 'index' %}">Главная</a>
+                        <a class="nav-link adaptive-text {% if request.path == '/' %}active{% endif %}" href="{% url 'index' %}">Главная</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if 'movies' in request.path %}active{% endif %}" href="{% url 'movies_list' %}">Фильмы</a>
+                        <a class="nav-link adaptive-text {% if 'movies' in request.path %}active{% endif %}" href="{% url 'movies_list' %}">Фильмы</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if 'serials' in request.path %}active{% endif %}" href="{% url 'serials_list' %}">Сериалы</a>
+                        <a class="nav-link adaptive-text {% if 'serials' in request.path %}active{% endif %}" href="{% url 'serials_list' %}">Сериалы</a>
                     </li>
                 </ul>
             </div>
@@ -96,6 +111,45 @@
     <!-- JS here -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        // Функция для обновления цвета текста
+        function updateTextColor() {
+            // Ищем баннер
+            const banner = document.querySelector('.banner-area');
+            let isPoster = false;
+            let bgImage = '';
+            if (banner) {
+                bgImage = banner.style.backgroundImage;
+                if ((!bgImage || bgImage === 'none') && banner.hasAttribute('data-background')) {
+                    bgImage = banner.getAttribute('data-background');
+                }
+                console.log('Баннер найден. background:', bgImage);
+                if (bgImage && bgImage.includes('poster')) {
+                    isPoster = true;
+                }
+            } else {
+                console.log('Баннер не найден');
+            }
+            // Меняем цвет у всех adaptive-text
+            const elements = document.querySelectorAll('.adaptive-text');
+            elements.forEach(element => {
+                if (isPoster) {
+                    element.classList.remove('light');
+                    element.classList.add('dark');
+                    console.log('Добавлен класс dark для', element);
+                } else {
+                    element.classList.remove('dark');
+                    element.classList.add('light');
+                    console.log('Добавлен класс light для', element);
+                }
+            });
+        }
+
+        // Вызываем функцию при загрузке страницы
+        document.addEventListener('DOMContentLoaded', updateTextColor);
+        // Обновляем цвет при изменении размера окна
+        window.addEventListener('resize', updateTextColor);
+    </script>
     {% block extra_js %}{% endblock %}
 </body>
 </html> 
