@@ -255,7 +255,7 @@ label {
     letter-spacing: 1px;
     line-height: 1.5;
     margin-bottom: 0;
-    padding: 16px 34px;
+    padding: 16px 16px;
     text-align: center;
     text-transform: uppercase;
     touch-action: manipulation;
@@ -2091,6 +2091,11 @@ label {
     border: 2px solid #1f1e24;
     padding: 45px 40px 60px;
     transition: .3s linear;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* чтобы блок занимал всю высоту */
+    background-color: #111; /* твой тёмный фон */
+    border-radius: 10px;
 }
 .pricing-box-item.active,
 .pricing-box-item:hover {
@@ -3375,4 +3380,25 @@ a:hover {
 .text-center { text-align: center; }
 .mb-20 { margin-bottom: 20px; }
 .p-20 { padding: 20px; }
+
+.pricing-top,
+.pricing-list {
+    margin-bottom: 20px;
+}
+
+.pricing-btn {
+    margin-top: auto; /* прижмет кнопку к низу */
+}
+
+.row.justify-content-center {
+    display: flex;
+    flex-wrap: wrap;
+}
+.col-lg-4 {
+    display: flex;
+}
+.pricing-box-item {
+    width: 100%;
+}
+
   

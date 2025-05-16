@@ -343,7 +343,7 @@ def cancel_subscription(request):
 @login_required
 def payment_history(request):
     """История платежей пользователя"""
-    payments = Payment.objects.filter(user=request.user).order_by('-created_at')
+    payments = Payment.objects.filter(user=request.user).order_by('-payment_date')
     return render(request, 'Main/payment_history.html', {'payments': payments})
 
 @api_view(['GET'])
