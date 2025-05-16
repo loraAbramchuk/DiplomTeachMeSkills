@@ -1,0 +1,923 @@
+/* Стили для фильмов и сериалов */
+.movie-card, .serial-card {
+    background: var(--bg-dark);
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+    transition: var(--transition-base);
+    border: 1px solid var(--border-color);
+}
+
+.movie-card:hover, .serial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.movie-poster, .serial-poster {
+    position: relative;
+    overflow: hidden;
+}
+
+.movie-poster img, .serial-poster img {
+    width: 100%;
+    height: auto;
+    transition: var(--transition-base);
+}
+
+.movie-card:hover .movie-poster img,
+.serial-card:hover .serial-poster img {
+    transform: scale(1.1);
+}
+
+.movie-info, .serial-info {
+    padding: var(--spacing-md);
+}
+
+.movie-title, .serial-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: var(--spacing-sm);
+}
+
+.movie-title a, .serial-title a {
+    color: var(--text-light);
+    transition: var(--transition-base);
+}
+
+.movie-title a:hover, .serial-title a:hover {
+    color: var(--primary-color);
+}
+
+.movie-meta, .serial-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.movie-meta span, .serial-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.movie-meta i, .serial-meta i {
+    color: var(--primary-color);
+}
+
+.movie-rating, .serial-rating {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* Стили для отзывов */
+.review-card {
+    background: rgba(23, 29, 34, 0.95);
+    border-radius: 16px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.review-author {
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.review-date {
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.review-content {
+    color: var(--text-color);
+    margin-bottom: 12px;
+}
+
+.review-rating {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+/* Стили для подписок */
+.subscription-card {
+    background: rgba(23, 29, 34, 0.95);
+    border-radius: 16px;
+    padding: 40px 32px;
+    text-align: center;
+    transition: var(--transition-base);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+
+.subscription-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+}
+
+.subscription-title {
+    color: var(--primary-color);
+    font-size: 28px;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.subscription-price {
+    font-size: 40px;
+    color: var(--text-light);
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.subscription-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 32px;
+}
+
+.subscription-features li {
+    color: var(--text-color);
+    margin-bottom: 10px;
+}
+
+/* Стили для уведомлений */
+.notification-item {
+    background: rgba(23, 29, 34, 0.95);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    transition: var(--transition-base);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+
+.notification-item:hover {
+    background: rgba(23, 29, 34, 1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+}
+
+.notification-title {
+    color: var(--text-light);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.notification-message {
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+.notification-time {
+    color: var(--text-color);
+    font-size: 12px;
+}
+
+/* Стили для поиска */
+.search-form {
+    position: relative;
+    margin-bottom: 32px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 16px 24px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-size: 16px;
+    transition: var(--transition-base);
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(255,255,255,0.15);
+}
+
+.search-button {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-color);
+    color: var(--text-dark);
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 700;
+    font-size: 16px;
+    transition: var(--transition-base);
+    min-width: 100px;
+}
+
+.search-button:hover {
+    background: var(--text-light);
+    color: var(--primary-color);
+}
+
+/* Стили для пагинации */
+.pagination {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 0;
+    margin: 40px 0;
+}
+
+.pagination-item {
+    margin: 0 8px;
+}
+
+.pagination-link {
+    display: block;
+    padding: 14px 24px;
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-light);
+    font-weight: 600;
+    font-size: 18px;
+    transition: var(--transition-base);
+}
+
+.pagination-link:hover,
+.pagination-link.active {
+    background: var(--primary-color);
+    color: var(--text-dark);
+    border-color: var(--primary-color);
+}
+
+/* Стили для загрузчика */
+.loader {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Стили для плейсхолдера постера (добавлено из placeholder.css) */
+.poster-placeholder {
+    background: linear-gradient(45deg, #2c3e50, #3498db);
+    width: 100%;
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2em;
+    text-align: center;
+    padding: 20px;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.movie-poster .poster-placeholder {
+    min-height: 300px;
+    font-size: 1.2em;
+}
+
+@media (max-width: 768px) {
+    .poster-placeholder {
+        min-height: 300px;
+        font-size: 1.2em;
+    }
+    .movie-poster .poster-placeholder {
+        min-height: 200px;
+        font-size: 1em;
+    }
+}
+
+/* Стили для ошибок */
+.error-message {
+    background: rgba(220, 53, 69, 0.12);
+    border: 1px solid #dc3545;
+    border-radius: 8px;
+    color: #dc3545;
+    padding: 18px 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Стили для успешных сообщений */
+.success-message {
+    background: rgba(40, 167, 69, 0.12);
+    border: 1px solid #28a745;
+    border-radius: 8px;
+    color: #28a745;
+    padding: 18px 24px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+/* Детали фильма/сериала */
+.movie-details-area, .serial-details-area {
+    position: relative;
+    padding: 100px 0;
+    background: var(--bg-darker);
+}
+
+.movie-details-area::before, .serial-details-area::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 12, 18, 0.8);
+    z-index: 1;
+}
+
+.movie-details-content, .serial-details-content {
+    position: relative;
+    z-index: 2;
+}
+
+.movie-details-poster, .serial-details-poster {
+    position: relative;
+    border-radius: var(--border-radius-md);
+    overflow: hidden;
+}
+
+.movie-details-poster img, .serial-details-poster img {
+    width: 100%;
+    height: auto;
+}
+
+.movie-details-box, .serial-details-box {
+    padding: var(--spacing-lg);
+    background: var(--bg-dark);
+    border-radius: var(--border-radius-md);
+    border: 1px solid var(--border-color);
+}
+
+.movie-details-box .title, .serial-details-box .title {
+    font-size: 32px;
+    margin-bottom: var(--spacing-md);
+}
+
+.movie-details-meta, .serial-details-meta {
+    margin-bottom: var(--spacing-lg);
+}
+
+.movie-details-meta ul, .serial-details-meta ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.movie-details-meta ul li, .serial-details-meta ul li {
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.movie-details-meta ul li.quality span, .serial-details-meta ul li.quality span {
+    background: var(--primary-color);
+    color: var(--text-dark);
+    padding: 2px 10px;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+}
+
+.movie-details-meta ul li i, .serial-details-meta ul li i {
+    color: var(--primary-color);
+    margin-right: 5px;
+}
+
+.movie-details-genres, .serial-details-genres {
+    margin-bottom: var(--spacing-lg);
+}
+
+.movie-details-genres span, .serial-details-genres span {
+    display: inline-block;
+    padding: 5px 15px;
+    background: var(--bg-darker);
+    color: var(--text-light);
+    border-radius: var(--border-radius-sm);
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.movie-details-rating, .serial-details-rating {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: var(--spacing-lg);
+}
+
+.movie-details-rating .rating, .serial-details-rating .rating {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.movie-details-rating .votes, .serial-details-rating .votes {
+    color: var(--text-color);
+    font-size: 14px;
+}
+
+.movie-details-countries, .serial-details-countries {
+    margin-bottom: var(--spacing-lg);
+}
+
+.movie-details-countries span, .serial-details-countries span {
+    display: inline-block;
+    padding: 5px 15px;
+    background: var(--bg-darker);
+    color: var(--text-light);
+    border-radius: var(--border-radius-sm);
+    margin-right: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+
+.movie-details-desc, .serial-details-desc {
+    color: var(--text-color);
+    line-height: 1.8;
+    margin-bottom: var(--spacing-lg);
+}
+
+.movie-details-btn, .serial-details-btn {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.movie-details-btn .btn, .serial-details-btn .btn {
+    padding: 12px 30px;
+    font-weight: 600;
+}
+
+.movie-details-btn .btn i, .serial-details-btn .btn i {
+    margin-right: 5px;
+}
+
+.movie-details-btn .popup-video, .serial-details-btn .popup-video {
+    background: var(--primary-color);
+    color: var(--text-dark);
+}
+
+.movie-details-btn .popup-video:hover, .serial-details-btn .popup-video:hover {
+    background: var(--secondary-color);
+    color: var(--primary-color);
+}
+
+.movie-details-btn .btn:not(.popup-video), .serial-details-btn .btn:not(.popup-video) {
+    background: var(--bg-darker);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+}
+
+.movie-details-btn .btn:not(.popup-video):hover, .serial-details-btn .btn:not(.popup-video):hover {
+    background: var(--primary-color);
+    color: var(--text-dark);
+    border-color: var(--primary-color);
+}
+
+/* Галерея */
+.movie-gallery-area, .serial-gallery-area {
+    padding: 100px 0;
+    background: var(--bg-darker);
+}
+
+/* Отзывы */
+.movie-reviews-area, .serial-reviews-area {
+    padding: 100px 0;
+    background: var(--bg-darker);
+}
+
+/* Баннер */
+.banner-area {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: 120px 0 80px 0;
+    z-index: 1;
+}
+.banner-area::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, rgba(10,12,18,0.95) 0%, rgba(10,12,18,0.7) 50%, rgba(10,12,18,0.4) 100%);
+    z-index: -1;
+}
+.banner-content {
+    position: relative;
+    z-index: 2;
+}
+.banner-content .title {
+    color: var(--text-light);
+    font-size: 48px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    transition: var(--transition-base);
+}
+.banner-content .title span {
+    color: var(--primary-color);
+}
+.banner-meta {
+    margin-bottom: 30px;
+}
+.banner-meta ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.banner-meta ul li {
+    color: var(--text-light);
+    font-size: 16px;
+    transition: var(--transition-base);
+}
+.banner-meta ul li.quality span {
+    background: var(--primary-color);
+    color: var(--text-dark);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+.banner-meta ul li.category a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: var(--transition-base);
+}
+.banner-meta ul li.category a:hover {
+    color: var(--primary-color);
+}
+.banner-meta ul li.release-time i {
+    margin-right: 5px;
+    color: var(--primary-color);
+}
+.banner-btn {
+    display: inline-flex;
+    align-items: center;
+    background: var(--primary-color);
+    color: var(--text-dark);
+    padding: 20px 48px;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 22px;
+    text-decoration: none;
+    transition: var(--transition-base);
+    margin-top: 20px;
+}
+.banner-btn i {
+    margin-right: 18px;
+    font-size: 28px;
+}
+.banner-btn:hover {
+    background: var(--text-light);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+/* Формы */
+.form-group {
+    margin-bottom: 32px;
+}
+.form-group label {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    display: block;
+    font-weight: 500;
+}
+.form-control {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
+    padding: 16px 24px;
+    color: var(--text-light);
+    border-radius: 8px;
+    transition: var(--transition-base);
+    font-size: 16px;
+}
+.form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+}
+.form-control::placeholder {
+    color: var(--text-color);
+    opacity: 0.7;
+}
+
+/* Бейджи */
+.badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 700;
+}
+.badge-primary {
+    background-color: var(--primary-color);
+    color: var(--text-dark);
+}
+.badge-danger {
+    background-color: #dc3545;
+    color: var(--text-light);
+}
+
+/* Списки фильмов и карточки в трендах */
+.tr-movie-active, .row.tr-movie-active, .row.justify-content-center {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 24px;
+    justify-content: flex-start;
+}
+.col-xl-3, .col-lg-4, .col-sm-6 {
+    flex: 0 0 260px;
+    max-width: 260px;
+    display: flex;
+}
+.movie-item, .movie-item-three {
+    background: var(--bg-dark);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    overflow: hidden;
+    border: none;
+    transition: var(--transition-base);
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 420px;
+    max-width: 260px;
+}
+.movie-item:hover, .movie-item-three:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+}
+.movie-poster {
+    position: relative;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+    min-height: 320px;
+    background: #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.movie-poster img {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+    border-radius: 16px 16px 0 0;
+    transition: var(--transition-base);
+}
+.movie-item:hover .movie-poster img,
+.movie-item-three:hover .movie-poster img {
+    transform: scale(1.08);
+}
+.movie-content {
+    padding: 20px 16px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+.movie-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+.movie-title a {
+    color: var(--primary-color);
+    transition: var(--transition-base);
+}
+.movie-title a:hover {
+    color: var(--text-light);
+}
+.movie-meta {
+    color: var(--text-light);
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+.movie-meta span {
+    margin-right: 8px;
+}
+.overlay-btn {
+    position: absolute;
+    left: 0; right: 0; bottom: 16px;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-base);
+}
+.movie-item:hover .overlay-btn,
+.movie-item-three:hover .overlay-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+.overlay-btn .btn {
+    padding: 10px 24px;
+    font-size: 16px;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: var(--text-dark);
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+.overlay-btn .btn:hover {
+    background: var(--text-light);
+    color: var(--primary-color);
+}
+
+/* Слайдеры и секции */
+.slick-slider, .owl-carousel {
+    margin-bottom: 40px;
+}
+.slick-slide, .owl-item {
+    outline: none !important;
+}
+.slick-arrow, .owl-nav button {
+    background: var(--primary-color);
+    color: var(--text-dark);
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: var(--transition-base);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    margin: 0 8px;
+}
+.slick-arrow:hover, .owl-nav button:hover {
+    background: var(--text-light);
+    color: var(--primary-color);
+}
+
+/* Адаптивность */
+@media (max-width: 1199.98px) {
+    .container, .custom-container { max-width: 960px; }
+}
+@media (max-width: 991.98px) {
+    .container, .custom-container { max-width: 720px; }
+    .banner-content .title { font-size: 36px; }
+    .movie-item, .movie-item-three { margin-bottom: 32px; }
+}
+@media (max-width: 767.98px) {
+    .container, .custom-container { max-width: 540px; }
+    .banner-area { padding: 80px 0 40px 0; }
+    .banner-content .title { font-size: 28px; }
+    .movie-item, .movie-item-three { margin-bottom: 24px; }
+    .card-body, .movie-info, .serial-info { padding: 16px; }
+}
+@media (max-width: 575.98px) {
+    .container, .custom-container { max-width: 100%; padding-left: 8px; padding-right: 8px; }
+    .banner-area { padding: 40px 0 20px 0; }
+    .banner-content .title { font-size: 20px; }
+    .movie-item, .movie-item-three { margin-bottom: 16px; }
+}
+
+/* Модальные окна */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition-base);
+}
+.modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+.modal-content {
+    background: var(--bg-dark);
+    border-radius: 16px;
+    padding: 40px 32px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    color: var(--text-light);
+    position: relative;
+    z-index: 3100;
+    transition: var(--transition-base);
+}
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-color);
+}
+.btn-close {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition-base);
+}
+.btn-close:hover {
+    color: var(--primary-color);
+}
+
+/* Всплывающие подсказки (tooltip) */
+.tooltip {
+    position: absolute;
+    z-index: 4000;
+    background: var(--bg-dark);
+    color: var(--text-light);
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--transition-base);
+}
+.tooltip.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Финальная полировка */
+::-webkit-scrollbar {
+    width: 8px;
+    background: var(--bg-darker);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+
+/* Футер — выравнивание меню */
+.footer-menu nav .navigation {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.footer-menu nav .navigation li {
+    margin: 0;
+}
+.footer-menu nav .navigation li a {
+    color: var(--text-light);
+    font-weight: 500;
+    font-size: 18px;
+    transition: var(--transition-base);
+}
+.footer-menu nav .navigation li a:hover {
+    color: var(--primary-color);
+}
+
+/* Футер — исправление отступов */
+.footer-area {
+    padding-bottom: 0;
+}
+.footer-top-wrap {
+    padding-bottom: 24px;
+}
+.footer-quick-link-wrap {
+    padding: 24px 0;
+}
+
+/* Исправление для .copyright-wrap */
+.copyright-wrap {
+    padding: 20px 0;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+} 

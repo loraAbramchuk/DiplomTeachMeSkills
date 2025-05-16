@@ -1,0 +1,159 @@
+.banner-area {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding: var(--spacing-xxl) 0;
+    z-index: 1;
+}
+
+.banner-area::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.4) 100%);
+    z-index: -1;
+}
+
+.banner-content {
+    position: relative;
+    z-index: 2;
+}
+
+.banner-content .title {
+    color: var(--text-light);
+    font-size: var(--font-size-xxl);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: var(--spacing-md);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    transition: var(--transition-base);
+}
+
+.banner-content .title.light-text {
+    color: var(--text-dark);
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.5);
+}
+
+.banner-content .title span {
+    color: var(--primary-color);
+}
+
+.banner-content .title.light-text span {
+    color: var(--primary-color);
+}
+
+.banner-meta {
+    margin-bottom: var(--spacing-lg);
+}
+
+.banner-meta ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+}
+
+.banner-meta ul li {
+    color: var(--text-light);
+    font-size: var(--font-size-md);
+    transition: var(--transition-base);
+}
+
+.banner-meta ul li.light-text {
+    color: var(--text-dark);
+}
+
+.banner-meta ul li.quality span {
+    background: var(--primary-color);
+    color: var(--text-dark);
+    padding: 2px 8px;
+    border-radius: var(--border-radius-sm);
+    font-weight: 600;
+}
+
+.banner-meta ul li.category a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: var(--transition-base);
+}
+
+.banner-meta ul li.category a.light-text {
+    color: var(--text-dark);
+}
+
+.banner-meta ul li.category a:hover {
+    color: var(--primary-color);
+}
+
+.banner-meta ul li.release-time span {
+    margin-right: var(--spacing-md);
+}
+
+.banner-meta ul li.release-time i {
+    margin-right: var(--spacing-xs);
+    color: var(--primary-color);
+}
+
+.banner-content .banner-btn,
+.banner-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    background: var(--primary-color) !important;
+    color: var(--text-dark) !important;
+    padding: 20px 48px !important;
+    border-radius: 40px !important;
+    font-weight: 700 !important;
+    font-size: 22px !important;
+    text-decoration: none !important;
+    transition: var(--transition-base) !important;
+    margin-top: 20px !important;
+    border: none !important;
+    box-shadow: none !important;
+    min-width: 0 !important;
+    max-width: none !important;
+}
+
+.banner-content .banner-btn i,
+.banner-btn i {
+    margin-right: 18px !important;
+    font-size: 28px !important;
+}
+
+.banner-content .banner-btn:hover,
+.banner-btn:hover {
+    background: var(--text-light) !important;
+    color: var(--primary-color) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Адаптивность */
+@media (max-width: 991.98px) {
+    .banner-area {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .banner-content .title {
+        font-size: var(--font-size-xl);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .banner-area {
+        padding: var(--spacing-lg) 0;
+    }
+    
+    .banner-content .title {
+        font-size: var(--font-size-lg);
+    }
+    
+    .banner-meta ul {
+        gap: var(--spacing-sm);
+    }
+    
+    .banner-meta ul li {
+        font-size: var(--font-size-sm);
+    }
+} 
