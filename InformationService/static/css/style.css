@@ -677,7 +677,6 @@ label {
     border: none;
     cursor: pointer;
 	color: #e4d804;
-    top: 8px;
 }
 .modal-backdrop {
 	z-index: 1;
@@ -3401,4 +3400,23 @@ a:hover {
     width: 100%;
 }
 
-  
+.form-select {
+    background: #181818 !important;
+    color: #fff !important;
+    border: 2px solid #ffe600 !important;
+    border-radius: 12px !important;
+    padding: 8px 16px !important;
+    font-size: 1em !important;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+    box-shadow: none !important;
+}
+
+.form-control {
+    background: #181818 !important;
+    color: #fff !important;
+    border: 2px solid #ffe600 !important;
+    border-radius: 12px !important;
+    padding: 8px 16px;
+    transition: border-color 0.2s, box-shadow 0.2s !important;
+    box-shadow: none !important;
+}
