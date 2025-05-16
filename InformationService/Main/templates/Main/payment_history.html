@@ -1,40 +1,51 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}История платежей{% endblock %}
 
 {% block content %}
-<div class="container">
-    <h1 class="mb-4">История платежей</h1>
+<link rel="stylesheet" href="{% static 'css/custom-buttons.css' %}">
 
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Дата</th>
-                    <th>Подписка</th>
-                    <th>Сумма</th>
-                    <th>Статус</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for payment in payments %}
-                    <tr>
-                        <td>{{ payment.payment_date|date:"d.m.Y H:i" }}</td>
-                        <td>{{ payment.subscription.name }}</td>
-                        <td>{{ payment.amount }} руб.</td>
-                        <td>{{ payment.get_status_display }}</td>
-                    </tr>
-                {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center">У вас пока нет платежей.</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
-    <div class="mt-4">
-        <a href="{% url 'subscription_list' %}" class="btn btn-primary">Вернуться к подпискам</a>
+<div class="container" style="max-width: 900px;">
+    <div class="card" style="background: rgba(23, 29, 34, 0.95); border-radius: 12px; box-shadow: 0 2px 16px rgba(0,0,0,0.2); margin-top: 40px;">
+        <div class="card-body">
+            <h1 class="mb-4 text-white text-center" style="font-weight: 700; letter-spacing: 1px;">История платежей</h1>
+            <div class="table-responsive">
+                <table class="table table-dark table-striped" style="border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background: #23272b;">
+                            <th>Дата</th>
+                            <th>Подписка</th>
+                            <th>Сумма</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.payment_date|date:"d.m.Y H:i" }}</td>
+                                <td>{{ payment.subscription.name }}</td>
+                                <td>{{ payment.amount }} руб.</td>
+                                <td>
+                                    {% if payment.status == 'completed' %}
+                                        <span class="text-success">{{ payment.get_status_display }}</span>
+                                    {% else %}
+                                        <span class="text-danger">{{ payment.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">У вас пока нет платежей.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-4 text-center">
+                <a href="{% url 'Main:subscription_list' %}" class="custom-btn">Вернуться к подпискам</a>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %} 
