@@ -292,7 +292,7 @@ def subscribe(request, subscription_id):
     
     if active_subscription:
         messages.warning(request, 'У вас уже есть активная подписка!')
-        return redirect('subscription_list')
+        return redirect('Main:subscription_list')
     
     # Создаем запись о подписке
     user_subscription = UserSubscription.objects.create(
@@ -312,7 +312,7 @@ def subscribe(request, subscription_id):
     )
     
     messages.success(request, f'Вы успешно подписались на тариф {subscription.name}!')
-    return redirect('subscription_list')
+    return redirect('Main:subscription_list')
 
 @login_required
 def cancel_subscription(request):
@@ -338,7 +338,7 @@ def cancel_subscription(request):
         else:
             messages.warning(request, 'У вас нет активной подписки для отмены.')
     
-    return redirect('user_profile', username=request.user.username)
+    return redirect('Main:user_profile', username=request.user.username)
 
 @login_required
 def payment_history(request):
