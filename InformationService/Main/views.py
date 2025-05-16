@@ -19,6 +19,10 @@ from .kinopoisk_parser import KinopoiskParser
 from .tasks import fetch_kinopoisk_data_task
 from django.conf import settings
 import os
+from django.db.models.functions import Lower
+from django.db.models import Q
+from django.shortcuts import render
+from .models import Movie, Serial, Genre, Country
 
 
 User = get_user_model()
@@ -431,35 +435,29 @@ def trending(request):
     return render(request, 'Main/trending.html', context)
 
 def search(request):
-    """Поиск контента по различным параметрам"""
-    # Получаем параметры из GET-запроса
     query = request.GET.get('q', '').strip()
     genre = request.GET.get('genre', '').strip()
     country = request.GET.get('country', '').strip()
     year = request.GET.get('year', '').strip()
     content_type = request.GET.get('type', 'all')
 
-    # Получаем все жанры и страны для фильтров
     genres = Genre.objects.all()
     countries = Country.objects.all()
-    
-    # Базовые запросы с предварительной загрузкой связанных данных
+
     movies = Movie.objects.prefetch_related('genres', 'country').all()
     serials = Serial.objects.prefetch_related('genres', 'country').all()
-    
-    # Применяем фильтры
-    if query:
-        movies = movies.filter(title__icontains=query)
-        serials = serials.filter(title__icontains=query)
-    
+
+    # Фильтрация по жанру (нерегистрозависимо)
     if genre:
-        movies = movies.filter(genres__name=genre)
-        serials = serials.filter(genres__name=genre)
-    
+        movies = movies.filter(genres__name__icontains=genre)
+        serials = serials.filter(genres__name__icontains=genre)
+
+    # Фильтрация по стране (нерегистрозависимо)
     if country:
-        movies = movies.filter(country__name=country)
-        serials = serials.filter(country__name=country)
-    
+        movies = movies.filter(country__name__icontains=country)
+        serials = serials.filter(country__name__icontains=country)
+
+    # Год
     if year:
         try:
             year = int(year)
@@ -467,16 +465,22 @@ def search(request):
             serials = serials.filter(release_year=year)
         except ValueError:
             pass
-    
-    # Фильтруем по типу контента
+
+    # Поиск по названию (нерегистрозависимый, временный костыль)
+    if query:
+        query_lower = query.lower()
+        movies = [m for m in movies if query_lower in m.title.lower()]
+        serials = [s for s in serials if query_lower in s.title.lower()]
+
+    # Тип контента
     if content_type == 'movies':
-        serials = Serial.objects.none()
+        serials = []
     elif content_type == 'serials':
-        movies = Movie.objects.none()
-    
+        movies = []
+
     context = {
-        'movies': movies.distinct(),
-        'serials': serials.distinct(),
+        'movies': movies,
+        'serials': serials,
         'genres': genres,
         'countries': countries,
         'selected_genre': genre,
@@ -485,5 +489,5 @@ def search(request):
         'selected_type': content_type,
         'query': query,
     }
-    
+
     return render(request, 'Main/search_results.html', context)
