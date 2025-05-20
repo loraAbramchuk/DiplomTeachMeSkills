@@ -206,3 +206,6 @@ SITE_URL = 'http://127.0.0.1:8000'
 # Добавляем обработчики ошибок
 handler404 = 'Main.views.handler404'
 handler500 = 'Main.views.handler500'
+
+
+ALLOWED_HOSTS = ['.onrender.com', 'localhost']
