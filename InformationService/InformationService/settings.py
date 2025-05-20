@@ -65,16 +65,27 @@ TEMPLATES = [
 WSGI_APPLICATION = 'InformationService.wsgi.application'
 
 # База данных
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('DB_NAME', default='postgres'),
+#         'USER': config('DB_USER', default='postgres'),
+#         'PASSWORD': config('DB_PASSWORD', default='postgres'),
+#         'HOST': config('DB_HOST', default='db'),
+#         'PORT': config('DB_PORT', default='5432'),
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='postgres'),
-        'USER': config('DB_USER', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default='postgres'),
-        'HOST': config('DB_HOST', default='db'),
-        'PORT': config('DB_PORT', default='5432'),
+        'NAME': 'dbservis',
+        'USER': 'dbservis_user',
+        'PASSWORD': 'pVxZqMvW84hCMfdaiz15DQXMZqCEDNlT',
+        'HOST': 'dpg-d0mdggeuk2gs73fiqvtg-a.oregon-postgres.render.com',
+        'PORT': '5432',
     }
 }
+
 
 # Валидация паролей
 AUTH_PASSWORD_VALIDATORS = [
