@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Безопасность
 SECRET_KEY = config('DJANGO_SECRET_KEY')
-DEBUG = True  # Явно включаем режим отладки
+DEBUG = False  # Отключаем режим отладки
 ALLOWED_HOSTS = ['*']  # Разрешаем все хосты для отладки
 
 # Приложения
@@ -201,3 +201,7 @@ LOGGING = {
 NOTIFICATION_EMAIL_SUBJECT_PREFIX = '[Movies Hub] '
 NOTIFICATION_EMAIL_TEMPLATE = 'users/email/notification.html'
 SITE_URL = 'http://127.0.0.1:8000'
+
+# Добавляем обработчики ошибок
+handler404 = 'Main.views.handler404'
+handler500 = 'Main.views.handler500'

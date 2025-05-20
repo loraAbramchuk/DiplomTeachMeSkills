@@ -509,3 +509,9 @@ def video_player(request, content_type, content_id):
     }
     
     return render(request, 'video_player.html', context)
+
+def handler404(request, exception):
+    return render(request, '404.html', status=404)
+
+def handler500(request):
+    return render(request, '404.html', status=500)
