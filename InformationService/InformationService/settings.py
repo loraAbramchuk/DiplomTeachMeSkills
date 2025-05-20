@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Безопасность
 SECRET_KEY = config('DJANGO_SECRET_KEY')
-DEBUG = False  # Отключаем режим отладки
+DEBUG = True  # Включаем режим отладки
 ALLOWED_HOSTS = ['*']  # Разрешаем все хосты для отладки
 
 # Приложения
