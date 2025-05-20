@@ -3455,3 +3455,20 @@ a:hover {
     width: 100%;
     max-width: 280px;
 }
+
+.movie-details-btn .btn {
+    padding: 12px 25px;
+    border-radius: 5px;
+    font-size: 14px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    max-width: 320px; /* Ограничение ширины */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    justify-content: center; /* Центрирование текста */
+}
