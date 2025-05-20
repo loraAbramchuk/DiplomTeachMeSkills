@@ -82,7 +82,7 @@
                                     {% endif %}
 
                                     {% if serial.watch_url %}
-                                    <a href="{{ serial.watch_url }}" class="btn" target="_blank">
+                                    <a href="{% url 'Main:video_player' 'serial' serial.id %}" class="btn">
                                         <i class="fas fa-film"></i> Смотреть сериал
                                     </a>
                                     {% endif %}

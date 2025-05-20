@@ -17,6 +17,9 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('profile/<str:username>/', views.user_profile, name='user_profile'),
     
+    # Видеоплеер
+    path('watch/<str:content_type>/<int:content_id>/', views.video_player, name='video_player'),
+    
     # Аутентификация
     path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
     

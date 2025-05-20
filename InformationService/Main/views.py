@@ -491,3 +491,21 @@ def search(request):
     }
 
     return render(request, 'Main/search_results.html', context)
+
+@subscription_required
+def video_player(request, content_type, content_id):
+    """Представление для отображения видеоплеера"""
+    if content_type == 'movie':
+        content = get_object_or_404(Movie, id=content_id)
+    else:
+        content = get_object_or_404(Serial, id=content_id)
+    
+    context = {
+        'video': {
+            'url': content.watch_url,
+            'poster': content.poster.url if content.poster else None,
+            'title': content.title
+        }
+    }
+    
+    return render(request, 'video_player.html', context)

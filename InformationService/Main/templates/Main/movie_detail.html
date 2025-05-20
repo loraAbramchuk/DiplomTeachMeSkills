@@ -77,7 +77,7 @@
                                     {% endif %}
 
                                     {% if movie.watch_url %}
-                                    <a href="{{ movie.watch_url }}" class="btn" target="_blank">
+                                    <a href="{% url 'Main:video_player' 'movie' movie.id %}" class="btn">
                                         <i class="fas fa-film"></i> Смотреть фильм
                                     </a>
                                     {% endif %}
