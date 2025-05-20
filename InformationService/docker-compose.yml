@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=InformationService.settings
+      - DJANGO_SECRET_KEY=your-secret-key-here
+      - DB_NAME=informationservis
+      - DB_USER=lora
+      - DB_PASSWORD=12345
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=informationservis
+      - POSTGRES_USER=lora
+      - POSTGRES_PASSWORD=12345
+
+  redis:
+    image: redis:6
+    ports:
+      - "6379:6379"
+
+  celery:
+    build: .
+    command: celery -A InformationService worker -l INFO
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=InformationService.settings
+      - DJANGO_SECRET_KEY=your-secret-key-here
+      - DB_NAME=informationservis
+      - DB_USER=lora
+      - DB_PASSWORD=12345
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+    depends_on:
+      - web
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A InformationService beat -l INFO
+    volumes:
+      - .:/app
+    environment:
+      - DEBUG=1
+      - DJANGO_SETTINGS_MODULE=InformationService.settings
+      - DJANGO_SECRET_KEY=your-secret-key-here
+      - DB_NAME=informationservis
+      - DB_USER=lora
+      - DB_PASSWORD=12345
+      - DB_HOST=db
+      - DB_PORT=5432
+      - EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend
+    depends_on:
+      - web
+      - redis
+
+volumes:
+  postgres_data: 

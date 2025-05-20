@@ -80,6 +80,7 @@ class Serial(models.Model):
     poster = models.ImageField(upload_to='posters/serials/', blank=True, null=True, verbose_name="Постер")
     trailer_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL трейлера")
     watch_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL для просмотра")
+    kinopoisk_id = models.PositiveIntegerField(null=True, blank=True, verbose_name="ID на Кинопоиске")
     kinopoisk_rating = models.FloatField(null=True, blank=True, verbose_name="Рейтинг Кинопоиска")
     kinopoisk_url = models.URLField(max_length=255, null=True, blank=True, verbose_name="URL на Кинопоиске")
     created_at = models.DateTimeField(auto_now_add=True)
