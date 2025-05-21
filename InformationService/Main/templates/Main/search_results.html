@@ -100,20 +100,20 @@
                                                 {% else %}
                                                     <div class="poster-placeholder">{{ movie.title }}</div>
                                                 {% endif %}
-                                                <div class="movie-content">
-                                                    <h5 class="title">
-                                                        <a href="{% url 'Main:movie_detail' movie.pk %}">{{ movie.title }}</a>
-                                                    </h5>
-                                                    <div class="movie-meta">
-                                                        <span class="year">{{ movie.release_year }}</span>
-                                                        <span class="genres">
-                                                            {% for genre in movie.genres.all %}
-                                                                {{ genre.name }}{% if not forloop.last %}, {% endif %}
-                                                            {% endfor %}
-                                                        </span>
-                                                    </div>
-                                                    <a href="{% url 'Main:movie_detail' movie.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
+                                            </div>
+                                            <div class="movie-content">
+                                                <h5 class="title">
+                                                    <a href="{% url 'Main:movie_detail' movie.pk %}">{{ movie.title }}</a>
+                                                </h5>
+                                                <div class="movie-meta">
+                                                    <span class="year">{{ movie.release_year }}</span>
+                                                    <span class="genres">
+                                                        {% for genre in movie.genres.all %}
+                                                            {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                                                        {% endfor %}
+                                                    </span>
                                                 </div>
+                                                <a href="{% url 'Main:movie_detail' movie.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
                                             </div>
                                         </div>
                                     </div>
@@ -135,20 +135,20 @@
                                                 {% else %}
                                                     <div class="poster-placeholder">{{ serial.title }}</div>
                                                 {% endif %}
-                                                <div class="movie-content">
-                                                    <h5 class="title">
-                                                        <a href="{% url 'Main:serial_detail' serial.pk %}">{{ serial.title }}</a>
-                                                    </h5>
-                                                    <div class="movie-meta">
-                                                        <span class="year">{{ serial.release_year }}</span>
-                                                        <span class="genres">
-                                                            {% for genre in serial.genres.all %}
-                                                                {{ genre.name }}{% if not forloop.last %}, {% endif %}
-                                                            {% endfor %}
-                                                        </span>
-                                                    </div>
-                                                    <a href="{% url 'Main:serial_detail' serial.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
+                                            </div>
+                                            <div class="movie-content">
+                                                <h5 class="title">
+                                                    <a href="{% url 'Main:serial_detail' serial.pk %}">{{ serial.title }}</a>
+                                                </h5>
+                                                <div class="movie-meta">
+                                                    <span class="year">{{ serial.release_year }}</span>
+                                                    <span class="genres">
+                                                        {% for genre in serial.genres.all %}
+                                                            {{ genre.name }}{% if not forloop.last %}, {% endif %}
+                                                        {% endfor %}
+                                                    </span>
                                                 </div>
+                                                <a href="{% url 'Main:serial_detail' serial.pk %}" class="btn btn-outline-light btn-sm mt-3">Подробнее</a>
                                             </div>
                                         </div>
                                     </div>
