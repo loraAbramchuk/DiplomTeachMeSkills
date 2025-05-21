@@ -232,4 +232,18 @@ CORS_ALLOWED_ORIGINS = [
 
 CORS_ALLOW_CREDENTIALS = True
 
+# CSRF настройки
+CSRF_TRUSTED_ORIGINS = [
+    "https://diplomteachmeskills.onrender.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_USE_SESSIONS = True
+CSRF_COOKIE_DOMAIN = None
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_NAME = 'csrftoken'
+
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
