@@ -132,12 +132,13 @@ def movie_detail(request, movie_id):
     movie = get_object_or_404(Movie, id=movie_id)
     
     # Проверяем наличие постера и других данных
-    has_poster = False
-    if movie.poster:
-        try:
-            has_poster = os.path.exists(movie.poster.path)
-        except ValueError:
-            has_poster = False
+    #     has_poster = False
+    # if movie.poster:
+    #     try:
+    #         has_poster = os.path.exists(movie.poster.path)
+    #     except ValueError:
+    #         has_poster = False
+    has_poster = bool(movie.poster)
     
     # Если нет постера или других данных, запускаем задачу обновления
     if not has_poster or not movie.kinopoisk_rating or not movie.trailer_url:
@@ -165,12 +166,13 @@ def serial_detail(request, pk):
     serial = get_object_or_404(Serial, pk=pk)
     
     # Проверяем наличие постера и других данных
-    has_poster = False
-    if serial.poster:
-        try:
-            has_poster = os.path.exists(serial.poster.path)
-        except ValueError:
-            has_poster = False
+    # has_poster = False
+    # if serial.poster:
+    #     try:
+    #         has_poster = os.path.exists(serial.poster.path)
+    #     except ValueError:
+    #         has_poster = False
+    has_poster = bool(serial.poster)
     
     # Если нет постера или других данных, запускаем задачу обновления
     if not has_poster or not serial.kinopoisk_rating or not serial.trailer_url:
