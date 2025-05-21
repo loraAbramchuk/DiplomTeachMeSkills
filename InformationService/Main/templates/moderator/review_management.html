@@ -7,10 +7,10 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Управление отзывами</h2>
         <div class="btn-group">
-            <a href="{% url 'review_management' %}?status=all" class="btn btn-outline-primary {% if status == 'all' %}active{% endif %}">Все</a>
-            <a href="{% url 'review_management' %}?status=pending" class="btn btn-outline-warning {% if status == 'pending' %}active{% endif %}">На модерации</a>
-            <a href="{% url 'review_management' %}?status=approved" class="btn btn-outline-success {% if status == 'approved' %}active{% endif %}">Одобренные</a>
-            <a href="{% url 'review_management' %}?status=rejected" class="btn btn-outline-danger {% if status == 'rejected' %}active{% endif %}">Отклоненные</a>
+            <a href="{% url 'Main:review_management' %}?status=all" class="btn btn-outline-primary {% if status == 'all' %}active{% endif %}">Все</a>
+            <a href="{% url 'Main:review_management' %}?status=pending" class="btn btn-outline-warning {% if status == 'pending' %}active{% endif %}">На модерации</a>
+            <a href="{% url 'Main:review_management' %}?status=approved" class="btn btn-outline-success {% if status == 'approved' %}active{% endif %}">Одобренные</a>
+            <a href="{% url 'Main:review_management' %}?status=rejected" class="btn btn-outline-danger {% if status == 'rejected' %}active{% endif %}">Отклоненные</a>
         </div>
     </div>
 
@@ -82,7 +82,7 @@
                                         data-action="reject">
                                     <i class="bi bi-x-lg"></i>
                                 </button>
-                                <a href="{% url 'edit_review' review.id %}" class="btn btn-sm btn-warning">
+                                <a href="{% url 'Main:edit_review' review.id %}" class="btn btn-sm btn-warning">
                                     <i class="bi bi-pencil"></i> Редактировать
                                 </a>
                                 <button class="btn btn-sm btn-info" 
