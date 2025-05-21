@@ -93,7 +93,7 @@
                             </td>
                             <td>{{ movie.created_at|date:"d.m.Y" }}</td>
                             <td>
-                                <a href="{% url 'edit_content' 'movie' movie.id %}" class="btn btn-sm btn-primary">
+                                <a href="{% url 'Main:edit_content' 'movie' movie.id %}" class="btn btn-sm btn-primary">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                             </td>
@@ -171,7 +171,7 @@
                             </td>
                             <td>{{ serial.created_at|date:"d.m.Y" }}</td>
                             <td>
-                                <a href="{% url 'edit_content' 'serial' serial.id %}" class="btn btn-sm btn-primary">
+                                <a href="{% url 'Main:edit_content' 'serial' serial.id %}" class="btn btn-sm btn-primary">
                                     <i class="bi bi-pencil"></i>
                                 </a>
                             </td>

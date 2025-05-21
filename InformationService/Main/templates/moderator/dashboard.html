@@ -92,7 +92,7 @@
                                     <td>{{ movie.title }}</td>
                                     <td>{{ movie.release_year }}</td>
                                     <td>
-                                        <a href="{% url 'edit_content' 'movie' movie.id %}" class="btn btn-sm btn-primary">
+                                        <a href="{% url 'Main:edit_content' 'movie' movie.id %}" class="btn btn-sm btn-primary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                     </td>
@@ -130,7 +130,7 @@
                                     <td>{{ serial.title }}</td>
                                     <td>{{ serial.release_year }}</td>
                                     <td>
-                                        <a href="{% url 'edit_content' 'serial' serial.id %}" class="btn btn-sm btn-primary">
+                                        <a href="{% url 'Main:edit_content' 'serial' serial.id %}" class="btn btn-sm btn-primary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                     </td>
@@ -150,7 +150,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="card-title mb-0">Последние отзывы</h5>
-                    <a href="{% url 'review_management' %}" class="btn btn-sm btn-primary">
+                    <a href="{% url 'Main:review_management' %}" class="btn btn-sm btn-primary">
                         <i class="bi bi-list"></i> Все отзывы
                     </a>
                 </div>
