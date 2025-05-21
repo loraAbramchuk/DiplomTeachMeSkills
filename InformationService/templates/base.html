@@ -127,19 +127,6 @@
                           </span>
                         </a>
                       </li>
-                      <li class="header-btn">
-                        <a href="{% url 'Main:user_profile' user.username %}" class="btn">{{ user.username }}</a>
-                      </li>
-                      <li class="header-btn">
-                        <a href="{% url 'users:logout' %}" class="btn">Выйти</a>
-                      </li>
-                      {% else %}
-                      <li class="header-btn">
-                        <a href="{% url 'users:login' %}" class="btn">Войти</a>
-                      </li>
-                      <li class="header-btn">
-                        <a href="{% url 'users:register' %}" class="btn">Регистрация</a>
-                      </li>
                       {% endif %}
                     </ul>
                   </div>
