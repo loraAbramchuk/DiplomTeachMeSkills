@@ -21,7 +21,7 @@ def register(request):
             user = form.save()
             login(request, user)
             messages.success(request, 'Регистрация успешна!')
-            return redirect('index')
+            return redirect('Main:index')
         else:
             messages.error(request, 'Ошибка при регистрации. Пожалуйста, проверьте данные.')
     else:
