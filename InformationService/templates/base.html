@@ -319,10 +319,28 @@
       // Добавляем CSRF токен ко всем AJAX запросам
       $.ajaxSetup({
         beforeSend: function(xhr, settings) {
-          if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+          if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type)) {
             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
           }
+        },
+        xhrFields: {
+          withCredentials: true
         }
+      });
+
+      // Добавляем CSRF токен ко всем формам
+      document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('form');
+        forms.forEach(function(form) {
+          if (!form.querySelector('input[name="csrfmiddlewaretoken"]')) {
+            const csrfToken = getCookie('csrftoken');
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = 'csrfmiddlewaretoken';
+            csrfInput.value = csrfToken;
+            form.appendChild(csrfInput);
+          }
+        });
       });
     </script>
   </body>
