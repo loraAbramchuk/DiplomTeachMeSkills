@@ -29,7 +29,19 @@ INSTALLED_APPS = [
     'users',
     'api',
     'django_celery_results',
+    'cloudinary',
+    'cloudinary_storage',
 ]
+
+# Cloudinary конфигурация
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': config('CLOUDINARY_API_KEY'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+}
+
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -65,26 +77,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'InformationService.wsgi.application'
 
 # База данных
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': config('DB_NAME', default='postgres'),
-#         'USER': config('DB_USER', default='postgres'),
-#         'PASSWORD': config('DB_PASSWORD', default='postgres'),
-#         'HOST': config('DB_HOST', default='db'),
-#         'PORT': config('DB_PORT', default='5432'),
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dbservis',
-        'USER': 'dbservis_user',
-        'PASSWORD': 'pVxZqMvW84hCMfdaiz15DQXMZqCEDNlT',
-        'HOST': 'dpg-d0mdggeuk2gs73fiqvtg-a.oregon-postgres.render.com',
-        'PORT': '5432',
+        'NAME': config('DB_NAME', default='postgres'),
+        'USER': config('DB_USER', default='postgres'),
+        'PASSWORD': config('DB_PASSWORD', default='postgres'),
+        'HOST': config('DB_HOST', default='db'),
+        'PORT': config('DB_PORT', default='5432'),
     }
 }
+
 
 
 # Валидация паролей
@@ -106,8 +109,8 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Тип ключа по умолчанию
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
