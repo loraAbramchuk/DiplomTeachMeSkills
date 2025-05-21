@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'cloudinary',
     'cloudinary_storage',
+    'corsheaders',
 ]
 
 # Cloudinary конфигурация
@@ -46,6 +47,7 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -221,5 +223,13 @@ SITE_URL = 'http://127.0.0.1:8000'
 handler404 = 'Main.views.handler404'
 handler500 = 'Main.views.handler500'
 
+# CORS настройки
+CORS_ALLOWED_ORIGINS = [
+    "https://diplomteachmeskills.onrender.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
 
 ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
