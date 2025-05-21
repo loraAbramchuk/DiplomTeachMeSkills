@@ -4,13 +4,9 @@ import re
 import json
 from urllib.parse import quote
 from .config import KINOPOISK_API_KEY, KINOPOISK_TIMEOUT
-import tempfile
-from django.core.files import File
+from django.core.files.base import ContentFile
 from .models import MovieImage, SerialImage, Serial, Movie
 import logging
-import os
-from django.conf import settings
-from django.core.files.base import ContentFile
 import uuid
 
 logger = logging.getLogger('Main.kinopoisk_parser')
@@ -30,78 +26,43 @@ class KinopoiskParser:
             'Content-Type': 'application/json',
         }
         logger.info(f"Инициализация парсера с API ключом: {'*' * len(self.api_key)}")
-        
-        # Создаем необходимые директории
-        self._create_media_dirs()
-    
-    def _create_media_dirs(self):
-        """Создание необходимых директорий для медиа-файлов"""
-        dirs = [
-            os.path.join(settings.MEDIA_ROOT, 'posters', 'movies'),
-            os.path.join(settings.MEDIA_ROOT, 'posters', 'serials'),
-            os.path.join(settings.MEDIA_ROOT, 'movie_images'),
-            os.path.join(settings.MEDIA_ROOT, 'serial_images'),
-        ]
-        for dir_path in dirs:
-            try:
-                os.makedirs(dir_path, exist_ok=True)
-                logger.info(f"Создана директория: {dir_path}")
-            except Exception as e:
-                logger.error(f"Ошибка при создании директории {dir_path}: {str(e)}")
     
     def _save_image(self, url, obj, is_poster=False):
-        """Скачивает и сохраняет изображение"""
+        """Скачивает и сохраняет изображение в Cloudinary"""
         try:
-            response = requests.get(url, timeout=KINOPOISK_TIMEOUT)
+            logger.info(f"Начинаем скачивание изображения с URL: {url}")
+            response = requests.get(url, headers=self.headers, timeout=KINOPOISK_TIMEOUT)
+            logger.info(f"Получен ответ от сервера: {response.status_code}")
+            
             if response.status_code == 200:
-                # Очищаем название от недопустимых символов
                 safe_title = re.sub(r'[^\w\s-]', '', obj.title)
                 safe_title = re.sub(r'[-\s]+', '-', safe_title).strip('-_')
                 
-                # Определяем путь для сохранения в зависимости от типа объекта
-                upload_path = 'posters/serials' if isinstance(obj, Serial) else 'posters/movies'
-                
                 if is_poster:
+                    upload_path = 'posters/serials' if isinstance(obj, Serial) else 'posters/movies'
                     filename = f"{safe_title}_poster.jpg"
                     logger.info(f"Сохраняем постер в {upload_path}/{filename}")
-                    
-                    # Создаем временный файл
                     temp_file = ContentFile(response.content)
-                    
-                    # Сохраняем новый постер
+                    logger.info(f"Создан временный файл размером {len(response.content)} байт")
                     obj.poster.save(filename, temp_file, save=True)
-                    
-                    # Проверяем, что файл действительно сохранен
-                    if obj.poster and os.path.exists(obj.poster.path):
-                        # Если есть старый постер и он отличается от нового, удаляем его
-                        old_poster_path = obj.poster.path
-                        if old_poster_path != os.path.join(settings.MEDIA_ROOT, upload_path, filename):
-                            try:
-                                os.remove(old_poster_path)
-                            except Exception as e:
-                                logger.error(f"Ошибка при удалении старого постера: {str(e)}")
-                        logger.info(f"Постер успешно сохранен: {obj.poster.path}")
-                        return True
-                    else:
-                        logger.error(f"Ошибка: постер не был сохранен")
-                        return False
+                    logger.info(f"Постер успешно сохранен в Cloudinary")
+                    return True
                 else:
+                    upload_path = 'frames/serials' if isinstance(obj, Serial) else 'frames/movies'
                     filename = f"{safe_title}_frame_{uuid.uuid4().hex[:8]}.jpg"
                     logger.info(f"Сохраняем кадр в {upload_path}/{filename}")
                     image = MovieImage(movie=obj) if isinstance(obj, Movie) else SerialImage(serial=obj)
+                    logger.info(f"Создан объект изображения для {'фильма' if isinstance(obj, Movie) else 'сериала'}")
                     image.image.save(filename, ContentFile(response.content), save=True)
-                    # Проверяем, что файл действительно сохранен
-                    if image.image and os.path.exists(image.image.path):
-                        logger.info(f"Кадр успешно сохранен: {image.image.path}")
-                        return True
-                    else:
-                        logger.error(f"Ошибка: кадр не был сохранен")
-                        return False
+                    logger.info(f"Кадр успешно сохранен в Cloudinary")
+                    return True
             else:
                 logger.error(f"Ошибка при скачивании изображения: {response.status_code}")
+                logger.error(f"Текст ответа: {response.text}")
                 return False
         except Exception as e:
             logger.error(f"Ошибка при сохранении изображения: {str(e)}")
+            logger.exception("Полный стек ошибки:")
             return False
 
     def get_movie_data(self, title, year):
@@ -162,17 +123,8 @@ class KinopoiskParser:
                             # Проверяем URL постера
                             poster_url = detail_data.get('posterUrl')
                             if poster_url:
-                                logger.info(f"Проверяем URL постера: {poster_url}")
-                                try:
-                                    head_response = requests.head(poster_url, timeout=KINOPOISK_TIMEOUT)
-                                    if head_response.status_code != 200:
-                                        logger.warning(f"URL постера недоступен: {poster_url}")
-                                        poster_url = None
-                                    else:
-                                        logger.info(f"URL постера доступен: {poster_url}")
-                                except Exception as e:
-                                    logger.error(f"Ошибка при проверке URL постера: {str(e)}")
-                                    poster_url = None
+                                logger.info(f"Пробуем использовать URL постера без HEAD-проверки: {poster_url}")
+                                # Просто используем этот URL, не делаем HEAD-запрос
                             
                             # Проверяем URL кадров
                             frame_urls = []
@@ -184,20 +136,17 @@ class KinopoiskParser:
                                 frames_data = frames_response.json()
                                 logger.info(f"Получены данные о кадрах: {json.dumps(frames_data, ensure_ascii=False, indent=2)}")
                                 # Ограничиваем количество кадров до 10
-                                frames = frames_data.get('frames', [])[:10]
+                                frames = frames_data.get('frames', [])
+                                logger.info(f"Найдено {len(frames)} кадров в ответе API")
+                                frames = frames[:10]
                                 for frame in frames:
                                     frame_url = frame.get('image')
                                     if frame_url:
-                                        try:
-                                            head_response = requests.head(frame_url, timeout=KINOPOISK_TIMEOUT)
-                                            if head_response.status_code == 200:
-                                                frame_urls.append(frame_url)
-                                                logger.info(f"Найден действительный URL кадра: {frame_url}")
-                                            else:
-                                                logger.warning(f"Недействительный URL кадра: {frame_url}")
-                                        except Exception as e:
-                                            logger.error(f"Ошибка при проверке URL кадра: {str(e)}")
-                                logger.info(f"Найдено {len(frame_urls)} действительных кадров")
+                                        frame_urls.append(frame_url)
+                                        logger.info(f"Добавлен URL кадра: {frame_url}")
+                                    else:
+                                        logger.warning(f"URL кадра не найден в данных: {frame}")
+                                logger.info(f"Найдено {len(frame_urls)} валидных URL кадров")
                             
                             result = {
                                 'kinopoisk_id': film_id,
@@ -392,17 +341,8 @@ class KinopoiskParser:
                             # Проверяем URL постера
                             poster_url = detail_data.get('posterUrl')
                             if poster_url:
-                                logger.info(f"Проверяем URL постера: {poster_url}")
-                                try:
-                                    head_response = requests.head(poster_url, timeout=KINOPOISK_TIMEOUT)
-                                    if head_response.status_code != 200:
-                                        logger.warning(f"URL постера недоступен: {poster_url}")
-                                        poster_url = None
-                                    else:
-                                        logger.info(f"URL постера доступен: {poster_url}")
-                                except Exception as e:
-                                    logger.error(f"Ошибка при проверке URL постера: {str(e)}")
-                                    poster_url = None
+                                logger.info(f"Пробуем использовать URL постера без HEAD-проверки: {poster_url}")
+                                # Просто используем этот URL, не делаем HEAD-запрос
                             
                             # Проверяем URL кадров
                             frame_urls = []
@@ -418,16 +358,9 @@ class KinopoiskParser:
                                 for frame in frames:
                                     frame_url = frame.get('image')
                                     if frame_url:
-                                        try:
-                                            head_response = requests.head(frame_url, timeout=KINOPOISK_TIMEOUT)
-                                            if head_response.status_code == 200:
-                                                frame_urls.append(frame_url)
-                                                logger.info(f"Найден действительный URL кадра: {frame_url}")
-                                            else:
-                                                logger.warning(f"Недействительный URL кадра: {frame_url}")
-                                        except Exception as e:
-                                            logger.error(f"Ошибка при проверке URL кадра: {str(e)}")
-                                logger.info(f"Найдено {len(frame_urls)} действительных кадров")
+                                        frame_urls.append(frame_url)
+                                        logger.info(f"Добавлен URL кадра: {frame_url}")
+                                logger.info(f"Найдено {len(frame_urls)} кадров")
                             
                             result = {
                                 'kinopoisk_id': serial_id,

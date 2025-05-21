@@ -18,7 +18,10 @@ $(function() {
 		$.ajax({
 			type: 'POST',
 			url: $(form).attr('action'),
-			data: formData
+			data: formData,
+			headers: {
+				'X-CSRFToken': getCookie('csrftoken')
+			}
 		})
 		.done(function(response) {
 			// Make sure that the formMessages div has the 'success' class.

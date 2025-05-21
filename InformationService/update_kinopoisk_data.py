@@ -101,8 +101,31 @@ def update_serials():
         except Exception as e:
             logger.error(f"Ошибка при обновлении сериала {serial.title}: {str(e)}")
 
+def update_movie_posters():
+    """Обновляет только постеры всех фильмов через парсер (Cloudinary)"""
+    parser = KinopoiskParser()
+    movies = Movie.objects.all()
+    logger.info(f"Начинаю обновление постеров для {movies.count()} фильмов")
+    for movie in movies:
+        try:
+            logger.info(f"Обновляем постер для фильма: {movie.title} ({movie.release_year})")
+            data = parser.get_movie_data(movie.title, movie.release_year)
+            if data and data.get('poster_url'):
+                # Удаляем старый постер, если он есть
+                if movie.poster:
+                    movie.poster.delete(save=False)
+                # Сохраняем новый постер в Cloudinary
+                parser._save_image(data['poster_url'], movie, is_poster=True)
+                movie.save()
+                logger.info(f"Постер для {movie.title} успешно обновлен")
+            else:
+                logger.warning(f"Не удалось получить постер для фильма {movie.title}")
+        except Exception as e:
+            logger.error(f"Ошибка при обновлении постера для фильма {movie.title}: {str(e)}")
+
 if __name__ == '__main__':
     logger.info("Начинаем обновление данных с Кинопоиска")
     update_movies()
     update_serials()
+    update_movie_posters()
     logger.info("Обновление данных завершено") 

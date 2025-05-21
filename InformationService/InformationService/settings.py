@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Безопасность
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 DEBUG = True  # Включаем режим отладки
-ALLOWED_HOSTS = ['*']  # Разрешаем все хосты для отладки
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']  # Разрешаем все хосты для отладки
 
 # Приложения
 INSTALLED_APPS = [
@@ -222,4 +222,4 @@ handler404 = 'Main.views.handler404'
 handler500 = 'Main.views.handler500'
 
 
-ALLOWED_HOSTS = ['.onrender.com', 'localhost']
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
