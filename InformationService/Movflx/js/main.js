@@ -33,9 +33,8 @@ if ($('.menu-area li.menu-item-has-children ul').length) {
 }
 //Mobile Nav Hide Show
 if ($('.mobile-menu').length) {
-
 	var mobileMenuContent = $('.menu-area .main-menu').html();
-	$('.mobile-menu .menu-box .menu-outer').append(mobileMenuContent);
+	$('.mobile-menu .menu-box .menu-outer').html(mobileMenuContent);
 
 	//Dropdown Button
 	$('.mobile-menu li.menu-item-has-children .dropdown-btn').on('click', function () {

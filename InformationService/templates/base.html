@@ -102,7 +102,12 @@
                       <li><a href="{% url 'Main:trending' %}">Рекомендации</a></li>
                       <li><a href="{% url 'Main:about' %}">О нас</a></li>
                       {% if user.is_authenticated %}
-                      <li><a href="{% url 'Main:subscription_list' %}">Подписки</a></li>
+                        <li><a href="{% url 'Main:subscription_list' %}">Подписки</a></li>
+                        <li><a href="{% url 'Main:user_profile' user.username %}">{{ user.username }}</a></li>
+                        <li><a href="{% url 'users:logout' %}">Выйти</a></li>
+                      {% else %}
+                        <li><a href="{% url 'users:login' %}">Войти</a></li>
+                        <li><a href="{% url 'users:register' %}">Регистрация</a></li>
                       {% endif %}
                     </ul>
                   </div>
@@ -151,21 +156,7 @@
                     </a>
                   </div>
                   <div class="menu-outer">
-                    <ul class="navigation">
-                      <li><a href="{% url 'Main:index' %}">Главная</a></li>
-                      <li><a href="{% url 'Main:movies_list' %}">Фильмы</a></li>
-                      <li><a href="{% url 'Main:serials_list' %}">Сериалы</a></li>
-                      <li><a href="{% url 'Main:trending' %}">Рекомендации</a></li>
-                      <li><a href="{% url 'Main:about' %}">О нас</a></li>
-                      {% if user.is_authenticated %}
-                      <li><a href="{% url 'Main:subscription_list' %}">Подписки</a></li>
-                      <li><a href="{% url 'Main:user_profile' user.username %}">{{ user.username }}</a></li>
-                      <li><a href="{% url 'users:logout' %}">Выйти</a></li>
-                      {% else %}
-                      <li><a href="{% url 'users:login' %}">Войти</a></li>
-                      <li><a href="{% url 'users:register' %}">Регистрация</a></li>
-                      {% endif %}
-                    </ul>
+                    <ul class="navigation"></ul>
                   </div>
                 </nav>
               </div>
